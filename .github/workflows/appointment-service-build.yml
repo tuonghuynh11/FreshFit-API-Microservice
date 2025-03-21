@@ -1,4 +1,4 @@
-name: Build And Test Appointment Service
+name: Build And Test Service
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
   pull_request:
 
 jobs:
-  build:
+  build-test-appointment-service:
     runs-on: ubuntu-latest
     strategy:
         matrix:
@@ -42,3 +42,39 @@ jobs:
         # # Run tests
         # - name: Run tests
         #   run: npm test
+  build-test-user-service:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x, 22.x]
+
+    steps:
+      # Checkout the code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Set up Node.js with the specified version
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      # Install dependencies
+      - name: Install dependencies
+        run: npm install
+        working-directory: user-service
+
+      # Lint the code
+      - name: Lint code
+        run: npm run lint
+        working-directory: user-service
+
+      # Build the project (TypeScript)
+      - name: Build project
+        run: npm run build
+        working-directory: user-service
+
+      # Run tests
+      - name: Run tests
+        run: npm test
