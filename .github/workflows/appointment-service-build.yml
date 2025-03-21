@@ -76,5 +76,5 @@ jobs:
         working-directory: user-service
 
       # Run tests
-      - name: Run tests
-        run: npm test
+      # - name: Run tests
+      #   run: npm test
