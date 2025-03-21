@@ -7,41 +7,38 @@ on:
   pull_request:
 
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
-    steps:
-runs-on: ubuntu-latest
-
     strategy:
-      matrix:
-        node-version: [18.x, 20.x, 22.x]
-
+        matrix:
+          node-version: [18.x, 20.x, 22.x]
+  
     steps:
-      # Checkout the code
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      # Set up Node.js with the specified version
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-
-      # Install dependencies
-      - name: Install dependencies
-        run: npm install
-        working-directory: appointment-service
-
-      # Lint the code
-      # - name: Lint code
-      #   run: npm run lint
-      #   working-directory: appointment-service
-
-      # Build the project (TypeScript)
-      - name: Build project
-        run: npm run build
-        working-directory: appointment-service
-
-      # # Run tests
-      # - name: Run tests
-      #   run: npm test
+        # Checkout the code
+        - name: Checkout code
+          uses: actions/checkout@v3
+  
+        # Set up Node.js with the specified version
+        - name: Set up Node.js
+          uses: actions/setup-node@v3
+          with:
+            node-version: ${{ matrix.node-version }}
+  
+        # Install dependencies
+        - name: Install dependencies
+          run: npm install
+          working-directory: appointment-service
+  
+        # Lint the code
+        # - name: Lint code
+        #   run: npm run lint
+        #   working-directory: appointment-service
+  
+        # Build the project (TypeScript)
+        - name: Build project
+          run: npm run build
+          working-directory: appointment-service
+  
+        # # Run tests
+        # - name: Run tests
+        #   run: npm test
