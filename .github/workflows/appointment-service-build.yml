@@ -1,4 +1,4 @@
-name: Test Appointment Service
+name: Build And Test Appointment Service
 
 on:
   push:
