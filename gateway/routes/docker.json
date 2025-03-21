@@ -1,0 +1,1115 @@
+[
+    {
+        "name": "auth-clients-service",
+        "methods": ["GET"],
+        "context": ["/clients"],
+        "target": "http://users:4001/api/v1",
+        "pathRewrite": {},
+        "internal": true,
+        "security":false,
+        "cache": {
+            "ttl": 60
+        }
+    },
+    {
+        "name": "get-all-users",
+        "methods": ["GET"],
+        "context": ["/users"],
+        "target": "http://users:4001/api/v1",
+        "pathRewrite": {},
+        "limits": {
+              "client": {
+                  "rate": 10,
+                  "window": 60
+              },
+              "overall": {
+                  "rate": 100,
+                  "window": 60
+              }
+          },
+        "security":true,
+        "cache": {
+          "ttl": 60
+        }
+      },
+      {
+        "name": "login",
+        "methods": ["POST"],
+        "context": ["/users/login"],
+        "target": "http://users:4001/api/v1",
+        "pathRewrite": {},
+        "security":false
+      },
+      {
+        "name": "login-google",
+        "methods": ["POST"],
+        "context": ["/users/login-google"],
+        "target": "http://users:4001/api/v1",
+        "pathRewrite": {},
+        "security":false
+      },
+      {
+        "name": "register",
+        "methods": ["POST"],
+        "context": ["/users/register"],
+        "target": "http://users:4001/api/v1",
+        "pathRewrite": {},
+        "security":false
+      },
+      {
+        "name": "refresh-token",
+        "methods": ["POST"],
+        "context": ["/users/refresh-token"],
+        "target": "http://users:4001/api/v1",
+        "pathRewrite": {},
+        "security":false
+      },
+      {
+        "name": "logout",
+        "methods": ["POST"],
+        "context": ["/users/logout"],
+        "target": "http://users:4001/api/v1",
+        "pathRewrite": {},
+        "security":true
+      },
+      {
+        "name": "verify-email",
+        "methods": ["POST"],
+        "context": ["/users/verify-email"],
+        "target": "http://users:4001/api/v1",
+        "pathRewrite": {},
+        "security":false
+      },
+      {
+        "name": "resend-verify-email",
+        "methods": ["POST"],
+        "context": ["/users/resend-verify-email"],
+        "target": "http://users:4001/api/v1",
+        "pathRewrite": {},
+        "security":false
+      },
+      {
+        "name": "forgot-password",
+        "methods": ["POST"],
+        "context": ["/users/forgot-password"],
+        "target": "http://users:4001/api/v1",
+        "pathRewrite": {},
+        "security":false
+      },
+      {
+        "name": "verify-otp-code",
+        "methods": ["POST"],
+        "context": ["/users/verify-otp-code"],
+        "target": "http://users:4001/api/v1",
+        "pathRewrite": {},
+        "security":false
+      },
+      {
+        "name": "reset-password",
+        "methods": ["POST"],
+        "context": ["/users/reset-password"],
+        "target": "http://users:4001/api/v1",
+        "pathRewrite": {},
+        "security":false
+      },
+      {
+        "name": "get-me",
+        "methods": ["GET"],
+        "context": ["/users/me"],
+        "target": "http://users:4001/api/v1",
+        "pathRewrite": {},
+        "security":true
+      },
+      {
+        "name": "update-me",
+        "methods": ["PATCH"],
+        "context": ["/users/me"],
+        "target": "http://users:4001/api/v1",
+        "pathRewrite": {},
+        "security":true
+      },
+      {
+        "name": "change-password",
+        "methods": ["PUT"],
+        "context": ["/users/change-password"],
+        "target": "http://users:4001/api/v1",
+        "pathRewrite": {},
+        "security":true
+      },
+      {
+        "name": "ban-user",
+        "methods": ["POST"],
+        "context": ["/users/ban/:user_id"],
+        "target": "http://users:4001/api/v1",
+        "pathRewrite": {},
+        "security":true
+      },
+      {
+        "name": "unban-user",
+        "methods": ["POST"],
+        "context": ["/users/unban/:user_id"],
+        "target": "http://users:4001/api/v1",
+        "pathRewrite": {},
+        "security":true
+      },
+      {
+        "name": "health-tracking",
+        "methods": ["GET"],
+        "context": ["/users/health-tracking"],
+        "target": "http://users:4001/api/v1",
+        "pathRewrite": {},
+        "security":true
+      },
+      {
+        "name": "add-health-tracking",
+        "methods": ["POST"],
+        "context": ["/users/health-tracking"],
+        "target": "http://users:4001/api/v1",
+        "pathRewrite": {},
+        "security":true
+      },
+      {
+        "name": "add-health-tracking-detail",
+        "methods": ["POST"],
+        "context": ["/users/health-tracking-details"],
+        "target": "http://users:4001/api/v1",
+        "pathRewrite": {},
+        "security":true
+      },
+      {
+        "name": "add-water-activity",
+        "methods": ["POST"],
+        "context": ["/users/waters"],
+        "target": "http://users:4001/api/v1",
+        "pathRewrite": {},
+        "security":true
+      },
+      {
+        "name": "update-notify-settings",
+        "methods": ["PATCH"],
+        "context": ["/users/me/notify-settings"],
+        "target": "http://users:4001/api/v1",
+        "pathRewrite": {},
+        "security":true
+      },
+      {
+        "name": "create-recommendation",
+        "methods": ["POST"],
+        "context": ["/users/recommend"],
+        "target": "http://users:4001/api/v1",
+        "pathRewrite": {},
+        "security":true
+      },
+      {
+        "name": "start-goal",
+        "methods": ["POST"],
+        "context": ["/users/goal/start"],
+        "target": "http://users:4001/api/v1",
+        "pathRewrite": {},
+        "security":true
+      },
+      {
+        "name": "update-goal-status",
+        "methods": ["PUT"],
+        "context": ["/users/goal"],
+        "target": "http://users:4001/api/v1",
+        "pathRewrite": {},
+        "security":true
+      },
+      {
+        "name": "check-user-existed",
+        "methods": ["GET"],
+        "context": ["/users/exist/:user_id"],
+        "target": "http://users:4001/api/v1",
+        "internal": true,
+        "pathRewrite": {},
+        "security":false
+      },
+      {
+        "name": "search-challenges",
+        "methods": ["GET"],
+        "context": ["/challenges"],
+        "target": "http://users:4001/api/v1",
+        "pathRewrite": {},
+        "security": true,
+        "cache": {
+            "ttl": 60
+        }
+    },
+    {
+        "name": "get-challenge-detail",
+        "methods": ["GET"],
+        "context": ["/challenges/:id"],
+        "target": "http://users:4001/api/v1",
+        "pathRewrite": {},
+        "security": true
+    },
+    {
+        "name": "add-challenge",
+        "methods": ["POST"],
+        "context": ["/challenges"],
+        "target": "http://users:4001/api/v1",
+        "pathRewrite": {},
+        "security": true
+    },
+    {
+        "name": "update-challenge",
+        "methods": ["PATCH"],
+        "context": ["/challenges/:id"],
+        "target": "http://users:4001/api/v1",
+        "pathRewrite": {},
+        "security": true
+    },
+    {
+        "name": "update-challenge-meal",
+        "methods": ["PUT"],
+        "context": ["/challenges/:id/meal"],
+        "target": "http://users:4001/api/v1",
+        "pathRewrite": {},
+        "security": true
+    },
+    {
+        "name": "update-challenge-workout",
+        "methods": ["PUT"],
+        "context": ["/challenges/:id/workout"],
+        "target": "http://users:4001/api/v1",
+        "pathRewrite": {},
+        "security": true
+    },
+    {
+        "name": "join-challenge",
+        "methods": ["POST"],
+        "context": ["/challenges/join/:id"],
+        "target": "http://users:4001/api/v1",
+        "pathRewrite": {},
+        "security": true
+    },
+    {
+        "name": "activate-challenge",
+        "methods": ["POST"],
+        "context": ["/challenges/:id/activate"],
+        "target": "http://users:4001/api/v1",
+        "pathRewrite": {},
+        "security": true
+    },
+    {
+        "name": "deactivate-challenge",
+        "methods": ["POST"],
+        "context": ["/challenges/:id/deactivate"],
+        "target": "http://users:4001/api/v1",
+        "pathRewrite": {},
+        "security": true
+    },
+    {
+        "name": "delete-challenge",
+        "methods": ["DELETE"],
+        "context": ["/challenges/:id"],
+        "target": "http://users:4001/api/v1",
+        "pathRewrite": {},
+        "security": true
+    },
+    {
+      "name": "get-messages-in-chat-room",
+      "methods": ["GET"],
+      "context": ["/chats/:chat_room_id/messages"],
+      "target": "http://users:4001/api/v1",
+      "pathRewrite": {},
+      "security": true,
+      "cache": {
+          "ttl": 60
+      }
+  },
+  {
+      "name": "get-all-chat-rooms",
+      "methods": ["GET"],
+      "context": ["/chats/chat-room"],
+      "target": "http://users:4001/api/v1",
+      "pathRewrite": {},
+      "security": true,
+      "cache": {
+          "ttl": 60
+      }
+  },
+  {
+      "name": "create-chat-room",
+      "methods": ["POST"],
+      "context": ["/chats/chat-room"],
+      "target": "http://users:4001/api/v1",
+      "pathRewrite": {},
+      "security": true
+  },
+  {
+      "name": "delete-chat-room",
+      "methods": ["DELETE"],
+      "context": ["/chats/:chat_room_id"],
+      "target": "http://users:4001/api/v1",
+      "pathRewrite": {},
+      "security": true
+  },
+  {
+      "name": "send-message",
+      "methods": ["POST"],
+      "context": ["/chats/:chat_room_id"],
+      "target": "http://users:4001/api/v1",
+      "pathRewrite": {},
+      "security": true
+  },
+  {
+    "name": "search-dishes",
+    "methods": ["GET"],
+    "context": ["/dishes"],
+    "target": "http://users:4001/api/v1",
+    "pathRewrite": {},
+    "security": true,
+    "cache": {
+        "ttl": 60
+    }
+},
+{
+    "name": "rate-dish",
+    "methods": ["POST"],
+    "context": ["/dishes/:id/rating"],
+    "target": "http://users:4001/api/v1",
+    "pathRewrite": {},
+    "security": true
+},
+{
+    "name": "get-dish-detail",
+    "methods": ["GET"],
+    "context": ["/dishes/:id"],
+    "target": "http://users:4001/api/v1",
+    "pathRewrite": {},
+    "security": true
+},
+{
+    "name": "add-dish",
+    "methods": ["POST"],
+    "context": ["/dishes"],
+    "target": "http://users:4001/api/v1",
+    "pathRewrite": {},
+    "security": true
+},
+{
+    "name": "update-dish",
+    "methods": ["PATCH"],
+    "context": ["/dishes/:id"],
+    "target": "http://users:4001/api/v1",
+    "pathRewrite": {},
+    "security": true
+},
+{
+    "name": "add-dish-ingredient",
+    "methods": ["POST"],
+    "context": ["/dishes/:id/ingredients"],
+    "target": "http://users:4001/api/v1",
+    "pathRewrite": {},
+    "security": true
+},
+{
+    "name": "get-dish-ingredient-detail",
+    "methods": ["GET"],
+    "context": ["/dishes/:id/ingredients/:ingredient_id"],
+    "target": "http://users:4001/api/v1",
+    "pathRewrite": {},
+    "security": true
+},
+{
+    "name": "update-dish-ingredient",
+    "methods": ["PATCH"],
+    "context": ["/dishes/:id/ingredients/:ingredient_id"],
+    "target": "http://users:4001/api/v1",
+    "pathRewrite": {},
+    "security": true
+},
+{
+    "name": "delete-dish-ingredient",
+    "methods": ["DELETE"],
+    "context": ["/dishes/:id/ingredients/:ingredient_id"],
+    "target": "http://users:4001/api/v1",
+    "pathRewrite": {},
+    "security": true
+},
+{
+    "name": "delete-dish",
+    "methods": ["DELETE"],
+    "context": ["/dishes/:id"],
+    "target": "http://users:4001/api/v1",
+    "pathRewrite": {},
+    "security": true
+},
+{
+  "name": "search-exercises",
+  "methods": ["GET"],
+  "context": ["/exercises"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": true,
+  "cache": {
+      "ttl": 60
+  }
+},
+{
+  "name": "get-all-exercises",
+  "methods": ["GET"],
+  "context": ["/exercises/all"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": true,
+  "cache": {
+      "ttl": 60
+  }
+},
+{
+  "name": "get-exercise-detail",
+  "methods": ["GET"],
+  "context": ["/exercises/:id"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": true
+},
+{
+  "name": "add-exercise",
+  "methods": ["POST"],
+  "context": ["/exercises"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": true
+},
+{
+  "name": "update-exercise",
+  "methods": ["PATCH"],
+  "context": ["/exercises/:id"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": true
+},
+{
+  "name": "delete-exercise",
+  "methods": ["DELETE"],
+  "context": ["/exercises/:id"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": true
+},
+{
+  "name": "rate-exercise",
+  "methods": ["POST"],
+  "context": ["/exercises/:id/rating"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": true
+},
+{
+  "name": "get-fruit-by-name",
+  "methods": ["GET"],
+  "context": ["/fruits/:name"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": true,
+  "cache": {
+      "ttl": 60
+  }
+},
+{
+  "name": "search-ingredient-external",
+  "methods": ["GET"],
+  "context": ["/ingredients/external"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": true,
+  "cache": {
+      "ttl": 60
+  }
+},
+{
+  "name": "search-ingredient",
+  "methods": ["GET"],
+  "context": ["/ingredients"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": true,
+  "cache": {
+      "ttl": 60
+  }
+},
+{
+  "name": "get-ingredient-detail",
+  "methods": ["GET"],
+  "context": ["/ingredients/:id"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": true
+},
+{
+  "name": "add-ingredient",
+  "methods": ["POST"],
+  "context": ["/ingredients"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": true
+},
+{
+  "name": "update-ingredient",
+  "methods": ["PATCH"],
+  "context": ["/ingredients/:id"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": true
+},
+{
+  "name": "delete-ingredient",
+  "methods": ["DELETE"],
+  "context": ["/ingredients/:id"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": true
+},
+{
+  "name": "search-meals",
+  "methods": ["GET"],
+  "context": ["/meals"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": true,
+  "cache": {
+      "ttl": 60
+  }
+},
+{
+  "name": "get-meals-by-date",
+  "methods": ["GET"],
+  "context": ["/meals/users"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": true,
+  "cache": {
+      "ttl": 60
+  }
+},
+{
+  "name": "get-meal-detail",
+  "methods": ["GET"],
+  "context": ["/meals/:meal_id"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": true
+},
+{
+  "name": "add-meal",
+  "methods": ["POST"],
+  "context": ["/meals"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": true
+},
+{
+  "name": "clone-meal",
+  "methods": ["POST"],
+  "context": ["/meals/clone"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": true
+},
+{
+  "name": "update-meal",
+  "methods": ["PUT"],
+  "context": ["/meals/:meal_id"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": true
+},
+{
+  "name": "delete-meal",
+  "methods": ["DELETE"],
+  "context": ["/meals/:meal_id"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": true
+},
+{
+  "name": "upload-video",
+  "methods": ["POST"],
+  "context": ["/medias/videos"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": true
+},
+{
+  "name": "upload-image",
+  "methods": ["POST"],
+  "context": ["/medias/images"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": true
+},
+{
+  "name": "get-dish-recommendations",
+  "methods": ["POST"],
+  "context": ["/recommends/dishes"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": true
+},
+{
+  "name": "get-workout-plan-recommendations",
+  "methods": ["POST"],
+  "context": ["/recommends/workout-plans"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": true
+},
+{
+  "name": "search-reports",
+  "methods": ["GET"],
+  "context": ["/reports"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": true,
+  "cache": {
+      "ttl": 60
+  }
+},
+{
+  "name": "get-report-detail",
+  "methods": ["GET"],
+  "context": ["/reports/:id"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": true
+},
+{
+  "name": "add-report",
+  "methods": ["POST"],
+  "context": ["/reports"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": true
+},
+{
+  "name": "update-report-status",
+  "methods": ["PUT"],
+  "context": ["/reports/status"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": true
+},
+{
+  "name": "search-sets",
+  "methods": ["GET"],
+  "context": ["/sets-exercise"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": true,
+  "cache": {
+      "ttl": 60
+  }
+},
+{
+  "name": "get-set-exercise-detail",
+  "methods": ["GET"],
+  "context": ["/sets-exercise/:setId/:id"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": true
+},
+{
+  "name": "add-set-exercise",
+  "methods": ["POST"],
+  "context": ["/sets-exercise/:setId"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": true
+},
+{
+  "name": "update-set-exercise",
+  "methods": ["PATCH"],
+  "context": ["/sets-exercise/:setId/:id"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": true
+},
+{
+  "name": "delete-set-exercise",
+  "methods": ["DELETE"],
+  "context": ["/sets-exercise/:setId/:id"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": true
+},
+{
+  "name": "search-sets",
+  "methods": ["GET"],
+  "context": ["/sets"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": true,
+  "cache": {
+      "ttl": 60
+  }
+},
+{
+  "name": "get-set-detail",
+  "methods": ["GET"],
+  "context": ["/sets/:id"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": true
+},
+{
+  "name": "add-set",
+  "methods": ["POST"],
+  "context": ["/sets"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": true
+},
+{
+  "name": "rate-set",
+  "methods": ["POST"],
+  "context": ["/sets/:id/rating"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": true
+},
+{
+  "name": "update-set",
+  "methods": ["PATCH"],
+  "context": ["/sets/:id"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": true
+},
+{
+  "name": "delete-set",
+  "methods": ["DELETE"],
+  "context": ["/sets/:id"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": true
+},
+{
+  "name": "clone-set",
+  "methods": ["POST"],
+  "context": ["/sets/clone"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": true
+},
+{
+  "name": "get-top-statistics",
+  "methods": ["GET"],
+  "context": ["/statistics/top"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": true,
+  "cache": {
+      "ttl": 60
+  }
+},
+{
+  "name": "get-transaction-detail",
+  "methods": ["GET"],
+  "context": ["/transactions/:id"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": true
+},
+{
+  "name": "get-transactions-by-access-token",
+  "methods": ["GET"],
+  "context": ["/transactions/user/access-token"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": true,
+  "cache": {
+      "ttl": 60
+  }
+},
+{
+  "name": "create-zalo-pay-transaction",
+  "methods": ["POST"],
+  "context": ["/transactions/deposit/zalo-pay"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": true
+},
+{
+  "name": "zalo-pay-callback",
+  "methods": ["POST"],
+  "context": ["/transactions/deposit/zalo-pay/callback"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": false
+},
+{
+  "name": "check-zalo-pay-transaction-status",
+  "methods": ["POST"],
+  "context": ["/transactions/deposit/zalo-pay/check-status-transaction"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": true
+},
+{
+  "name": "get-transactions-by-user-id",
+  "methods": ["GET"],
+  "context": ["/transactions/user/:userId"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": true,
+  "cache": {
+      "ttl": 60
+  }
+},
+{
+  "name": "update-transaction-status",
+  "methods": ["PATCH"],
+  "context": ["/transactions/:id/status"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": true
+},
+{
+  "name": "refund-coin-for-user",
+  "methods": ["POST"],
+  "context": ["/transactions/refund/:userId"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": true
+},
+{
+  "name": "booking-transaction",
+  "methods": ["POST"],
+  "context": ["/transactions/book/:userId"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": false,
+  "internal": true
+},
+{
+  "name": "refund-coin-for-user-by-system",
+  "methods": ["POST"],
+  "context": ["/transactions/refund/:userId/system"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": false,
+  "internal": true
+},
+{
+  "name": "search-workout-plan-details",
+  "methods": ["GET"],
+  "context": ["/workout-plan-details/:workoutPlanId"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": true,
+  "cache": {
+      "ttl": 60
+  }
+},
+{
+  "name": "get-workout-plan-detail",
+  "methods": ["GET"],
+  "context": ["/workout-plan-details/:workoutPlanId/:id"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": true
+},
+{
+  "name": "add-workout-plan-detail",
+  "methods": ["POST"],
+  "context": ["/workout-plan-details/:workoutPlanId"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": true
+},
+{
+  "name": "add-set-for-workout-plan-detail",
+  "methods": ["POST"],
+  "context": ["/workout-plan-details/:workoutPlanId/:id"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": true
+},
+{
+  "name": "delete-set-in-workout-plan-detail",
+  "methods": ["DELETE"],
+  "context": ["/workout-plan-details/:workoutPlanId/:id/:setId"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": true
+},
+{
+  "name": "update-workout-plan-detail",
+  "methods": ["PATCH"],
+  "context": ["/workout-plan-details/:workoutPlanId/:id"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": true
+},
+{
+  "name": "delete-workout-plan-detail",
+  "methods": ["DELETE"],
+  "context": ["/workout-plan-details/:workoutPlanId/:id"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": true
+},
+{
+  "name": "search-workout-plans",
+  "methods": ["GET"],
+  "context": ["/workout-plans"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": true,
+  "cache": {
+      "ttl": 60
+  }
+},
+{
+  "name": "get-workout-plan-detail",
+  "methods": ["GET"],
+  "context": ["/workout-plans/:id"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": true
+},
+{
+  "name": "add-workout-plan",
+  "methods": ["POST"],
+  "context": ["/workout-plans"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": true
+},
+{
+  "name": "update-workout-plan",
+  "methods": ["PATCH"],
+  "context": ["/workout-plans/:id"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": true
+},
+{
+  "name": "delete-workout-plan",
+  "methods": ["DELETE"],
+  "context": ["/workout-plans/:id"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": true
+},
+{
+  "name": "get-appointments",
+  "methods": ["GET"],
+  "context": ["/appointments"],
+  "target": "http://appointments:4002/api/v1",
+  "pathRewrite": {},
+  "security": true,
+  "cache": {
+      "ttl": 60
+  }
+},
+{
+  "name": "book-appointment",
+  "methods": ["POST"],
+  "context": ["/appointments/book"],
+  "target": "http://appointments:4002/api/v1",
+  "pathRewrite": {},
+  "security": true
+},
+{
+  "name": "get-appointments-by-user-id",
+  "methods": ["GET"],
+  "context": ["/appointments/user/:userId"],
+  "target": "http://appointments:4002/api/v1",
+  "pathRewrite": {},
+  "security": true,
+  "cache": {
+      "ttl": 60
+  }
+},
+{
+  "name": "get-appointments-by-access-token",
+  "methods": ["GET"],
+  "context": ["/appointments/user"],
+  "target": "http://appointments:4002/api/v1",
+  "pathRewrite": {},
+  "security": true,
+  "cache": {
+      "ttl": 60
+  }
+},
+{
+  "name": "get-appointments-by-expert-id",
+  "methods": ["GET"],
+  "context": ["/appointments/expert/:expertId"],
+  "target": "http://appointments:4002/api/v1",
+  "pathRewrite": {},
+  "security": true,
+  "cache": {
+      "ttl": 60
+  }
+},
+{
+  "name": "get-appointment-detail",
+  "methods": ["GET"],
+  "context": ["/appointments/:id"],
+  "target": "http://appointments:4002/api/v1",
+  "pathRewrite": {},
+  "security": true
+},
+{
+  "name": "update-appointment-status",
+  "methods": ["PATCH"],
+  "context": ["/appointments/:id"],
+  "target": "http://appointments:4002/api/v1",
+  "pathRewrite": {},
+  "security": true
+},
+{
+  "name": "cancel-appointment",
+  "methods": ["POST"],
+  "context": ["/appointments/:id/cancel"],
+  "target": "http://appointments:4002/api/v1",
+  "pathRewrite": {},
+  "security": true
+},
+{
+  "name": "rate-appointment",
+  "methods": ["POST"],
+  "context": ["/appointments/:id/rating"],
+  "target": "http://appointments:4002/api/v1",
+  "pathRewrite": {},
+  "security": true
+},
+{
+  "name": "rate-expert-appointment",
+  "methods": ["POST"],
+  "context": ["/appointments/:id/expert/rating"],
+  "target": "http://appointments:4002/api/v1",
+  "pathRewrite": {},
+  "security": true
+},
+{
+  "name": "soft-delete-appointment",
+  "methods": ["DELETE"],
+  "context": ["/appointments/:id"],
+  "target": "http://appointments:4002/api/v1",
+  "pathRewrite": {},
+  "security": true
+},
+{
+  "name": "hard-delete-appointment",
+  "methods": ["DELETE"],
+  "context": ["/appointments/:id/permanently"],
+  "target": "http://appointments:4002/api/v1",
+  "pathRewrite": {},
+  "security": true
+},
+{
+  "name": "test-demo",
+  "methods": ["GET"],
+  "context": ["/appointments/test/demo"],
+  "target": "http://appointments:4002/api/v1",
+  "pathRewrite": {},
+  "security": true
+}
+]

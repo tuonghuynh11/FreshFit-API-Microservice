@@ -1,0 +1,21 @@
+{
+	"folders": [
+		{
+			"name": "Root",
+			"path": "."
+		},
+		{
+			"name": "gateway",
+			"path": "gateway"
+		},
+		{
+			"name": "auth-service",
+			"path": "auth-service"
+		},
+		{
+			"name": "users-service",
+			"path": "users-service"
+		}
+	],
+	"settings": {}
+}

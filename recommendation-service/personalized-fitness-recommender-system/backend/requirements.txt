@@ -1,0 +1,10 @@
+fastapi==0.68.1
+uvicorn==0.15.0
+opencv-python-headless
+nltk
+pytesseract
+pandas==2.2.2
+scikit-learn==1.6.1
+numpy==1.26.4
+scipy==1.13.1
+python-multipart

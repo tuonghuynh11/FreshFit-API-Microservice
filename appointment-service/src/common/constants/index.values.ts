@@ -1,0 +1,4 @@
+export const DEFAULT_FEES = {
+  EXPERT_CALL_FEES: 20,
+  EXPERT_MESSAGE_FEES: 10,
+};

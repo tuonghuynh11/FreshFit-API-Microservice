@@ -1,0 +1,8 @@
+version: '3'
+services:
+  freshFit:
+    image: hmt1/freshfit:v0
+    ports:
+      - '4000:4000'
+    volumes:
+      - '~/Documents/DuocEdu/NodeJs-Super/Twitter/uploads:/app/uploads'
