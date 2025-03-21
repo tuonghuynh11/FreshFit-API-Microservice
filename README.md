@@ -1,4 +1,4 @@
-[![Test Appointment Service](https://github.com/tuonghuynh11/FreshFit-API-Microservice/actions/workflows/appointment-service-build.yml/badge.svg)](https://github.com/tuonghuynh11/FreshFit-API-Microservice/actions/workflows/appointment-service-build.yml)
+[![Build And Test Service](https://github.com/tuonghuynh11/FreshFit-API-Microservice/actions/workflows/build-and-test-service.yml/badge.svg)](https://github.com/tuonghuynh11/FreshFit-API-Microservice/actions/workflows/build-and-test-service.yml)
 # API Gateway
 
 ## Description
