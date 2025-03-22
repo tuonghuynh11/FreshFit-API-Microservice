@@ -18,7 +18,7 @@ jobs:
           port: ${{ secrets.PORT }}
           script: |
             set -e  # Exit if any command fails
-            cd /FreshFit-API-Microservice  # Change this to your actual project path
+            cd FreshFit-API-Microservice  # Change this to your actual project path
             git pull origin main  # Pull latest changes
             # Stop and remove containers safely
             # timeout 120s docker-compose down || echo "Timeout reached, skipping..."
