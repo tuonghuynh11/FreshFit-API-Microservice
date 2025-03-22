@@ -1,0 +1,31 @@
+name: Deploy Node.js App
+
+on:
+  push:
+    branches:
+      - main  # Change this if your deployment branch is different
+
+jobs:
+  deploy_VPS:
+   runs-on: ubuntu-latest
+   steps:
+      - name: Executing remote ssh commands using password
+        uses: appleboy/ssh-action@v1.1.0
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.HOST_USERNAME }}
+          password: ${{ secrets.HOST_PASSWORD }}
+          port: ${{ secrets.PORT }}
+          script: |
+            set -e  # Exit if any command fails
+            cd /FreshFit-API-Microservice  # Change this to your actual project path
+            git pull origin main  # Pull latest changes
+            # Stop and remove containers safely
+            timeout 120s docker-compose down || echo "Timeout reached, skipping..."
+            # Rebuild and restart services
+            docker-compose up -d --build
+            # Clean up unused Docker data
+            docker system prune -f
+          
+
+           
