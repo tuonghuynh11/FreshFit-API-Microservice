@@ -21,7 +21,8 @@ jobs:
             cd /FreshFit-API-Microservice  # Change this to your actual project path
             git pull origin main  # Pull latest changes
             # Stop and remove containers safely
-            timeout 120s docker-compose down || echo "Timeout reached, skipping..."
+            # timeout 120s docker-compose down || echo "Timeout reached, skipping..."
+            docker-compose down
             # Rebuild and restart services
             docker-compose up -d --build
             # Clean up unused Docker data
