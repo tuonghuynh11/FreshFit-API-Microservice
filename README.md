@@ -1,4 +1,5 @@
 [![Build And Test Service](https://github.com/tuonghuynh11/FreshFit-API-Microservice/actions/workflows/build-and-test-service.yml/badge.svg)](https://github.com/tuonghuynh11/FreshFit-API-Microservice/actions/workflows/build-and-test-service.yml)
+[![Deploy Node.js App](https://github.com/tuonghuynh11/FreshFit-API-Microservice/actions/workflows/deploy.yml/badge.svg)](https://github.com/tuonghuynh11/FreshFit-API-Microservice/actions/workflows/deploy.yml)
 # API Gateway
 
 ## Description
