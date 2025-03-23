@@ -974,7 +974,7 @@ class UserService {
         console.log(`Rolled back: Deleted user ${userId}`)
       }
 
-      throw new Error('Failed to create expert user, transaction rolled back')
+      throw new Error('Failed to create expert user, transaction rolled back: ' + error)
     } finally {
       session.endSession()
     }
