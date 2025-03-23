@@ -14,6 +14,8 @@ config({
 export const envConfig = {
   port: (process.env.PORT as string) || 4000,
   host: process.env.HOST as string,
+  appointmentServiceHost: process.env.APPOINTMENT_SERVICE_HOST as string,
+  recommendationServiceHost: process.env.RECOMMENDATION_SERVICE_HOST as string,
   dbName: process.env.DB_NAME as string,
   dbUsername: process.env.DB_USERNAME as string,
   dbPassword: process.env.DB_PASSWORD as string,
@@ -63,5 +65,7 @@ export const envConfig = {
   zalo_key_2: process.env.ZALO_KEY_2 || '',
   zalo_endpoint: process.env.ZALO_END_POINT || '',
   zalo_redirect_url: process.env.ZALO_REDIRECT_URL || '',
-  zalo_app_user: process.env.ZALO_APP_USER || ''
+  zalo_app_user: process.env.ZALO_APP_USER || '',
+  // DEFAULT PASSWORD
+  defaultExpertPassword: process.env.DEFAULT_EXPERT_PASSWORD || '12345678expert@Ex'
 }

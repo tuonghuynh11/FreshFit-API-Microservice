@@ -149,28 +149,28 @@ function calculateExercisePlan(exerciseName: string, caloriesToBurn: number): Ex
       rest_time_per_round: 1,
       calories_per_minute: 0
     },
-    "Deadlift": {
+    Deadlift: {
       calories_per_rep: 0.5,
       reps_per_round: 10,
       time_per_round: 6,
       rest_time_per_round: 1,
       calories_per_minute: 0
     },
-    "Squats": {
+    Squats: {
       calories_per_rep: 0.3,
       reps_per_round: 15,
       time_per_round: 4,
       rest_time_per_round: 1,
       calories_per_minute: 0
     },
-    "Plank": {
+    Plank: {
       calories_per_rep: 0.1,
       calories_per_minute: 2,
       reps_per_round: 1,
       time_per_round: 1,
       rest_time_per_round: 1
     }, // Plank held for time
-    "Burpees": {
+    Burpees: {
       calories_per_rep: 0.6,
       reps_per_round: 10,
       time_per_round: 8,
@@ -303,4 +303,17 @@ export const getSetExercises = ({
   }
 
   return exercisePlan
+}
+
+export const generateExpertUniqueUsername = async (): Promise<string> => {
+  let username: string
+  let isTaken: boolean
+
+  do {
+    const randomNumber = Math.floor(100000 + Math.random() * 900000) // 6-digit number
+    username = `expert${randomNumber}`
+    isTaken = await IsUsernameExisted(username)
+  } while (isTaken)
+
+  return username
 }

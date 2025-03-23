@@ -1,6 +1,11 @@
 import User from '~/models/schemas/User.schema'
 import databaseService from './database.services'
-import { RegisterReqBody, UpdateMeReqBody, UpdateUserNotifySettingsReqBody } from '~/models/requests/User.requests'
+import {
+  CreateExpertUserBody,
+  RegisterReqBody,
+  UpdateMeReqBody,
+  UpdateUserNotifySettingsReqBody
+} from '~/models/requests/User.requests'
 import { hashPassword } from '~/utils/crypto'
 import { signToken, verifyToken } from '~/utils/jwt'
 import {
@@ -14,15 +19,16 @@ import {
 } from '~/constants/enums'
 import { envConfig } from '~/constants/config'
 import RefreshToken from '~/models/schemas/RefreshToken.schema'
-import { ObjectId } from 'mongodb'
+import { ClientSession, ObjectId } from 'mongodb'
 import { ErrorWithStatus } from '~/models/Errors'
 import axios from 'axios'
 import { USERS_MESSAGES } from '~/constants/messages'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { sendForgotPasswordEmail, sendVerifyEmail } from '~/utils/mails'
 import OTP from '~/models/schemas/Otp.schema'
-import { generateOTP, generatePassword } from '~/utils/commons'
+import { generateExpertUniqueUsername, generateOTP, generatePassword, IsEmailExist } from '~/utils/commons'
 import { GoalDetail } from '~/models/schemas/GoalDetail.schema'
+import appointmentService from './appointment.services'
 
 class UserService {
   private signAccessToken({ user_id, role, verify }: { user_id: string; role: UserRole; verify: UserVerifyStatus }) {
@@ -916,6 +922,62 @@ class UserService {
     })
 
     return user
+  }
+  async createExpertUser(expert: CreateExpertUserBody) {
+    const existedEmail = await IsEmailExist(expert.email)
+    if (existedEmail) {
+      throw new ErrorWithStatus({
+        message: USERS_MESSAGES.EMAIL_ALREADY_EXISTS,
+        status: HTTP_STATUS.BAD_REQUEST
+      })
+    }
+    const session: ClientSession = databaseService.startSession()
+
+    let userId: string | null = null
+    try {
+      await session.withTransaction(async () => {
+        const username = await generateExpertUniqueUsername()
+        const newExpertUser = new User({
+          fullName: expert.fullName,
+          email: expert.email,
+          phoneNumber: expert.phoneNumber,
+          date_of_birth: new Date(expert.dateOfBirth),
+          password: hashPassword(envConfig.defaultExpertPassword),
+          verify: UserVerifyStatus.Verified,
+          gender: expert.gender,
+          role: UserRole.Expert,
+          username,
+          avatar: expert.avatar
+        })
+
+        // Insert User into MongoDB
+        const result = await databaseService.users.insertOne(newExpertUser, { session })
+        if (!result.insertedId) throw new Error('Failed to insert user')
+
+        userId = result.insertedId.toString() // Store userId for rollback if needed
+      })
+
+      // Now call the external service (outside the MongoDB transaction)
+      const expertInfo = await appointmentService.createExpert({
+        userId: userId!,
+        ...expert
+      })
+
+      return {
+        id: userId,
+        ...expert
+      }
+    } catch (error) {
+      // If external service fails, rollback by deleting the user from MongoDB
+      if (userId) {
+        await databaseService.users.deleteOne({ _id: new ObjectId(userId) })
+        console.log(`Rolled back: Deleted user ${userId}`)
+      }
+
+      throw new Error('Failed to create expert user, transaction rolled back')
+    } finally {
+      session.endSession()
+    }
   }
 }
 

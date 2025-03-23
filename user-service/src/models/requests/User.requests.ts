@@ -1,5 +1,5 @@
 import { JwtPayload } from 'jsonwebtoken'
-import { ActivityLevel, Gender, LevelType, TokenType, UserRole, UserVerifyStatus } from '~/constants/enums'
+import { ActivityLevel, DegreeType, Gender, LevelType, TokenType, UserRole, UserVerifyStatus } from '~/constants/enums'
 import { ParamsDictionary } from 'express-serve-static-core'
 export interface LoginReqBody {
   username?: string
@@ -78,4 +78,43 @@ export interface UpdateUserNotifySettingsReqBody {
   isWater?: boolean
   isAdmin?: boolean
   isHealth?: boolean
+}
+
+export interface CreateCertificateBody {
+  name: string
+  issuingOrganization: string
+  issueDate: string
+  expirationDate?: string
+  credentialUrl?: string
+}
+export interface CreateExperienceBody {
+  company: string
+  position: string
+  description?: string
+  startDate: string
+  endDate?: string
+}
+export interface CreateEducationBody {
+  institution: string
+  degree: DegreeType
+  major: string
+  startYear: number
+  endYear?: number
+}
+export interface CreateExpertUserBody {
+  email: string
+  phoneNumber: string
+  fullName: string
+  dateOfBirth: string
+  gender: Gender
+  avatar: string
+  specialization: string
+  experienceYears: number
+  bio: string
+  certifications: CreateCertificateBody[]
+  languages: string[]
+  consultationFee: number
+  mainSkills: string[]
+  experiences: CreateExperienceBody[]
+  educations: CreateEducationBody[]
 }

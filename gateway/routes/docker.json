@@ -1111,5 +1111,22 @@
   "target": "http://appointments:4002/api/v1",
   "pathRewrite": {},
   "security": true
+},
+{
+  "name": "Create expert information (appointment-service)",
+  "methods": ["POST"],
+  "context": ["/experts/create"],
+  "target": "http://appointments:4002/api/v1",
+  "pathRewrite": {},
+  "internal": true,
+  "security": false
+},
+{
+  "name": "Create expert account (user-service)",
+  "methods": ["POST"],
+  "context": ["/users/expert/create"],
+  "target": "http://users:4001/api/v1",
+  "pathRewrite": {},
+  "security": true
 }
 ]

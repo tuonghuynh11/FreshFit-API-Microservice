@@ -97,7 +97,8 @@ export const USERS_MESSAGES = {
   START_GOAL_SUCCESS: 'Start goals successful',
   UPDATE_GOAL_STATUS_SUCCESS: 'Update goals status successful',
   OTP_CODE_IS_REQUIRED: 'OTP code is required',
-  GET_USER_SUCCESS: 'Get user successful'
+  GET_USER_SUCCESS: 'Get user successful',
+  CREATE_EXPERT_USER_SUCCESS: 'Create expert user successful'
 } as const
 
 export const PAGINATION_MESSAGES = {

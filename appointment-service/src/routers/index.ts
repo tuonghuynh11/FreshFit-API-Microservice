@@ -1,5 +1,6 @@
 import AppointmentController from "../controllers/appointment.controller";
 import CategoryController from "../controllers/category.controller";
+import ExpertController from "../controllers/expert.controller";
 import MediaController from "../controllers/media.controller";
 import OrderController from "../controllers/order.controller";
 import PaymentController from "../controllers/payment.controller";
@@ -15,6 +16,7 @@ export const appRouters = [
       PaymentController,
       RatingController,
       AppointmentController,
+      ExpertController,
     ],
   },
 ];
