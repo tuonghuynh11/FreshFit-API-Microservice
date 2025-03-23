@@ -43,7 +43,8 @@ export enum EncodingStatus {
 }
 export enum Gender {
   Male = 'Male',
-  Female = 'Female'
+  Female = 'Female',
+  Other = 'Other'
 }
 export enum UserStatus {
   Normal = 'Normal',
@@ -252,4 +253,10 @@ export enum ReactionType {
   Wow = 'Wow',
   Sad = 'Sad',
   Angry = 'Angry'
+}
+export enum DegreeType {
+  ASSOCIATE = 'ASSOCIATE',
+  BACHELOR = 'BACHELOR',
+  MASTER = 'MASTER',
+  DOCTORATE = 'DOCTORATE'
 }

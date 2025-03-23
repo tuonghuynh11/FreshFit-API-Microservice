@@ -1,4 +1,4 @@
-import { Collection, Db, MongoClient } from 'mongodb'
+import { ClientSession, Collection, Db, MongoClient } from 'mongodb'
 import dotenv from 'dotenv'
 import User from '~/models/schemas/User.schema'
 import RefreshToken from '~/models/schemas/RefreshToken.schema'
@@ -52,7 +52,9 @@ class DatabaseService {
     //   )
     // }
   }
-
+  startSession(): ClientSession {
+    return this.client.startSession()
+  }
   get users(): Collection<User> {
     return this.db.collection(envConfig.dbUsersCollection as string)
   }

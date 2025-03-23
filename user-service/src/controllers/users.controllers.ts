@@ -9,6 +9,7 @@ import { HealthTrackingDetailBody } from '~/models/requests/HealthTrackingDetail
 import {
   BanUserReqParams,
   ChangePasswordReqBody,
+  CreateExpertUserBody,
   ForgotPasswordReqBody,
   LoginGoogleReqBody,
   LoginReqBody,
@@ -175,6 +176,7 @@ export const resetPasswordTokenController = async (
   const result = await userService.resetPassword(user_id, password)
   return res.json(result)
 }
+
 export const getMeController = async (req: Request, res: Response, next: NextFunction) => {
   const { user_id } = req.decoded_authorization as TokenPayload
   const user = await userService.getMe(user_id)
@@ -334,5 +336,17 @@ export const checkUserExistedController = async (req: Request<BanUserReqParams>,
   return res.json({
     message: USERS_MESSAGES.GET_USER_SUCCESS,
     result: user
+  })
+}
+
+export const createExpertUserController = async (
+  req: Request<ParamsDictionary, any, CreateExpertUserBody>,
+  res: Response,
+  next: NextFunction
+) => {
+  const result = await userService.createExpertUser(req.body)
+  return res.json({
+    message: USERS_MESSAGES.CREATE_EXPERT_USER_SUCCESS,
+    result
   })
 }

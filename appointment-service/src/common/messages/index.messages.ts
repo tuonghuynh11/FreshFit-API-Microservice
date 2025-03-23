@@ -25,3 +25,7 @@ export const APPOINTMENT_MESSAGES = {
   RATING_EXPERT_SUCCESS: "Rating expert success",
   FAILED_TO_RATING_EXPERT: "Failed to rating appointment",
 };
+
+export const EXPERT_MESSAGES = {
+  CREATE_EXPERT_SUCCESS: "Create expert success",
+};

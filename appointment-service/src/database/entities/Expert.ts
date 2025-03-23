@@ -6,11 +6,12 @@ import { ExpertReview } from "./ExpertReview";
 import { ExpertEducation } from "./ExpertEducation";
 import { ExpertExperience } from "./ExpertExperience";
 import { ExpertCertification } from "./ExpertCertification";
+import { ExpertSkill } from "./ExpertSkill";
 
 @Entity("experts")
 export class Expert extends AppBaseEntity {
   @Column({ nullable: false })
-  userId?: string;
+  userId: string;
 
   @Column({ nullable: true })
   specialization: string;
@@ -21,11 +22,11 @@ export class Expert extends AppBaseEntity {
   @Column({ nullable: true })
   bio: string;
 
-  @Column({ type: "float" })
-  rating: number;
+  @Column({ type: "float", default: 0 })
+  rating?: number;
 
   @Column({ default: 0 })
-  total_reviews: number;
+  total_reviews?: number;
 
   @OneToMany(
     () => ExpertCertification,
@@ -42,8 +43,6 @@ export class Expert extends AppBaseEntity {
   @Column({ type: "decimal", precision: 10, scale: 2, default: 0 })
   consultation_fee: number;
 
-  @Column({ type: "text", array: true, nullable: true })
-  mainSkills: string[];
   @OneToMany(() => ExpertEducation, (education) => education.expert, {
     cascade: true,
   })
@@ -61,6 +60,12 @@ export class Expert extends AppBaseEntity {
 
   @OneToMany(() => Appointment, (appointment) => appointment.expert)
   appointments?: Appointment[];
+
   @OneToMany(() => ExpertReview, (expertReview) => expertReview.expert)
   reviews?: ExpertReview[];
+
+  @OneToMany(() => ExpertSkill, (expertSkill) => expertSkill.expert, {
+    cascade: true,
+  })
+  expertSkills: ExpertSkill[];
 }

@@ -34,7 +34,7 @@ export class ExpertEducation {
   degree: string;
 
   @Column({ type: "varchar", length: 255 })
-  fieldOfStudy: string;
+  major: string;
 
   @Column({ type: "int" })
   startYear: number;

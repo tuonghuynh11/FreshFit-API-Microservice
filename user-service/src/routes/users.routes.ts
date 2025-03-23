@@ -7,6 +7,7 @@ import {
   changePasswordController,
   checkUserExistedController,
   createCalorieAndTimeToGoalRecommendController,
+  createExpertUserController,
   forgotPasswordController,
   getAllUserController,
   getHealthTrackingController,
@@ -343,6 +344,69 @@ usersRouter.post('/goal/start', accessTokenValidator, verifiedUSerValidator, wra
  * }
  * **/
 usersRouter.put('/goal', accessTokenValidator, verifiedUSerValidator, wrapRequestHandler(updateGoalStatusController))
+
+/**
+ * Description: Create Expert User
+ * Path: /expert/create
+ * Method: POST
+ * Body: {
+    "username":"", 
+    "email":"",
+    "phoneNumber":"",
+    "password":"", // default: 12345678exper@Ex // skip
+    "fullName":"",
+    "dateOfBirth":"2025-03-10T18:27:36.437Z",
+    "gender":"", ["male, female"]
+    "height":"", // skip
+    "weight":"", // skip
+    "avatar":"",
+    "specialization": "",
+    "experienceYears": 4,
+    "bio": "",
+    "certifications":[
+      {
+        "name":"", // Name of the certification
+        "issuingOrganization":"", // Organization that issued the certification
+        "issueDate":"2025-03-10T18:27:36.437Z", // Date when the certification was issued
+        "expirationDate":"" // Can be null
+        "credentialUrl":"" //  Can be null
+      }
+    ],
+    "languages":[
+        "Vietnamese",
+        "English",
+        "Korean"
+    ],
+    "consultationFee":10000000,
+    "mainSkills":[
+    ], // skill ids
+    "experiences":[
+      {
+        "company":"",
+        "position": "",
+        "description": "",
+        "startDate":"2025-03-10T18:27:36.437Z",
+        "endDate":"2025-03-10T18:27:36.437Z" // NULL means still working
+      }
+    ],
+    "educations":[
+      {
+        "institution":"",
+        "degree":"", ["ASSOCIATE", "BACHELOR","MASTER","DOCTORATE"]
+        "major":"",
+        "startYear":"2021"
+        "endYear:"2025" // NULL means still studying
+      }
+    ]
+  }
+ * **/
+usersRouter.post(
+  '/expert/create',
+  accessTokenValidator,
+  verifiedUSerValidator,
+  verifiedAdminValidator,
+  wrapRequestHandler(createExpertUserController)
+)
 
 // =================================== External API ===================================
 /**
