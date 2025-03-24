@@ -917,9 +917,29 @@ class UserService {
   }
 
   async checkUserExited(user_id: string) {
-    const user = await databaseService.users.findOne({
-      _id: new ObjectId(user_id)
-    })
+    const user = await databaseService.users.findOne(
+      {
+        _id: new ObjectId(user_id)
+      },
+      {
+        projection: {
+          password: 0,
+          email_verify_token: 0,
+          forgot_password_token: 0,
+          height: 0,
+          weight: 0,
+          goal_weight: 0,
+          level: 0,
+          workout_plans: 0,
+          meals: 0,
+          waters: 0,
+          challenges: 0,
+          otp: 0,
+          healthTrackings: 0,
+          myNotifySettings: 0
+        }
+      }
+    )
 
     return user
   }
