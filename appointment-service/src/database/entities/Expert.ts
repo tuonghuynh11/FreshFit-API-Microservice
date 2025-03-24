@@ -12,6 +12,8 @@ import { ExpertSkill } from "./ExpertSkill";
 export class Expert extends AppBaseEntity {
   @Column({ nullable: false })
   userId: string;
+  @Column({ nullable: true })
+  fullName?: string;
 
   @Column({ nullable: true })
   specialization: string;

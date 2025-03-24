@@ -28,4 +28,8 @@ export const APPOINTMENT_MESSAGES = {
 
 export const EXPERT_MESSAGES = {
   CREATE_EXPERT_SUCCESS: "Create expert success",
+  GET_EXPERT_INFO_SUCCESS: "Get expert info success",
+  EXPERT_NOT_FOUND: "Expert not found",
+  USER_ID_REQUIRED: "User id required",
+  GET_EXPERT_SUCCESS: "Get expert success",
 };
