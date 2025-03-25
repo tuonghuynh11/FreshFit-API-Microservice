@@ -1707,7 +1707,6 @@
       "/experts/availability/set"
     ],
     "target": "http://appointments:4002/api/v1",
-    "internal": true,
     "pathRewrite": {},
     "security": true
   },
@@ -1720,7 +1719,6 @@
       "/experts/availability/:expertId"
     ],
     "target": "http://appointments:4002/api/v1",
-    "internal": true,
     "pathRewrite": {},
     "security": true
   },
@@ -1733,7 +1731,6 @@
       "/experts/availability/:id"
     ],
     "target": "http://appointments:4002/api/v1",
-    "internal": true,
     "pathRewrite": {},
     "security": true
   },
@@ -1746,7 +1743,6 @@
       "/experts/availability/:id"
     ],
     "target": "http://appointments:4002/api/v1",
-    "internal": true,
     "pathRewrite": {},
     "security": true
   }
