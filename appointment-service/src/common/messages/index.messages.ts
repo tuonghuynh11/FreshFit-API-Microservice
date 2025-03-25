@@ -33,3 +33,21 @@ export const EXPERT_MESSAGES = {
   USER_ID_REQUIRED: "User id required",
   GET_EXPERT_SUCCESS: "Get expert success",
 };
+
+export const EXPERT_AVAILABILITY_MESSAGES = {
+  ID_REQUIRED: "Id required",
+  START_DATE_MUST_BE_EQUAL_OR_BEFORE_END_DATE:
+    "Start date must be equal or before end date",
+  AVAILABILITY_EXISTED: "Availability existed",
+  CREATE_AVAILABILITY_SUCCESS: "Create availability success",
+  GET_AVAILABILITIES_SUCCESS: "Get availabilities success",
+  UPDATE_AVAILABILITY_SUCCESS: "Update availability success",
+  AVAILABILITY_NOT_FOUND: "Availability not found",
+  NOT_PERMISSION_TO_UPDATE_THIS_AVAILABILITY:
+    "Not permission to update this availability",
+  UPDATE_FAILED_SLOT_IS_PICKED: "Update failed because slot is picked",
+  DELETE_AVAILABILITY_SUCCESS: "Delete availability success",
+  NOT_PERMISSION_TO_DELETE_THIS_AVAILABILITY:
+    "No permission to delete this availability",
+  DELETE_FAILED: "Delete failed",
+};
