@@ -1711,7 +1711,7 @@
         "security": true
       },
       {
-        "name": "Get an expert’s available slots (Admin, Expert)",
+        "name": "Get an expert available slots (Admin, Expert)",
         "methods": [
           "GET"
         ],
