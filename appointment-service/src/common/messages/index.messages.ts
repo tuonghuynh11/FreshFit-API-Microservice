@@ -51,3 +51,7 @@ export const EXPERT_AVAILABILITY_MESSAGES = {
     "No permission to delete this availability",
   DELETE_FAILED: "Delete failed",
 };
+
+export const EXPERT_SCHEDULE_MESSAGES = {
+  GET_EXPERT_SCHEDULE_SUCCESS: "Get expert schedule success",
+};

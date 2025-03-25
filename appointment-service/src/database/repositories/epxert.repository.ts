@@ -641,6 +641,104 @@ export default class ExpertRepository {
     }));
     return result;
   };
+  static getExpertScheduleForUser = async (req: Request) => {
+    const { expertId } = req.params;
+    const { month, year } = req.query;
+    const { dataSource } = req.app.locals;
+    const expertAvailabilityRepository =
+      dataSource.getRepository(ExpertAvailability);
+    const expertRepository = dataSource.getRepository(Expert);
+    const expert = await expertRepository.findOne({
+      where: {
+        id: expertId,
+      },
+    });
+    if (!expert) {
+      throw new NotFoundError(EXPERT_MESSAGES.EXPERT_NOT_FOUND);
+    }
+
+    const criteria: FindManyOptions<ExpertAvailability> = {
+      relations: {},
+      where: {
+        expert: { id: expertId },
+      },
+      order: {
+        date: "ASC",
+      },
+      select: {
+        id: true,
+        date: true,
+        startTime: true,
+        endTime: true,
+        isAvailable: true,
+      },
+    };
+
+    if (month && year) {
+      const startDate = new Date(Number(year), Number(month) - 1, 1);
+      const endDate = new Date(Number(year), Number(month), 0);
+
+      criteria.where = {
+        ...criteria.where,
+        date: Between(startDate, endDate),
+      };
+    }
+
+    const availabilities = await expertAvailabilityRepository.find(criteria);
+    const numberOfDaysInSelectedMonth = getDaysInMonth(
+      Number(year),
+      Number(month)
+    );
+    const availabilitiesMap = new Map();
+
+    // Init empty array for each day of month
+    for (let day: number = 2; day <= numberOfDaysInSelectedMonth + 1; day++) {
+      const date = new Date(Number(year), Number(month) - 1, day);
+      const formattedDate = date.toISOString().split("T")[0];
+      availabilitiesMap.set(formattedDate, []);
+    }
+
+    // Find Appointment Id for unavailable slots
+    const temp = await Promise.all(
+      availabilities.map(async (availability: ExpertAvailability) => {
+        let appointmentId = null;
+        if (!availability.isAvailable) {
+          const appointment = await dataSource
+            .getRepository(Appointment)
+            .findOne({
+              where: {
+                available: {
+                  id: availability.id,
+                },
+              },
+              select: {
+                id: true,
+              },
+            });
+          appointmentId = appointment?.id;
+        }
+        return {
+          ...availability,
+          appointmentId,
+        };
+      })
+    );
+
+    temp.forEach((availability: any) => {
+      const formattedDate = new Date(availability.date)
+        .toISOString()
+        .split("T")[0];
+      availabilitiesMap.set(formattedDate, [
+        ...availabilitiesMap.get(formattedDate),
+        availability,
+      ]);
+    });
+    const result = Array.from(availabilitiesMap, ([date, slots]) => ({
+      date,
+      slots,
+    }));
+    return result;
+  };
 
   static updateAvailability = async ({
     req,
