@@ -1723,6 +1723,18 @@
         "security": true
       },
       {
+        "name": "Get an expert schedule (User)",
+        "methods": [
+          "GET"
+        ],
+        "context": [
+          "/experts/schedule/:expertId"
+        ],
+        "target": "http://localhost:4002/api/v1",
+        "pathRewrite": {},
+        "security": true
+      },
+      {
         "name": "Update availability (Expert)",
         "methods": [
           "PUT"

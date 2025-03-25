@@ -4,6 +4,7 @@ import { Delete, Get, Post, Put } from "../decorators/handlers";
 import {
   EXPERT_AVAILABILITY_MESSAGES,
   EXPERT_MESSAGES,
+  EXPERT_SCHEDULE_MESSAGES,
 } from "../common/messages/index.messages";
 import ExpertRepository from "../database/repositories/epxert.repository";
 import Authorize from "../decorators/authorize";
@@ -211,6 +212,28 @@ export default class ExpertController {
       res.locals.message =
         EXPERT_AVAILABILITY_MESSAGES.DELETE_AVAILABILITY_SUCCESS;
       res.locals.data = null;
+
+      next();
+    } catch (error) {
+      next(error);
+    }
+    next();
+  }
+
+  @Get("/schedule/:expertId")
+  @Authorize([SystemRole.User])
+  @UseMiddlewares(validateMonth)
+  public async getExpertScheduleForUser(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const schedules = await ExpertRepository.getExpertScheduleForUser(req);
+      res.locals.message = EXPERT_SCHEDULE_MESSAGES.GET_EXPERT_SCHEDULE_SUCCESS;
+      res.locals.data = {
+        schedules,
+      };
 
       next();
     } catch (error) {
