@@ -31,10 +31,21 @@ import { GoalDetail } from '~/models/schemas/GoalDetail.schema'
 import appointmentService from './appointment.services'
 
 class UserService {
-  private signAccessToken({ user_id, role, verify }: { user_id: string; role: UserRole; verify: UserVerifyStatus }) {
+  private signAccessToken({
+    user_id,
+    expert_id,
+    role,
+    verify
+  }: {
+    user_id: string
+    expert_id?: string
+    role: UserRole
+    verify: UserVerifyStatus
+  }) {
     return signToken({
       payload: {
         user_id,
+        expert_id: expert_id,
         role: role,
         token_type: TokenType.AccessToken,
         verify: verify
@@ -49,11 +60,13 @@ class UserService {
 
   private signRefreshToken({
     user_id,
+    expert_id,
     role,
     verify,
     exp
   }: {
     user_id: string
+    expert_id?: string
     role: UserRole
     verify: UserVerifyStatus
     exp?: number
@@ -61,6 +74,7 @@ class UserService {
     return signToken({
       payload: {
         user_id,
+        expert_id: expert_id,
         role: role,
         token_type: TokenType.RefreshToken,
         verify: verify
@@ -103,18 +117,20 @@ class UserService {
   }
   private signAccessTokenAndRefreshToken({
     user_id,
+    expert_id,
     verify,
     role,
     exp
   }: {
     user_id: string
+    expert_id?: string
     verify: UserVerifyStatus
     role: UserRole
     exp?: number
   }) {
     return Promise.all([
-      this.signAccessToken({ user_id, verify, role }),
-      this.signRefreshToken({ user_id, role, verify, exp })
+      this.signAccessToken({ user_id, expert_id, verify, role }),
+      this.signRefreshToken({ user_id, expert_id, role, verify, exp })
     ])
   }
   private decodeRefreshToken(refresh_token: string) {
@@ -167,9 +183,20 @@ class UserService {
     const user = await databaseService.users.findOne({ email: email })
     return Boolean(user)
   }
-  async login({ user_id, verify, user_role }: { user_id: string; verify: UserVerifyStatus; user_role: UserRole }) {
+  async login({
+    user_id,
+    verify,
+    user_role,
+    expertId
+  }: {
+    user_id: string
+    verify: UserVerifyStatus
+    user_role: UserRole
+    expertId?: string
+  }) {
     const [access_token, refresh_token] = await this.signAccessTokenAndRefreshToken({
       user_id,
+      expert_id: expertId,
       verify: verify,
       role: user_role
     })

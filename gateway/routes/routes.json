@@ -1684,5 +1684,70 @@
       "target": "http://localhost:4002/api/v1",
       "pathRewrite": {},
       "security": true
-    }
+    },
+    {
+        "name": "Check expert existed",
+        "methods": [
+          "GET"
+        ],
+        "context": [
+          "/experts/exists/:userid"
+        ],
+        "target": "http://localhost:4002/api/v1",
+        "internal": true,
+        "pathRewrite": {},
+        "security": true
+      },
+    {
+        "name": "Create Availabilities",
+        "methods": [
+          "POST"
+        ],
+        "context": [
+          "/experts/availability/set"
+        ],
+        "target": "http://localhost:4002/api/v1",
+        "internal": true,
+        "pathRewrite": {},
+        "security": true
+      },
+      {
+        "name": "Get an expert’s available slots (Admin, Expert)",
+        "methods": [
+          "GET"
+        ],
+        "context": [
+          "/experts/availability/:expertId"
+        ],
+        "target": "http://localhost:4002/api/v1",
+        "internal": true,
+        "pathRewrite": {},
+        "security": true
+      },
+      {
+        "name": "Update availability (Expert)",
+        "methods": [
+          "PUT"
+        ],
+        "context": [
+          "/experts/availability/:id"
+        ],
+        "target": "http://localhost:4002/api/v1",
+        "internal": true,
+        "pathRewrite": {},
+        "security": true
+      },
+      {
+        "name": "Delete availability (Expert)",
+        "methods": [
+          "DELETE"
+        ],
+        "context": [
+          "/experts/availability/:id"
+        ],
+        "target": "http://localhost:4002/api/v1",
+        "internal": true,
+        "pathRewrite": {},
+        "security": true
+      }
   ]

@@ -25,6 +25,7 @@ import {
 } from '~/models/requests/User.requests'
 import { WaterBody } from '~/models/requests/Water.requests'
 import User from '~/models/schemas/User.schema'
+import appointmentService from '~/services/appointment.services'
 import databaseService from '~/services/database.services'
 import healthTrackingService from '~/services/healthTracking.services'
 import healthTrackingDetailService from '~/services/healthTrackingDetail.services'
@@ -35,10 +36,12 @@ import waterService from '~/services/water.services'
 export const loginController = async (req: Request<ParamsDictionary, any, LoginReqBody>, res: Response) => {
   const user = req.user as User
   const user_id = user._id as ObjectId
+  const expertInfo = await appointmentService.checkExpertExist(user_id.toString())
   const result = await userService.login({
     user_id: user_id.toString(),
     verify: user.verify as UserVerifyStatus,
-    user_role: user.role as UserRole
+    user_role: user.role as UserRole,
+    expertId: expertInfo ? expertInfo.id : null
   })
   return res.json({
     message: USERS_MESSAGES.LOGIN_SUCCESS,

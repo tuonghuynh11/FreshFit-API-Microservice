@@ -127,3 +127,6 @@ export const getGoogleUser = async ({
   );
   return data;
 };
+export const getDaysInMonth = (year: number, month: number): number => {
+  return new Date(year, month, 0).getDate();
+};

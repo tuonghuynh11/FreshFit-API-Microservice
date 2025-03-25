@@ -7,6 +7,14 @@ class AppointmentService {
     const res = await axios.post(envConfig.appointmentServiceHost + '/' + EXPERT_END_POINT + '/create', expert)
     return res.data
   }
+  async checkExpertExist(userId: string) {
+    try {
+      const res = await axios.get(envConfig.appointmentServiceHost + '/' + EXPERT_END_POINT + '/exists/' + userId)
+      return res.data.data.expertInfo
+    } catch (error) {
+      return null
+    }
+  } // Return expert information if exists
 }
 
 const appointmentService = new AppointmentService()
