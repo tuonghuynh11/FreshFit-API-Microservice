@@ -1757,5 +1757,89 @@
         "target": "http://localhost:4002/api/v1",
         "pathRewrite": {},
         "security": true
+      },
+      {
+        "name": "Create a post",
+        "methods": [
+          "POST"
+        ],
+        "context": [
+          "/posts/create"
+        ],
+        "target": "http://localhost:4001/api/v1",
+        "pathRewrite": {},
+        "security": true
+      },
+      {
+        "name": "Get a post detail",
+        "methods": [
+          "GET"
+        ],
+        "context": [
+          "/posts/:id"
+        ],
+        "target": "http://localhost:4001/api/v1",
+        "pathRewrite": {},
+        "security": true
+      },
+      {
+        "name": "Filter posts",
+        "methods": [
+          "GET"
+        ],
+        "context": [
+          "/posts"
+        ],
+        "target": "http://localhost:4001/api/v1",
+        "pathRewrite": {},
+        "security": true
+      },
+      {
+        "name": "Approve a post (Admin only)",
+        "methods": [
+          "PATCH"
+        ],
+        "context": [
+          "/posts/approve/:postId"
+        ],
+        "target": "http://localhost:4001/api/v1",
+        "pathRewrite": {},
+        "security": true
+      },
+      {
+        "name": "Reject a post (Admin only)",
+        "methods": [
+          "POST"
+        ],
+        "context": [
+          "/posts/reject/:postId"
+        ],
+        "target": "http://localhost:4001/api/v1",
+        "pathRewrite": {},
+        "security": true
+      },
+      {
+        "name": "Update a post feedback (Admin only for published)",
+        "methods": [
+          "PUT"
+        ],
+        "context": [
+          "/posts/:postId/feedbacks/:feedbackId"
+        ],
+        "target": "http://localhost:4001/api/v1",
+        "pathRewrite": {},
+        "security": true
+      },
+      {
+        "name": "Update a post",
+        "methods": [
+          "PATCH"
+        ],
+        "context": [
+          "/posts/:postId"
+        ],
+        "target": "http://localhost:4001/api/v1",
+        "pathRewrite": {},
+        "security": true
       }
   ]

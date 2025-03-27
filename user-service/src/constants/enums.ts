@@ -228,11 +228,20 @@ export enum TransactionType {
 
 export enum PostType {
   Expert_Post = 'Expert_Post',
-  Achievement = 'Achievement'
+  Achievement = 'Achievement',
+  Republish = 'Republish'
 }
 export enum PostMediaType {
   Image = 'Image',
   Video = 'Video'
+}
+
+export enum PostFeedbackType {
+  Published = 'Published'
+}
+export enum PostFeedbackStatus {
+  Completed = 'Completed',
+  Uncompleted = 'Uncompleted'
 }
 
 export enum PostTags {

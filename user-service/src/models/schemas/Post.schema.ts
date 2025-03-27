@@ -1,5 +1,6 @@
 import { ObjectId } from 'mongodb'
 import { PostMediaType, PostStatus, PostTags, PostType } from '~/constants/enums'
+import PostFeedback from './PostFeedBacks.schema'
 
 // Swagger UI Express Comment Format
 
@@ -12,10 +13,12 @@ interface PostTypeSM {
   medias: string[]
   mediaType: PostMediaType
   tags: PostTags[]
-  status: PostStatus
-  approveBy: ObjectId
-  comments: ObjectId[]
-  reactions: ObjectId[]
+  status?: PostStatus
+  approveBy?: ObjectId
+  parentId?: ObjectId
+  postFeedBacks?: PostFeedback[]
+  comments?: ObjectId[]
+  reactions?: ObjectId[]
   created_at?: Date
   updated_at?: Date
 }
@@ -31,6 +34,8 @@ export default class Post {
   tags?: PostTags[]
   status?: PostStatus
   approveBy?: ObjectId
+  parentId?: ObjectId // Using when expert update the post to republish
+  postFeedBacks?: PostFeedback[]
   comments?: ObjectId[]
   reactions?: ObjectId[]
   created_at?: Date
@@ -51,5 +56,7 @@ export default class Post {
     this.reactions = post.reactions || []
     this.created_at = post.created_at || date
     this.updated_at = post.updated_at || date
+    this.parentId = post.parentId
+    this.postFeedBacks = post.postFeedBacks || []
   }
 }

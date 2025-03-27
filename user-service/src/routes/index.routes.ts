@@ -21,6 +21,7 @@ import fruitsRouter from './fruits.routes'
 import recommendsRouter from './recommend.routes'
 import transactionsRouter from './transactions.routes'
 import clientRouter from './client.routes'
+import postsRouter from './post.routes'
 
 const file = fs.readFileSync(path.resolve('slda-swagger.yaml'), 'utf8')
 const swaggerDocument = YAML.parse(file)
@@ -45,4 +46,5 @@ versionOneRouter.use('/fruits', fruitsRouter)
 versionOneRouter.use('/recommends', recommendsRouter)
 versionOneRouter.use('/transactions', transactionsRouter)
 versionOneRouter.use('/clients', clientRouter)
+versionOneRouter.use('/posts', postsRouter)
 export { versionOneRouter }
