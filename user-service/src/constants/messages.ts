@@ -98,7 +98,8 @@ export const USERS_MESSAGES = {
   UPDATE_GOAL_STATUS_SUCCESS: 'Update goals status successful',
   OTP_CODE_IS_REQUIRED: 'OTP code is required',
   GET_USER_SUCCESS: 'Get user successful',
-  CREATE_EXPERT_USER_SUCCESS: 'Create expert user successful'
+  CREATE_EXPERT_USER_SUCCESS: 'Create expert user successful',
+  NO_PERMISSION: 'No permission'
 } as const
 
 export const PAGINATION_MESSAGES = {
@@ -412,7 +413,28 @@ export const TRANSACTION_MESSAGES = {
   REFUND_SUCCESS: 'Refund successful',
   MAKE_BOOKING_TRANSACTION_SUCCESS: 'Make booking transaction successful'
 }
+export const POST_MESSAGES = {
+  INVALID_POST_TYPE: 'Invalid post type',
+  INVALID_MEDIA_TYPE: 'Invalid media type',
+  INVALID_POST_STATUS: 'Invalid post status',
+  CREATE_POST_SUCCESS: 'Create post successfully',
+  GET_POST_DETAIL_SUCCESS: 'Get post detail successfully',
+  POST_NOT_FOUND: 'Post not found',
+  GET_POST_SUCCESS: 'Get post successfully',
+  POST_ALREADY_PUBLISHED: 'Post already published',
+  APPROVE_POST_SUCCESS: 'Approve post successfully',
+  REJECT_POST_SUCCESS: 'Reject post successfully',
+  UNAUTHORIZED_DELETE_POST: 'Unauthorized delete post',
+  DELETE_POST_SUCCESS: 'Delete post successfully',
+  UPDATE_POST_SUCCESS: 'Update post successfully',
+  UNAUTHORIZED_UPDATE_POST: 'Unauthorized update post'
+}
 
+export const POST_FEEDBACK_MESSAGES = {
+  INVALID_POST_FEEDBACK_STATUS: 'Invalid post feedback status',
+  UPDATE_POST_FEEDBACK_SUCCESS: 'Update post feedback',
+  FEEDBACK_NOT_FOUND: 'Feedback not found'
+}
 export const COMMON_MESSAGES = {
   'MSG 1': 'Incorrect username or password',
   'MSG 2': "Email doesn't exist",

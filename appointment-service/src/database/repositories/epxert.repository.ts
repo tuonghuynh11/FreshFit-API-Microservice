@@ -266,8 +266,8 @@ export default class ExpertRepository {
       search,
       experiences,
       mainSkills,
-      sortBy = "fullName",
-      orderBy = "ASC",
+      sort_by = "fullName",
+      order_by = "ASC",
     } = req.query;
 
     const { dataSource } = req.app.locals;
@@ -279,7 +279,7 @@ export default class ExpertRepository {
       .leftJoinAndSelect("expertSkill.skill", "skill")
       .skip(Number(limit) * (Number(page) - 1))
       .take(Number(limit))
-      .orderBy(`expert.${sortBy}`, orderBy === "ASC" ? "ASC" : "DESC");
+      .orderBy(`expert.${sort_by}`, order_by === "ASC" ? "ASC" : "DESC");
 
     if (search) {
       query.andWhere("expert.fullName ILIKE :search", {

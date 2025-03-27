@@ -18,8 +18,8 @@ module.exports = (callback = () => {}) => {
     app.use(requestId)
     app.use(express.raw({ type: '*/*' }))
 
-    router.get('/health', require('../handlers/health'))
-    router.get('/metrics', async (_, res) => {
+    app.get('/health', require('../handlers/health'))
+    app.get('/metrics', async (_, res) => {
         res.set('Content-Type', client.register.contentType)
         res.end(await client.register.metrics())
     })

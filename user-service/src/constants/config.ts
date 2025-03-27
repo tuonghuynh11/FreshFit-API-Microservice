@@ -37,6 +37,8 @@ export const envConfig = {
   dbChatRoomsCollection: process.env.DB_CHAT_ROOMS_COLLECTION as string,
   dbChatDetailsCollection: process.env.DB_CHAT_DETAILS_COLLECTION as string,
   dbTransactionsCollection: process.env.DB_TRANSACTIONS_COLLECTION as string,
+  dbPostsCollection: process.env.DB_POSTS_COLLECTION as string,
+  dbPostReactionsCollection: process.env.DB_POST_REACTIONS_COLLECTION as string,
 
   passwordSecret: process.env.PASSWORD_SECRET as string,
   jwtSecretAccessToken: process.env.JWT_SECRET_ACCESS_TOKEN as string,
