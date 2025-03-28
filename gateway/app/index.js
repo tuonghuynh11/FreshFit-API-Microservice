@@ -12,24 +12,29 @@ client.collectDefaultMetrics()
  * @returns {import('express').Express}
  */
 module.exports = (callback = () => {}) => {
-    const app = express()
-    const router = express.Router()
+    const app = express();
+    const router = express.Router();
 
-    app.use(requestId)
-    app.use(express.raw({ type: '*/*' }))
+    app.use(requestId);
+    app.use(express.raw({ type: '*/*' }));
 
-    app.get('/health', require('../handlers/health'))
+    // Define health check and metrics routes (without /api/v1 prefix)
+    app.get('/health', require('../handlers/health'));
     app.get('/metrics', async (_, res) => {
-        res.set('Content-Type', client.register.contentType)
-        res.end(await client.register.metrics())
-    })
-    app.all('*', require('../handlers/proxy'))
+        res.set('Content-Type', client.register.contentType);
+        res.end(await client.register.metrics());
+    });
 
-    app.use('/api/v1', router) // Apply the prefix here
+    // Apply proxy to /health and /metrics
+    app.use(['/health', '/metrics'], require('../handlers/proxy'));
 
-    callback(app)
+    // Define all other routes inside /api/v1
+    router.all('*', require('../handlers/proxy'));
+    app.use('/api/v1', router);
 
-    app.use(error)
+    callback(app);
 
-    return app
-}
+    app.use(error);
+
+    return app;
+};

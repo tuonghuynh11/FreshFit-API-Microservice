@@ -183,6 +183,12 @@ class PostService {
         status: HTTP_STATUS.NOT_FOUND
       })
     }
+    if (post.status === PostStatus.Pending && role === UserRole.Expert) {
+      throw new ErrorWithStatus({
+        message: POST_MESSAGES.POST_IS_WAITING_FOR_APPROVAL,
+        status: HTTP_STATUS.BAD_REQUEST
+      })
+    }
     let result: any = {}
     if (role === UserRole.Admin) {
       result = await databaseService.posts.findOneAndUpdate(
@@ -294,23 +300,50 @@ class PostService {
         status: HTTP_STATUS.BAD_REQUEST
       })
     }
-
-    const updatedPost = await databaseService.posts.findOneAndUpdate(
-      {
-        _id: new ObjectId(postId)
-      },
-      {
-        $set: {
-          status: PostStatus.Published,
-          approveBy: new ObjectId(user_id)
+    let result: any = {}
+    if (post.parentId) {
+      result = await databaseService.posts.findOneAndUpdate(
+        {
+          _id: post.parentId
         },
-        $currentDate: {
-          updated_at: true
-        }
-      },
-      { returnDocument: 'after' }
-    )
-    return updatedPost
+        {
+          $set: {
+            type: post.type,
+            title: post.title,
+            content: post.content,
+            medias: post.medias,
+            mediaType: post.mediaType,
+            tags: post.tags,
+            status: PostStatus.Published,
+            approveBy: new ObjectId(user_id),
+            postFeedBacks: post.postFeedBacks
+          },
+          $currentDate: {
+            updated_at: true
+          }
+        },
+        { returnDocument: 'after' }
+      )
+      await databaseService.posts.deleteOne({ _id: new ObjectId(postId) })
+    } else {
+      result = await databaseService.posts.findOneAndUpdate(
+        {
+          _id: new ObjectId(postId)
+        },
+        {
+          $set: {
+            status: PostStatus.Published,
+            approveBy: new ObjectId(user_id)
+          },
+          $currentDate: {
+            updated_at: true
+          }
+        },
+        { returnDocument: 'after' }
+      )
+    }
+
+    return result
   }
   async rejectPost({ postId, feedback, user_id }: { postId: string; feedback: RejectPostReqBody; user_id: string }) {
     const post = await databaseService.posts.findOne({
