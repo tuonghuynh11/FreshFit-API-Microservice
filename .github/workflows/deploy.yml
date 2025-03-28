@@ -3,12 +3,12 @@ name: Deploy Node.js App
 on:
   push:
     branches:
-      - main  # Change this if your deployment branch is different
+      - main # Change this if your deployment branch is different
 
 jobs:
   deploy_VPS:
-   runs-on: ubuntu-latest
-   steps:
+    runs-on: ubuntu-latest
+    steps:
       - name: Executing remote ssh commands using password
         uses: appleboy/ssh-action@v1.1.0
         with:
@@ -20,6 +20,10 @@ jobs:
             set -e  # Exit if any command fails
             cd FreshFit-API-Microservice  # Change this to your actual project path
             git pull origin main  # Pull latest changes
+
+             # Kill all containerd-shim processes (requires sudo)
+            echo "${{ secrets.HOST_PASSWORD }}" | sudo -S killall containerd-shim || echo "No containerd-shim processes found."
+
             # Stop and remove containers safely
             # timeout 120s docker-compose down || echo "Timeout reached, skipping..."
             docker-compose down
@@ -27,6 +31,3 @@ jobs:
             docker-compose up -d --force-recreate --build
             # Clean up unused Docker data
             docker system prune -f
-          
-
-           
