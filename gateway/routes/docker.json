@@ -1841,5 +1841,17 @@
     "target": "http://users:4001/api/v1",
     "pathRewrite": {},
     "security": true
+  },
+  {
+    "name": "Delete a post",
+    "methods": [
+      "DELETE"
+    ],
+    "context": [
+      "/posts/:postId"
+    ],
+    "target": "http://users:4001/api/v1",
+    "pathRewrite": {},
+    "security": true
   }
 ]

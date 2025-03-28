@@ -427,7 +427,8 @@ export const POST_MESSAGES = {
   UNAUTHORIZED_DELETE_POST: 'Unauthorized delete post',
   DELETE_POST_SUCCESS: 'Delete post successfully',
   UPDATE_POST_SUCCESS: 'Update post successfully',
-  UNAUTHORIZED_UPDATE_POST: 'Unauthorized update post'
+  UNAUTHORIZED_UPDATE_POST: 'Unauthorized update post',
+  POST_IS_WAITING_FOR_APPROVAL: 'Post is waiting for approval'
 }
 
 export const POST_FEEDBACK_MESSAGES = {
