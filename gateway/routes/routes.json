@@ -1853,5 +1853,41 @@
         "target": "http://localhost:4001/api/v1",
         "pathRewrite": {},
         "security": true
+      },
+      {
+        "name": "React a post",
+        "methods": [
+          "POST"
+        ],
+        "context": [
+          "/posts/:postId/reactions"
+        ],
+        "target": "http://localhost:4001/api/v1",
+        "pathRewrite": {},
+        "security": true
+      },
+      {
+        "name": "Get reactions count for a post",
+        "methods": [
+          "GET"
+        ],
+        "context": [
+          "/posts/:postId/reactions"
+        ],
+        "target": "http://localhost:4001/api/v1",
+        "pathRewrite": {},
+        "security": true
+      },
+      {
+        "name": "Remove post reaction",
+        "methods": [
+          "DELETE"
+        ],
+        "context": [
+          "/posts/:postId/reactions/:reactionId"
+        ],
+        "target": "http://localhost:4001/api/v1",
+        "pathRewrite": {},
+        "security": true
       }
   ]

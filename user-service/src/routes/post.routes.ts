@@ -5,7 +5,10 @@ import {
   approvePostController,
   createPostController,
   deletePostController,
+  deleteReactionOfPostController,
   getPostByIdController,
+  getReactionsOfPostController,
+  reactPostController,
   rejectPostController,
   searchPostController,
   updatePostController,
@@ -16,6 +19,7 @@ import { paginationNavigator } from '~/middlewares/paginations.middlewares'
 import {
   createPostValidator,
   postsSearchValidator,
+  reactPostValidator,
   rejectPostValidator,
   updatePostFeedbackValidator,
   updatePostValidator
@@ -175,6 +179,49 @@ postsRouter.delete(
   verifiedUSerValidator,
   roleValidator([UserRole.Admin, UserRole.Expert]),
   wrapRequestHandler(deletePostController)
+)
+
+/**
+ * Description: React a Post
+ * Path: /posts/:postId/reactions
+ * Method: POST
+ * Body:
+ * {
+  "user_id":"user-uuid",
+  "reaction":"" // ["Like","Love","Haha","Wow","Sad","Angry"]
+}
+ * **/
+postsRouter.post(
+  '/:postId/reactions',
+  accessTokenValidator,
+  verifiedUSerValidator,
+  reactPostValidator,
+  wrapRequestHandler(reactPostController)
+)
+
+/**
+ * Description: Get reactions count for a post
+ * Path: /posts/:postId/reactions
+ * Method: GET
+ * Body:
+ * **/
+postsRouter.get(
+  '/:postId/reactions',
+  accessTokenValidator,
+  verifiedUSerValidator,
+  wrapRequestHandler(getReactionsOfPostController)
+)
+/**
+ * Description: Remove post reaction
+ * Path: /posts/:postId/reactions/:reactionId
+ * Method: DELETE
+ * Body:
+ * **/
+postsRouter.delete(
+  '/:postId/reactions/:reactionId',
+  accessTokenValidator,
+  verifiedUSerValidator,
+  wrapRequestHandler(deleteReactionOfPostController)
 )
 
 export default postsRouter

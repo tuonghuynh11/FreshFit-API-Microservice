@@ -1,6 +1,6 @@
 import { checkSchema } from 'express-validator'
 import { ObjectId } from 'mongodb'
-import { MediaType, PostStatus, PostType } from '~/constants/enums'
+import { MediaType, PostStatus, PostType, ReactionType } from '~/constants/enums'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { POST_MESSAGES, USERS_MESSAGES } from '~/constants/messages'
 import { ErrorWithStatus } from '~/models/Errors'
@@ -168,6 +168,39 @@ export const updatePostFeedbackValidator = validate(
       status: {
         optional: true,
         isString: true
+      }
+    },
+    ['body']
+  )
+)
+export const reactPostValidator = validate(
+  checkSchema(
+    {
+      user_id: {
+        notEmpty: true,
+        trim: true,
+        custom: {
+          options: async (value, { req }) => {
+            const isExist = await databaseService.users.findOne({
+              _id: new ObjectId(value)
+            })
+            if (!isExist) {
+              throw new ErrorWithStatus({
+                message: USERS_MESSAGES.USER_NOT_FOUND,
+                status: HTTP_STATUS.NOT_FOUND
+              })
+            }
+            return true
+          }
+        }
+      },
+      reaction: {
+        notEmpty: true,
+        isString: true,
+        isIn: {
+          options: [ReactionType],
+          errorMessage: POST_MESSAGES.INVALID_POST_REACTION_TYPE
+        }
       }
     },
     ['body']

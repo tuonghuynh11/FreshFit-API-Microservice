@@ -428,7 +428,15 @@ export const POST_MESSAGES = {
   DELETE_POST_SUCCESS: 'Delete post successfully',
   UPDATE_POST_SUCCESS: 'Update post successfully',
   UNAUTHORIZED_UPDATE_POST: 'Unauthorized update post',
-  POST_IS_WAITING_FOR_APPROVAL: 'Post is waiting for approval'
+  POST_IS_WAITING_FOR_APPROVAL: 'Post is waiting for approval',
+  INVALID_POST_REACTION_TYPE: 'Invalid post reaction type',
+  REACT_POST_SUCCESS: 'React post was successfully',
+  POST_IS_UNPUBLISHED: 'Post is unpublished',
+  GET_REACTIONS_OF_POST_SUCCESS: 'Get Reactions of post successfully',
+  POST_ALREADY_REACTED: 'Post already reacted',
+  POST_REACTION_NOT_FOUND: 'Post reaction not found',
+  DELETE_POST_REACTION_SUCCESS: 'Delete post reaction successfully',
+  UNAUTHORIZED_DELETE_POST_REACTION: 'Unauthorized delete post reaction'
 }
 
 export const POST_FEEDBACK_MESSAGES = {

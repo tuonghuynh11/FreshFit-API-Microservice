@@ -1,4 +1,4 @@
-import { PostFeedbackStatus, PostMediaType, PostStatus, PostTags, PostType } from '~/constants/enums'
+import { PostFeedbackStatus, PostMediaType, PostStatus, PostTags, PostType, ReactionType } from '~/constants/enums'
 import { PaginationReqQuery } from './Pagination.requests'
 import { Filter } from './Index.request'
 
@@ -34,4 +34,9 @@ export interface PostReqQuery extends PaginationReqQuery, Filter {
   type: string
   status: string
   tags: string
+}
+
+export interface ReactPostReqBody {
+  user_id: string
+  reaction: ReactionType
 }
