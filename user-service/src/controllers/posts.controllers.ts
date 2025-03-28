@@ -5,6 +5,7 @@ import { POST_FEEDBACK_MESSAGES, POST_MESSAGES } from '~/constants/messages'
 import {
   PostReqBody,
   PostReqQuery,
+  ReactPostReqBody,
   RejectPostReqBody,
   UpdatePostFeedbackReqBody,
   UpdatePostReqBody
@@ -112,5 +113,37 @@ export const deletePostController = async (req: Request<ParamsDictionary, any, a
 
   return res.json({
     message: POST_MESSAGES.DELETE_POST_SUCCESS
+  })
+}
+export const reactPostController = async (req: Request<ParamsDictionary, any, ReactPostReqBody>, res: Response) => {
+  const { user_id, role } = req.decoded_authorization as TokenPayload
+
+  const { postId } = req.params
+  const result = await postService.reactPost({ id: postId, user_id, role, reactionBody: req.body })
+
+  return res.json({
+    message: POST_MESSAGES.REACT_POST_SUCCESS,
+    reaction: result
+  })
+}
+export const getReactionsOfPostController = async (req: Request<ParamsDictionary, any, any>, res: Response) => {
+  const { user_id, role } = req.decoded_authorization as TokenPayload
+
+  const { postId } = req.params
+  const result = await postService.getReactionsOfPost({ id: postId, user_id })
+
+  return res.json({
+    message: POST_MESSAGES.GET_REACTIONS_OF_POST_SUCCESS,
+    reaction: result
+  })
+}
+export const deleteReactionOfPostController = async (req: Request<ParamsDictionary, any, any>, res: Response) => {
+  const { user_id, role } = req.decoded_authorization as TokenPayload
+
+  const { postId, reactionId } = req.params
+  const result = await postService.deleteReactionOfPost({ id: postId, reactionId, user_id })
+
+  return res.json({
+    message: POST_MESSAGES.DELETE_POST_REACTION_SUCCESS
   })
 }

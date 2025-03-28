@@ -6,6 +6,7 @@ import { ErrorWithStatus } from '~/models/Errors'
 import HTTP_STATUS from '~/constants/httpStatus'
 import {
   PostReqBody,
+  ReactPostReqBody,
   RejectPostReqBody,
   UpdatePostFeedbackReqBody,
   UpdatePostReqBody
@@ -13,6 +14,7 @@ import {
 import Post from '~/models/schemas/Post.schema'
 import { omit } from 'lodash'
 import PostFeedback from '~/models/schemas/PostFeedBacks.schema'
+import PostReaction from '~/models/schemas/PostReaction.schema'
 
 class PostService {
   async search({
@@ -428,6 +430,137 @@ class PostService {
       { returnDocument: 'after' }
     )
     return feedbackExist
+  }
+
+  async reactPost({
+    id,
+    user_id,
+    role,
+    reactionBody
+  }: {
+    id: string
+    user_id: string
+    role: UserRole
+    reactionBody: ReactPostReqBody
+  }) {
+    const post = await databaseService.posts.findOne({ _id: new ObjectId(id) })
+    if (!post) {
+      throw new ErrorWithStatus({
+        message: POST_MESSAGES.POST_NOT_FOUND,
+        status: HTTP_STATUS.NOT_FOUND
+      })
+    }
+
+    if (post.status !== PostStatus.Published) {
+      throw new ErrorWithStatus({
+        message: POST_MESSAGES.POST_IS_UNPUBLISHED,
+        status: HTTP_STATUS.BAD_REQUEST
+      })
+    }
+
+    const existedReaction = await databaseService.postReactions.findOne({
+      postId: new ObjectId(id),
+      user_id: new ObjectId(reactionBody.user_id)
+    })
+    if (existedReaction) {
+      throw new ErrorWithStatus({
+        message: POST_MESSAGES.POST_ALREADY_REACTED,
+        status: HTTP_STATUS.BAD_REQUEST
+      })
+    }
+    const newReaction = new PostReaction({
+      postId: new ObjectId(id),
+      user_id: new ObjectId(reactionBody.user_id),
+      reaction: reactionBody.reaction
+    })
+    const insertedReaction = await databaseService.postReactions.insertOne(newReaction)
+
+    const result = await databaseService.posts.findOneAndUpdate(
+      { _id: new ObjectId(id) },
+      {
+        $push: {
+          reactions: insertedReaction.insertedId
+        },
+        $currentDate: {
+          updated_at: true
+        }
+      }
+    )
+
+    return {
+      _id: insertedReaction.insertedId,
+      ...newReaction
+    }
+  }
+  async getReactionsOfPost({ id, user_id }: { id: string; user_id: string }) {
+    const post = await databaseService.posts.findOne({ _id: new ObjectId(id) })
+    if (!post) {
+      throw new ErrorWithStatus({
+        message: POST_MESSAGES.POST_NOT_FOUND,
+        status: HTTP_STATUS.NOT_FOUND
+      })
+    }
+
+    const reactionTypeArray = Object.values(ReactionType)
+    const [currentUserReactThisPost, ...reactions] = await Promise.all([
+      databaseService.postReactions.findOne({
+        postId: post._id,
+        user_id: new ObjectId(user_id)
+      }),
+      ...reactionTypeArray.map((reaction) =>
+        databaseService.postReactions.countDocuments({
+          postId: post._id,
+          reaction
+        })
+      )
+    ])
+    const reactionResponseObject: any = {}
+    reactionResponseObject.current_user_react = currentUserReactThisPost
+    reactionTypeArray.forEach((reaction: string, index: number) => {
+      reactionResponseObject[reaction] = reactions[index]
+    })
+    return reactionResponseObject
+  }
+
+  async deleteReactionOfPost({ id, user_id, reactionId }: { id: string; user_id: string; reactionId: string }) {
+    const post = await databaseService.posts.findOne({ _id: new ObjectId(id) })
+    if (!post) {
+      throw new ErrorWithStatus({
+        message: POST_MESSAGES.POST_NOT_FOUND,
+        status: HTTP_STATUS.NOT_FOUND
+      })
+    }
+
+    const reaction = await databaseService.postReactions.findOne({ _id: new ObjectId(reactionId) })
+    if (!reaction) {
+      throw new ErrorWithStatus({
+        message: POST_MESSAGES.POST_REACTION_NOT_FOUND,
+        status: HTTP_STATUS.NOT_FOUND
+      })
+    }
+    if (reaction.user_id.toString() !== user_id) {
+      throw new ErrorWithStatus({
+        message: POST_MESSAGES.UNAUTHORIZED_DELETE_POST_REACTION,
+        status: HTTP_STATUS.UNAUTHORIZED
+      })
+    }
+    await Promise.all([
+      databaseService.postReactions.deleteOne({ _id: new ObjectId(reactionId) }),
+      databaseService.posts.findOneAndUpdate(
+        {
+          _id: new ObjectId(id)
+        },
+        {
+          $pull: {
+            reactions: new ObjectId(reactionId)
+          },
+          $currentDate: {
+            updated_at: true
+          }
+        }
+      )
+    ])
+    return null
   }
 }
 const postService = new PostService()
