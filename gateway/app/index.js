@@ -23,7 +23,7 @@ module.exports = (callback = () => {}) => {
         res.set('Content-Type', client.register.contentType)
         res.end(await client.register.metrics())
     })
-    router.all('*', require('../handlers/proxy'))
+    app.all('*', require('../handlers/proxy'))
 
     app.use('/api/v1', router) // Apply the prefix here
 
