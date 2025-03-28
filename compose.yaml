@@ -15,6 +15,7 @@ services:
       - redis
       - loki
       - jaeger
+    restart: unless-stopped
 
   # auth:
   #   build:
@@ -33,6 +34,7 @@ services:
       - 8083:4001
     environment:
       - JAEGER_URL=http://jaeger:4317
+    restart: unless-stopped
   appointments:
     build:
       context: ./appointment-service
@@ -41,10 +43,12 @@ services:
       - 8082:4002
     environment:
       - JAEGER_URL=http://jaeger:4317
+    restart: unless-stopped
   redis:
     image: redis:alpine
     ports:
       - 6379:6379
+    restart: unless-stopped
 
   prometheus:
     image: prom/prometheus:latest
@@ -53,6 +57,7 @@ services:
       - prometheus-data:/prometheus
     ports:
       - 9090:9090
+    restart: unless-stopped
 
   grafana:
     image: grafana/grafana:main
@@ -65,6 +70,7 @@ services:
       - prometheus
       - loki
       - jaeger
+    restart: unless-stopped
 
   loki:
     image: grafana/loki:latest
@@ -73,7 +79,7 @@ services:
     command: -config.file=/etc/loki/loki-local-config.yaml
     volumes:
       - ./conf/loki-config.yaml:/etc/loki/loki-local-config.yaml
-
+    restart: unless-stopped
   jaeger:
     image: jaegertracing/all-in-one:latest
     ports:
@@ -87,7 +93,7 @@ services:
       - 9411:9411
     environment:
       - COLLECTOR_ZIPKIN_HTTP_PORT=9411
-
+    restart: unless-stopped
 networks:
   default:
     name: app
