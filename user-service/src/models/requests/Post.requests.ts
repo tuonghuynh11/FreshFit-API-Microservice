@@ -40,3 +40,7 @@ export interface ReactPostReqBody {
   user_id: string
   reaction: ReactionType
 }
+export interface CommentPostReqBody {
+  content: string
+  parentCommentId?: string
+}

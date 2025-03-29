@@ -3,9 +3,12 @@ import { UserRole } from '~/constants/enums'
 import { getAllExerciseController } from '~/controllers/exercises.controllers'
 import {
   approvePostController,
+  commentPostController,
   createPostController,
+  deleteCommentOfPostController,
   deletePostController,
   deleteReactionOfPostController,
+  getCommentsOfPostController,
   getPostByIdController,
   getReactionsOfPostController,
   reactPostController,
@@ -17,6 +20,7 @@ import {
 import { filterMiddleware } from '~/middlewares/common.middlewares'
 import { paginationNavigator } from '~/middlewares/paginations.middlewares'
 import {
+  commentPostValidator,
   createPostValidator,
   postsSearchValidator,
   reactPostValidator,
@@ -224,4 +228,47 @@ postsRouter.delete(
   wrapRequestHandler(deleteReactionOfPostController)
 )
 
+/**
+ * Description: Comment a Post
+ * Path: /posts/:postId/comments
+ * Method: POST
+ * Body:
+{
+  "content":"",
+  "parentCommentId":""
+}
+ * **/
+postsRouter.post(
+  '/:postId/comments',
+  accessTokenValidator,
+  verifiedUSerValidator,
+  commentPostValidator,
+  wrapRequestHandler(commentPostController)
+)
+/**
+ * Description: Get all comments for a post
+ * Path: /posts/:postId/comments
+ * Method: GET
+ * Body:
+ * **/
+postsRouter.get(
+  '/:postId/comments',
+  accessTokenValidator,
+  verifiedUSerValidator,
+  paginationNavigator,
+  wrapRequestHandler(getCommentsOfPostController)
+)
+
+/**
+ * Description: Remove post comment
+ * Path: /posts/:postId/comments/:commentId
+ * Method: DELETE
+ * Body:
+ * **/
+postsRouter.delete(
+  '/:postId/comments/:commentId',
+  accessTokenValidator,
+  verifiedUSerValidator,
+  wrapRequestHandler(deleteCommentOfPostController)
+)
 export default postsRouter

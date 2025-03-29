@@ -21,6 +21,7 @@ import ChatDetail from '~/models/schemas/ChatDetail.schema'
 import Transaction from '~/models/schemas/Transactions.schema'
 import Post from '~/models/schemas/Post.schema'
 import PostReaction from '~/models/schemas/PostReaction.schema'
+import PostComment from '~/models/schemas/PostComment.schema'
 dotenv.config()
 const uri = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.dlxrr.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`
 
@@ -116,6 +117,12 @@ class DatabaseService {
   }
   get postReactions(): Collection<PostReaction> {
     return this.db.collection(envConfig.dbPostReactionsCollection as string)
+  }
+  get postComments(): Collection<PostComment> {
+    return this.db.collection(envConfig.dbPostCommentsCollection as string)
+  }
+  get postBookmarks(): Collection<PostComment> {
+    return this.db.collection(envConfig.dbPostBookmarksCollection as string)
   }
 }
 const databaseService = new DatabaseService()
