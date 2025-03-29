@@ -100,7 +100,14 @@ class PostService {
         ])
       })
     )
-
+    const bookmarks = await Promise.all(
+      posts.map((post: Post) => {
+        return databaseService.postBookmarks.findOne({
+          postId: post._id,
+          user_id: new ObjectId(user_id)
+        })
+      })
+    )
     const result = posts.map((post: Post, index: number) => {
       const total_comments = post.comments?.length
       const reactionResponseObject: any = {}
@@ -112,6 +119,7 @@ class PostService {
       return {
         ...omit(post, ['comments', 'reactions']),
         reactions: reactionResponseObject,
+        isBookmark: !!bookmarks[index],
         total_comments
       }
     })
@@ -133,8 +141,12 @@ class PostService {
     }
     const total_comments = post.comments?.length
     const reactionTypeArray = Object.values(ReactionType)
-    const [currentUserReactThisPost, ...reactions] = await Promise.all([
+    const [currentUserReactThisPost, isBookmark, ...reactions] = await Promise.all([
       databaseService.postReactions.findOne({
+        postId: post._id,
+        user_id: new ObjectId(user_id)
+      }),
+      databaseService.postBookmarks.findOne({
         postId: post._id,
         user_id: new ObjectId(user_id)
       }),
@@ -153,6 +165,7 @@ class PostService {
     return {
       ...omit(post, ['comments', 'reactions']),
       reactions: reactionResponseObject,
+      isBookmark: !!isBookmark,
       total_comments
     }
   }

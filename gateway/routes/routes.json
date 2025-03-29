@@ -1925,5 +1925,41 @@
         "target": "http://localhost:4001/api/v1",
         "pathRewrite": {},
         "security": true
+      },
+      {
+        "name": "Bookmark a post",
+        "methods": [
+          "POST"
+        ],
+        "context": [
+          "/bookmarks/:postId"
+        ],
+        "target": "http://localhost:4001/api/v1",
+        "pathRewrite": {},
+        "security": true
+      },
+      {
+        "name": "Get all bookmarked posts for a user",
+        "methods": [
+          "GET"
+        ],
+        "context": [
+          "/bookmarks"
+        ],
+        "target": "http://localhost:4001/api/v1",
+        "pathRewrite": {},
+        "security": true
+      },
+      {
+        "name": "Remove a post from bookmarks",
+        "methods": [
+          "DELETE"
+        ],
+        "context": [
+          "/bookmarks/:bookmarkId"
+        ],
+        "target": "http://localhost:4001/api/v1",
+        "pathRewrite": {},
+        "security": true
       }
   ]

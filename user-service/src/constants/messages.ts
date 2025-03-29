@@ -442,9 +442,15 @@ export const POST_MESSAGES = {
   DELETE_POST_COMMENT_SUCCESS: 'Delete post comment successfully',
   POST_COMMENT_NOT_FOUND: 'Post comment not found',
   UNAUTHORIZED_DELETE_POST_COMMENT: 'Unauthorized delete post comment',
-  POST_COMMENT_HAS_CHILDREN: 'Comment has children'
+  POST_COMMENT_HAS_CHILDREN: 'Comment has children',
+  POST_ALREADY_BOOKMARKED: 'Post already bookmarked'
 }
-
+export const BOOKMARK_MESSAGES = {
+  BOOKMARK_POST_SUCCESS: 'Bookmark post successfully',
+  GET_BOOKMARK_SUCCESS: 'Get bookmark successfully',
+  DELETE_BOOKMARK_SUCCESS: 'Delete bookmark successfully',
+  BOOKMARK_NOT_FOUND: 'Bookmark not found'
+}
 export const POST_FEEDBACK_MESSAGES = {
   INVALID_POST_FEEDBACK_STATUS: 'Invalid post feedback status',
   UPDATE_POST_FEEDBACK_SUCCESS: 'Update post feedback',
