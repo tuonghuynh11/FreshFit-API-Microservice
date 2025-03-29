@@ -1889,5 +1889,41 @@
         "target": "http://localhost:4001/api/v1",
         "pathRewrite": {},
         "security": true
+      },
+      {
+        "name": "Comment a post",
+        "methods": [
+          "POST"
+        ],
+        "context": [
+          "/posts/:postId/comments"
+        ],
+        "target": "http://localhost:4001/api/v1",
+        "pathRewrite": {},
+        "security": true
+      },
+      {
+        "name": "Get all comments for a post",
+        "methods": [
+          "GET"
+        ],
+        "context": [
+          "/posts/:postId/comments"
+        ],
+        "target": "http://localhost:4001/api/v1",
+        "pathRewrite": {},
+        "security": true
+      },
+      {
+        "name": "Remove a comment of post",
+        "methods": [
+          "DELETE"
+        ],
+        "context": [
+          "/posts/:postId/comments/:commentId"
+        ],
+        "target": "http://localhost:4001/api/v1",
+        "pathRewrite": {},
+        "security": true
       }
   ]

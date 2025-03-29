@@ -7,7 +7,7 @@ interface PostCommentType {
   user_id: ObjectId
   postId: ObjectId
   content: string
-  parentCommentId: ObjectId
+  parentCommentId?: ObjectId
   created_at?: Date
 }
 

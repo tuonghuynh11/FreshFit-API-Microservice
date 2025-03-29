@@ -3,6 +3,7 @@ import { TokenPayload } from '~/models/requests/User.requests'
 import { ParamsDictionary } from 'express-serve-static-core'
 import { POST_FEEDBACK_MESSAGES, POST_MESSAGES } from '~/constants/messages'
 import {
+  CommentPostReqBody,
   PostReqBody,
   PostReqQuery,
   ReactPostReqBody,
@@ -145,5 +146,53 @@ export const deleteReactionOfPostController = async (req: Request<ParamsDictiona
 
   return res.json({
     message: POST_MESSAGES.DELETE_POST_REACTION_SUCCESS
+  })
+}
+
+export const commentPostController = async (req: Request<ParamsDictionary, any, CommentPostReqBody>, res: Response) => {
+  const { user_id, role } = req.decoded_authorization as TokenPayload
+
+  const { postId } = req.params
+  const result = await postService.commentPost({ postId, user_id, commentBody: req.body })
+
+  return res.json({
+    message: POST_MESSAGES.COMMENT_POST_SUCCESS,
+    comment: result
+  })
+}
+
+export const getCommentsOfPostController = async (
+  req: Request<ParamsDictionary, any, any, PostReqQuery>,
+  res: Response
+) => {
+  const { user_id, role } = req.decoded_authorization as TokenPayload
+  const { page, limit, sort_by, order_by } = req.query
+  const { postId } = req.params
+  const { comments, total } = await postService.getCommentsOfPost({
+    page,
+    limit,
+    sort_by,
+    order_by,
+    postId
+  })
+  return res.json({
+    message: POST_MESSAGES.GET_COMMENT_OF_POST_SUCCESS,
+    result: {
+      comments,
+      page: Number(page),
+      limit: Number(limit),
+      total_items: total,
+      total_pages: Math.ceil(total / limit)
+    }
+  })
+}
+export const deleteCommentOfPostController = async (req: Request<ParamsDictionary, any, any>, res: Response) => {
+  const { user_id, role } = req.decoded_authorization as TokenPayload
+
+  const { postId, commentId } = req.params
+  const result = await postService.deleteCommentOfPost({ id: postId, commentId, user_id })
+
+  return res.json({
+    message: POST_MESSAGES.DELETE_POST_COMMENT_SUCCESS
   })
 }

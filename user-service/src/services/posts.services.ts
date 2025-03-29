@@ -5,6 +5,7 @@ import { POST_FEEDBACK_MESSAGES, POST_MESSAGES } from '~/constants/messages'
 import { ErrorWithStatus } from '~/models/Errors'
 import HTTP_STATUS from '~/constants/httpStatus'
 import {
+  CommentPostReqBody,
   PostReqBody,
   ReactPostReqBody,
   RejectPostReqBody,
@@ -15,6 +16,7 @@ import Post from '~/models/schemas/Post.schema'
 import { omit } from 'lodash'
 import PostFeedback from '~/models/schemas/PostFeedBacks.schema'
 import PostReaction from '~/models/schemas/PostReaction.schema'
+import PostComment from '~/models/schemas/PostComment.schema'
 
 class PostService {
   async search({
@@ -553,6 +555,155 @@ class PostService {
         {
           $pull: {
             reactions: new ObjectId(reactionId)
+          },
+          $currentDate: {
+            updated_at: true
+          }
+        }
+      )
+    ])
+    return null
+  }
+  async commentPost({
+    postId,
+    user_id,
+    commentBody
+  }: {
+    postId: string
+    user_id: string
+    commentBody: CommentPostReqBody
+  }) {
+    const post = await databaseService.posts.findOne({ _id: new ObjectId(postId) })
+    if (!post) {
+      throw new ErrorWithStatus({
+        message: POST_MESSAGES.POST_NOT_FOUND,
+        status: HTTP_STATUS.NOT_FOUND
+      })
+    }
+    const comment = new PostComment({
+      user_id: new ObjectId(user_id),
+      postId: post._id,
+      content: commentBody.content,
+      parentCommentId: commentBody.parentCommentId ? new ObjectId(commentBody.parentCommentId) : undefined,
+      _id: new ObjectId()
+    })
+    const commentInserted = await databaseService.postComments.insertOne(comment)
+    await databaseService.posts.updateOne(
+      {
+        _id: new ObjectId(postId)
+      },
+      {
+        $push: {
+          comments: commentInserted.insertedId
+        }
+      }
+    )
+    return comment
+  }
+
+  async getCommentsOfPost({
+    page,
+    limit,
+    sort_by = 'created_at',
+    order_by = 'DESC',
+    postId
+  }: {
+    page?: number
+    limit?: number
+    sort_by: string
+    order_by: string
+    postId: string
+  }) {
+    const conditions: Filter<PostComment> = {
+      postId: new ObjectId(postId),
+      parentCommentId: undefined
+    }
+
+    const [comments, total] = await Promise.all([
+      databaseService.postComments
+        .find(conditions, {
+          skip: page && limit ? (Number(page) - 1) * Number(limit) : undefined,
+          limit: Number(limit),
+          sort: {
+            [sort_by]: order_by === 'ASC' ? 1 : -1
+          }
+        })
+        .toArray(),
+      await databaseService.postComments.countDocuments(conditions)
+    ])
+
+    // Get children comments if exists
+    const childrenComments = await Promise.all(
+      comments.map((comment: PostComment) => {
+        return databaseService.postComments
+          .find(
+            {
+              parentCommentId: comment._id
+            },
+            {
+              sort: {
+                created_at: 1
+              }
+            }
+          )
+          .toArray()
+      })
+    )
+    const result = comments.map((comment: PostComment, index: number) => {
+      return {
+        ...comment,
+        children: childrenComments[index]
+      }
+    })
+
+    return {
+      comments: result,
+      total
+    }
+  }
+
+  async deleteCommentOfPost({ id, user_id, commentId }: { id: string; user_id: string; commentId: string }) {
+    const post = await databaseService.posts.findOne({ _id: new ObjectId(id) })
+    if (!post) {
+      throw new ErrorWithStatus({
+        message: POST_MESSAGES.POST_NOT_FOUND,
+        status: HTTP_STATUS.NOT_FOUND
+      })
+    }
+
+    const [comment, childComments] = await Promise.all([
+      databaseService.postComments.findOne({ _id: new ObjectId(commentId) }),
+      databaseService.postComments.find({ parentCommentId: new ObjectId(commentId) }).toArray()
+    ])
+    if (!comment) {
+      throw new ErrorWithStatus({
+        message: POST_MESSAGES.POST_COMMENT_NOT_FOUND,
+        status: HTTP_STATUS.NOT_FOUND
+      })
+    }
+    if (comment.user_id.toString() !== user_id) {
+      throw new ErrorWithStatus({
+        message: POST_MESSAGES.UNAUTHORIZED_DELETE_POST_COMMENT,
+        status: HTTP_STATUS.UNAUTHORIZED
+      })
+    }
+
+    if (childComments.length > 0) {
+      throw new ErrorWithStatus({
+        message: POST_MESSAGES.POST_COMMENT_HAS_CHILDREN,
+        status: HTTP_STATUS.BAD_REQUEST
+      })
+    }
+
+    await Promise.all([
+      databaseService.postComments.deleteOne({ _id: new ObjectId(commentId) }),
+      databaseService.posts.updateOne(
+        {
+          _id: new ObjectId(id)
+        },
+        {
+          $pull: {
+            comments: new ObjectId(commentId)
           },
           $currentDate: {
             updated_at: true

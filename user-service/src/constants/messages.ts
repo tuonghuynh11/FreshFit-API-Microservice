@@ -436,7 +436,13 @@ export const POST_MESSAGES = {
   POST_ALREADY_REACTED: 'Post already reacted',
   POST_REACTION_NOT_FOUND: 'Post reaction not found',
   DELETE_POST_REACTION_SUCCESS: 'Delete post reaction successfully',
-  UNAUTHORIZED_DELETE_POST_REACTION: 'Unauthorized delete post reaction'
+  UNAUTHORIZED_DELETE_POST_REACTION: 'Unauthorized delete post reaction',
+  COMMENT_POST_SUCCESS: 'Comment post successfully',
+  GET_COMMENT_OF_POST_SUCCESS: 'Get Comment of post successfully',
+  DELETE_POST_COMMENT_SUCCESS: 'Delete post comment successfully',
+  POST_COMMENT_NOT_FOUND: 'Post comment not found',
+  UNAUTHORIZED_DELETE_POST_COMMENT: 'Unauthorized delete post comment',
+  POST_COMMENT_HAS_CHILDREN: 'Comment has children'
 }
 
 export const POST_FEEDBACK_MESSAGES = {

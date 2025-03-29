@@ -206,3 +206,19 @@ export const reactPostValidator = validate(
     ['body']
   )
 )
+export const commentPostValidator = validate(
+  checkSchema(
+    {
+      content: {
+        notEmpty: true,
+        isString: true,
+        trim: true
+      },
+      parentCommentId: {
+        optional: true,
+        isString: true
+      }
+    },
+    ['body']
+  )
+)
