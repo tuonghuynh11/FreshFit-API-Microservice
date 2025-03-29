@@ -271,4 +271,5 @@ postsRouter.delete(
   verifiedUSerValidator,
   wrapRequestHandler(deleteCommentOfPostController)
 )
+
 export default postsRouter
