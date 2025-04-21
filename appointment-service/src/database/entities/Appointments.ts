@@ -35,9 +35,14 @@ export class Appointment extends AppBaseEntity {
   @ManyToOne(() => Expert, (expert) => expert.appointments)
   expert: Expert;
 
-  @OneToOne(() => ExpertAvailability)
-  @JoinColumn()
-  available: ExpertAvailability;
+  // @OneToOne(() => ExpertAvailability)
+  // @JoinColumn()
+  // available: ExpertAvailability;
+  @ManyToOne(
+    () => ExpertAvailability,
+    (expertAvailability) => expertAvailability.appointments
+  )
+  available?: ExpertAvailability;
 
   @Column({
     type: "enum",

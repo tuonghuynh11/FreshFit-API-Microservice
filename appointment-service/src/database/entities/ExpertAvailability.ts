@@ -1,6 +1,7 @@
-import { Column, Entity, ManyToOne } from "typeorm";
+import { Column, Entity, ManyToOne, OneToMany } from "typeorm";
 import { AppBaseEntity } from "./AppBase";
 import { Expert } from "./Expert";
+import { Appointment } from "./Appointments";
 
 @Entity("expert_availabilities")
 export class ExpertAvailability extends AppBaseEntity {
@@ -18,4 +19,7 @@ export class ExpertAvailability extends AppBaseEntity {
 
   @ManyToOne(() => Expert, (expert) => expert.availabilities)
   expert?: Expert;
+
+  @OneToMany(() => Appointment, (appointment) => appointment.available)
+  appointments: Appointment[];
 }

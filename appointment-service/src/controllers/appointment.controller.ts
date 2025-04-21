@@ -15,6 +15,8 @@ import {
   AppointmentType,
 } from "../database/entities/Appointments";
 import Authenticate from "../decorators/authenticate";
+import { publishToQueue } from "../utils/rabbitmq";
+import { QUEUE_NAMES } from "../common/constants/rabbitMq.values";
 
 @Controller("/appointments")
 @Authenticate()
@@ -47,6 +49,9 @@ export default class AppointmentController {
       const response = await AppointmentRepository.add({ req, res });
       res.locals.message = APPOINTMENT_MESSAGES.APPOINTMENT_CREATED;
       res.locals.data = response;
+      const { userId, expertId, availableId, issues, notes, type } = req.body;
+      const bookingReq = { userId, expertId, availableId, issues, notes, type };
+      await publishToQueue(QUEUE_NAMES.BOOKING_QUEUE, bookingReq);
       next();
     } catch (error) {
       next(error);

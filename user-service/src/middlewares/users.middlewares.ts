@@ -6,7 +6,7 @@ import { ObjectId } from 'mongodb'
 import { envConfig } from '~/constants/config'
 import { Gender, LevelType, UserRole, UserStatus, UserVerifyStatus } from '~/constants/enums'
 import HTTP_STATUS from '~/constants/httpStatus'
-import { USERS_MESSAGES } from '~/constants/messages'
+import { HEALTH_MESSAGES, USERS_MESSAGES } from '~/constants/messages'
 import { ErrorWithStatus } from '~/models/Errors'
 import { TokenPayload } from '~/models/requests/User.requests'
 import databaseService from '~/services/database.services'
@@ -848,3 +848,54 @@ export const userIsOnlineValidator = async (req: Request, res: Response, next: N
 
   next()
 }
+
+export const createDailyHealthSummaryValidator = validate(
+  checkSchema(
+    {
+      heartRate: {
+        notEmpty: true,
+        isNumeric: true
+      },
+      bloodPressure: {
+        notEmpty: true,
+        isObject: true,
+        custom: {
+          options: (value, { req }) => {
+            if (!value.systolic || !value.diastolic) {
+              throw new Error(HEALTH_MESSAGES.BLOOD_PRESSURE_MUST_BE_OBJECT_WITH_SYSTOLIC_AND_DIASTOLIC)
+            }
+            return true
+          }
+        }
+      },
+      sleep: {
+        notEmpty: true,
+        isObject: true,
+        custom: {
+          options: (value, { req }) => {
+            if (!value.duration || !value.quality) {
+              throw new Error(HEALTH_MESSAGES.SLEEP_MUST_BE_OBJECT_WITH_DURATION_AND_QUALITY)
+            }
+            return true
+          }
+        }
+      },
+      caloriesBurned: {
+        notEmpty: true,
+        isNumeric: true
+      },
+      caloriesConsumed: {
+        notEmpty: true,
+        isNumeric: true
+      },
+      waterIntake: {
+        notEmpty: true,
+        isNumeric: true
+      },
+      date: {
+        optional: true
+      }
+    },
+    ['body']
+  )
+)

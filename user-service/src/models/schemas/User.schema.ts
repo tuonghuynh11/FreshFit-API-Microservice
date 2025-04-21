@@ -38,6 +38,8 @@ interface UserType {
   otp?: OTP
   healthTrackings?: ObjectId[]
   goalDetail?: GoalDetail
+  fcmToken?: string
+  zegoToken?: string // token video call
 }
 
 export default class User {
@@ -74,6 +76,9 @@ export default class User {
   otp?: OTP
   healthTrackings?: ObjectId[]
   goalDetail?: GoalDetail
+  fcmToken?: string
+  zegoToken?: string // token video call
+
   constructor(user: UserType) {
     const date = new Date()
     this._id = user._id
@@ -105,5 +110,7 @@ export default class User {
     this.healthTrackings = user.healthTrackings || []
     this.goalDetail = user.goalDetail
     this.activityLevel = user.activityLevel || ActivityLevel.Sedentary
+    this.fcmToken = user.fcmToken || ''
+    this.zegoToken = user.zegoToken || ''
   }
 }

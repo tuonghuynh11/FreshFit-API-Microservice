@@ -32,6 +32,7 @@ export const EXPERT_MESSAGES = {
   EXPERT_NOT_FOUND: "Expert not found",
   USER_ID_REQUIRED: "User id required",
   GET_EXPERT_SUCCESS: "Get expert success",
+  GET_EXPERT_STATISTIC_SUCCESS: "Get expert statistic success",
 };
 
 export const EXPERT_AVAILABILITY_MESSAGES = {

@@ -19,8 +19,8 @@ export default class HealthTracking {
   date: string
   type: HealthTrackingType
   user_id?: ObjectId
-  value: number
-  target: number
+  value: number // actual calories  - consumed or burned
+  target: number // expected calories - consumed or burned
   created_at?: Date
   updated_at?: Date
   healthTrackingDetails: HealthTrackingDetail[]

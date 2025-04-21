@@ -26,3 +26,18 @@ export class UserNotifySettings {
     this.isHealth = userSetting?.isHealth || false
   }
 }
+
+export interface DailyPlan {
+  date: string
+  intakeCalories: number
+  burnedCalories: number
+  waterIntake: number // liters
+}
+export interface HealthPlanOutput {
+  BMI: number
+  BMIStatus: string
+  healthyBMIRange: string
+  totalCaloriesIntake: number
+  totalCaloriesBurned: number
+  waterPerDay: number // liters
+}

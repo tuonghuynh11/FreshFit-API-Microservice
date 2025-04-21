@@ -7,9 +7,13 @@ import {
   changePasswordController,
   checkUserExistedController,
   createCalorieAndTimeToGoalRecommendController,
+  createDailyHealthSummaryController,
   createExpertUserController,
+  createZegoTokenController,
   forgotPasswordController,
+  generateHealthPlanController,
   getAllUserController,
+  getDailyHealthSummaryController,
   getHealthTrackingController,
   getMeController,
   loginController,
@@ -20,6 +24,7 @@ import {
   resendVerifyEmailController,
   resetPasswordTokenController,
   startGoalController,
+  storeFcmTokenController,
   unBanUserController,
   updateGoalStatusController,
   updateMeController,
@@ -32,6 +37,7 @@ import {
   accessTokenValidator,
   adminRoleValidator,
   changePasswordValidator,
+  createDailyHealthSummaryValidator,
   forgotPasswordValidator,
   loginValidator,
   refreshTokenValidator,
@@ -406,6 +412,91 @@ usersRouter.post(
   verifiedUSerValidator,
   verifiedAdminValidator,
   wrapRequestHandler(createExpertUserController)
+)
+
+/**
+ * Description: Create Summary Daily Health Information
+ * Path: /daily-health-summary
+ * Method: Post
+ * Body: {
+ *  heartRate: number,
+ *  bloodPressure: { systolic: number, diastolic: number },
+ *  sleep: { duration: number, quality: SleepQuality },
+ *  caloriesBurned: number,
+ *  caloriesConsumed: number,
+ *  waterIntake: number,
+ *  date: Date
+ * }
+ * **/
+
+usersRouter.post(
+  '/daily-health-summary',
+  accessTokenValidator,
+  verifiedUSerValidator,
+  createDailyHealthSummaryValidator,
+  wrapRequestHandler(createDailyHealthSummaryController)
+)
+/**
+ * Description: Get Summary Daily Health Information
+ * Path: /daily-health-summary
+ * Method: Get
+ * Body: {}
+ * Query:
+ * {
+ *  getBy: string; (day, week, month, year),
+ *  date: string; (2021-09-01)
+ * }
+ * **/
+
+usersRouter.get(
+  '/daily-health-summary',
+  accessTokenValidator,
+  verifiedUSerValidator,
+  wrapRequestHandler(getDailyHealthSummaryController)
+)
+
+/**
+ * Description: Store FCM-Token (For Push Notification)
+ * Path: /fcm-token
+ * Method: Post
+ * Body: {
+ *  token: string,
+ * }
+ * **/
+
+usersRouter.post('/fcm-token', accessTokenValidator, verifiedUSerValidator, wrapRequestHandler(storeFcmTokenController))
+
+/**
+ * Description: Generate Health Plan
+ * Path: /generate-health-plan
+ * Method: Post
+ * Body: {
+ *  startDate:string
+ *  target: HealthTarget,
+ *  desiredWeight: number,
+ * }
+ * **/
+
+usersRouter.post(
+  '/generate-health-plan',
+  accessTokenValidator,
+  verifiedUSerValidator,
+  wrapRequestHandler(generateHealthPlanController)
+)
+
+/**
+ * Description: Create Zego Token (For Video Call)
+ * Path: /zego-token
+ * Method: Post
+ * Body: {
+ * }
+ * **/
+
+usersRouter.post(
+  '/zego-token',
+  accessTokenValidator,
+  verifiedUSerValidator,
+  wrapRequestHandler(createZegoTokenController)
 )
 
 // =================================== External API ===================================

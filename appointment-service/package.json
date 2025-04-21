@@ -19,6 +19,7 @@
     "@opentelemetry/instrumentation-express": "^0.43.0",
     "@opentelemetry/instrumentation-http": "^0.53.0",
     "@opentelemetry/sdk-node": "^0.53.0",
+    "amqplib": "^0.10.7",
     "axios": "^1.7.7",
     "bcryptjs": "^2.4.3",
     "class-transformer": "^0.5.1",
@@ -47,6 +48,7 @@
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
+    "@types/amqplib": "^0.10.7",
     "@types/bcryptjs": "^2.4.6",
     "@types/cookie-parser": "^1.4.3",
     "@types/cors": "^2.8.13",

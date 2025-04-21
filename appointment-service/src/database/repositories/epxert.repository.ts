@@ -20,7 +20,7 @@ import {
   MoreThanOrEqual,
 } from "typeorm";
 import { getDaysInMonth } from "../../utils";
-import { Appointment } from "../entities/Appointments";
+import { Appointment, AppointmentStatus } from "../entities/Appointments";
 
 export default class ExpertRepository {
   static async create(req: Request) {
@@ -836,5 +836,154 @@ export default class ExpertRepository {
     }
     await expertAvailabilityRepository.remove(expertAvailability);
     return null;
+  };
+  static getExpertStatistic = async ({
+    req,
+    res,
+  }: {
+    req: Request;
+    res: Response;
+  }) => {
+    const { user } = res.locals.session;
+    const { user_id: userId, expert_id: expertId } = user;
+    const { dataSource } = req.app.locals;
+    const appointmentRepository = dataSource.getRepository(Appointment);
+
+    const startOfLastMonth = new Date();
+    startOfLastMonth.setMonth(startOfLastMonth.getMonth() - 1);
+    startOfLastMonth.setDate(1);
+    startOfLastMonth.setHours(0, 0, 0, 0);
+
+    const endOfLastMonth = new Date();
+    endOfLastMonth.setMonth(endOfLastMonth.getMonth(), 0);
+    endOfLastMonth.setHours(23, 59, 59, 999);
+
+    const startOfThisMonth = new Date();
+    startOfThisMonth.setDate(1);
+    startOfThisMonth.setHours(0, 0, 0, 0);
+
+    const endOfThisMonth = new Date();
+    endOfThisMonth.setMonth(endOfThisMonth.getMonth() + 1, 0);
+    endOfThisMonth.setHours(23, 59, 59, 999);
+
+    const startOfYesterday = new Date();
+    startOfYesterday.setDate(startOfYesterday.getDate() - 1);
+    startOfYesterday.setHours(0, 0, 0, 0);
+
+    const endOfYesterday = new Date();
+    endOfYesterday.setDate(endOfYesterday.getDate() - 1);
+    endOfYesterday.setHours(23, 59, 59, 999);
+
+    const startOfToday = new Date();
+    startOfToday.setHours(0, 0, 0, 0);
+
+    const endOfToday = new Date();
+    endOfToday.setHours(23, 59, 59, 999);
+
+    // Raw query to get the total number of patients in the last month
+    const queryGetTotalPatientLastMonth = appointmentRepository
+      .createQueryBuilder("appointments")
+      .select("appointments.userId", "userId") // Chọn trường userId
+      .addSelect("COUNT(appointments.id)", "count") // Đếm số lượng
+      .where("appointments.expertId = :expertId", { expertId }) // Điều kiện expert.id
+      .andWhere("appointments.status = :status", {
+        status: AppointmentStatus.COMPLETED,
+      }) // Điều kiện status
+      .andWhere("appointments.createdAt BETWEEN :start AND :end", {
+        start: startOfLastMonth,
+        end: endOfLastMonth,
+      }) // Điều kiện createdAt
+      .groupBy("appointments.userId");
+
+    const queryGetTotalPatientThisMonth = appointmentRepository
+      .createQueryBuilder("appointments")
+      .select("appointments.userId", "userId") // Chọn trường userId
+      .addSelect("COUNT(appointments.id)", "count") // Đếm số lượng
+      .where("appointments.expertId = :expertId", { expertId }) // Điều kiện expert.id
+      .andWhere("appointments.status = :status", {
+        status: AppointmentStatus.COMPLETED,
+      }) // Điều kiện status
+      .andWhere("appointments.createdAt BETWEEN :start AND :end", {
+        start: startOfThisMonth,
+        end: endOfThisMonth,
+      }) // Điều kiện createdAt
+      .groupBy("appointments.userId");
+
+    const [
+      totalYesterDayAppointments,
+      totalTodayAppointments,
+      totalPendingAppointmentsLastMonth,
+      totalPendingAppointmentsThisMonth,
+      totalPatientsLastMonth,
+      totalPatientsThisMonth,
+      totalCompleteAppointmentsLastMonth,
+      totalCompleteAppointmentsThisMonth,
+    ] = await Promise.all([
+      appointmentRepository.count({
+        where: {
+          expert: {
+            id: expertId,
+          },
+          createdAt: Between(startOfYesterday, startOfYesterday),
+        },
+      }),
+      appointmentRepository.count({
+        where: {
+          expert: {
+            id: expertId,
+          },
+          createdAt: Between(startOfToday, endOfToday),
+        },
+      }),
+      appointmentRepository.count({
+        where: {
+          expert: {
+            id: expertId,
+          },
+          status: AppointmentStatus.PENDING,
+          createdAt: Between(startOfLastMonth, endOfLastMonth),
+        },
+      }),
+      appointmentRepository.count({
+        where: {
+          expert: {
+            id: expertId,
+          },
+          status: AppointmentStatus.PENDING,
+          createdAt: Between(startOfThisMonth, endOfThisMonth),
+        },
+      }),
+      queryGetTotalPatientLastMonth.getCount(),
+      queryGetTotalPatientThisMonth.getCount(),
+      appointmentRepository.count({
+        where: {
+          expert: {
+            id: expertId,
+          },
+          status: AppointmentStatus.COMPLETED,
+          createdAt: Between(startOfLastMonth, endOfLastMonth),
+        },
+      }),
+      appointmentRepository.count({
+        where: {
+          expert: {
+            id: expertId,
+          },
+          status: AppointmentStatus.COMPLETED,
+          createdAt: Between(startOfThisMonth, endOfThisMonth),
+        },
+      }),
+    ]);
+
+    return {
+      totalYesterDayAppointments,
+      totalTodayAppointments,
+      totalPendingAppointmentsLastMonth,
+      totalPendingAppointmentsThisMonth,
+      totalPatientsLastMonth,
+      totalPatientsThisMonth,
+      totalCompleteAppointmentsLastMonth,
+      totalCompleteAppointmentsThisMonth,
+    };
   };
 }

@@ -17,6 +17,19 @@ export const dishesSearchValidator = validate(
     ['query']
   )
 )
+export const dishesSearchByIngredientValidator = validate(
+  checkSchema(
+    {
+      ingredients: {
+        notEmpty: {
+          errorMessage: 'Ingredients is required'
+        },
+        isString: true
+      } // ingredient name
+    },
+    ['query']
+  )
+)
 
 export const addDishValidator = validate(
   checkSchema(

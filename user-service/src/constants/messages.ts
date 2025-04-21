@@ -99,7 +99,9 @@ export const USERS_MESSAGES = {
   OTP_CODE_IS_REQUIRED: 'OTP code is required',
   GET_USER_SUCCESS: 'Get user successful',
   CREATE_EXPERT_USER_SUCCESS: 'Create expert user successful',
-  NO_PERMISSION: 'No permission'
+  NO_PERMISSION: 'No permission',
+  STORE_FCM_TOKEN_SUCCESS: 'Store FCM token successful',
+  CREATE_ZEGO_TOKEN_SUCCESS: 'Create Zego token successful'
 } as const
 
 export const PAGINATION_MESSAGES = {
@@ -456,7 +458,18 @@ export const POST_FEEDBACK_MESSAGES = {
   UPDATE_POST_FEEDBACK_SUCCESS: 'Update post feedback',
   FEEDBACK_NOT_FOUND: 'Feedback not found'
 }
+
+export const HEALTH_MESSAGES = {
+  BLOOD_PRESSURE_MUST_BE_OBJECT_WITH_SYSTOLIC_AND_DIASTOLIC:
+    'Blood pressure must be object with systolic and diastolic',
+  SLEEP_MUST_BE_OBJECT_WITH_DURATION_AND_QUALITY: 'Sleep must be object with duration and quality',
+  CREATE_DAILY_HEALTH_SUMMARY_SUCCESS: 'Create daily health summary successful',
+  GET_DAILY_HEALTH_SUMMARY_SUCCESS: 'Get daily health summary successful',
+  GENERATE_HEALTH_PLAN_SUCCESS: 'Generate health plan successful'
+}
+
 export const COMMON_MESSAGES = {
+  DATE_MUST_BE_ISO8601: 'Date must be ISO8601',
   'MSG 1': 'Incorrect username or password',
   'MSG 2': "Email doesn't exist",
   'MSG 3': 'OTP code is invalid',
