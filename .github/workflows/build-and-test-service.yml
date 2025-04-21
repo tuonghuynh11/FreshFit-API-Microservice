@@ -62,20 +62,26 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      # Install dependencies
-      - name: Install dependencies
-        run: npm install
-        working-directory: user-service
+      - name: Build user-service
+        run: |
+          cd user-service
+          npm install
+          npm run lint
+          npm run build
+      # # Install dependencies
+      # - name: Install dependencies
+      #   run: npm install
+      #   working-directory: user-service
 
-      # Lint the code
-      - name: Lint code
-        run: npm run lint
-        working-directory: user-service
+      # # Lint the code
+      # - name: Lint code
+      #   run: npm run lint
+      #   working-directory: user-service
 
-      # Build the project (TypeScript)
-      - name: Build project
-        run: npm run build
-        working-directory: user-service
+      # # Build the project (TypeScript)
+      # - name: Build project
+      #   run: npm run build
+      #   working-directory: user-service
 
       # Run tests
       # - name: Run tests
