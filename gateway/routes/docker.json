@@ -2032,5 +2032,17 @@
     "target": "http://users:4001/api/v1",
     "pathRewrite": {},
     "security": true
+  },
+  {
+    "name": "Get Expert Statistic",
+    "methods": [
+      "GET"
+    ],
+    "context": [
+      "/experts/statistic/general"
+    ],
+    "target": "http://appointments:4002/api/v1",
+    "pathRewrite": {},
+    "security": true
   }
 ]
