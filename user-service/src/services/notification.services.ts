@@ -1,9 +1,9 @@
 import * as admin from 'firebase-admin'
 import databaseService from './database.services'
 import { ObjectId } from 'mongodb'
-import path from 'path'
 import Logger from '~/utils/logger'
-const credentialPath = path.join(__dirname, '..\\credentials\\credential.json')
+import { FIREBASE_CREDENTIAL_DIR } from '~/constants/dir'
+const credentialPath = FIREBASE_CREDENTIAL_DIR
 
 admin.initializeApp({
   credential: admin.credential.cert(credentialPath)
