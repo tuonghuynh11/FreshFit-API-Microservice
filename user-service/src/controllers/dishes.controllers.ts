@@ -7,6 +7,7 @@ import {
   DishIngredientReqBody,
   DishReqBody,
   DishReqQuery,
+  SearchDishByIngredientReqQuery,
   UpdateDishIngredientReqBody,
   UpdateDishReqBody
 } from '~/models/requests/Dishes.requests'
@@ -134,5 +135,29 @@ export const deleteDishIngredientController = async (req: Request<ParamsDictiona
 
   return res.json({
     message: DISH_INGREDIENT_MESSAGES.DELETE_DISH_INGREDIENT_SUCCESS
+  })
+}
+
+export const searchDishesByIngredientsController = async (
+  req: Request<ParamsDictionary, any, any, SearchDishByIngredientReqQuery>,
+  res: Response
+) => {
+  const { ingredients, page, limit, sort_by, order_by } = req.query
+  const { dishes, total } = await dishService.searchByIngredients({
+    ingredients: ingredients?.toString(),
+    page: Number(page),
+    limit: Number(limit),
+    sort_by,
+    order_by
+  })
+  return res.json({
+    message: DISH_MESSAGES.GET_DISH_SUCCESS,
+    result: {
+      dishes,
+      page: Number(page),
+      limit: Number(limit),
+      total_items: total,
+      total_pages: Math.ceil(total / limit)
+    }
   })
 }

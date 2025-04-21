@@ -241,4 +241,24 @@ export default class ExpertController {
     }
     next();
   }
+  @Get("/statistic/general")
+  @Authorize([SystemRole.Expert])
+  public async getExpertStatistic(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const statistic = await ExpertRepository.getExpertStatistic({ req, res });
+      res.locals.message = EXPERT_MESSAGES.GET_EXPERT_STATISTIC_SUCCESS;
+      res.locals.data = {
+        statistic,
+      };
+
+      next();
+    } catch (error) {
+      next(error);
+    }
+    next();
+  }
 }

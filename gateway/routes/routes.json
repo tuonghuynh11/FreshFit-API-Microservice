@@ -1961,5 +1961,77 @@
         "target": "http://localhost:4001/api/v1",
         "pathRewrite": {},
         "security": true
+      },
+      {
+        "name": "Create Summary Daily Health Information",
+        "methods": [
+          "POST"
+        ],
+        "context": [
+          "/users/daily-health-summary"
+        ],
+        "target": "http://localhost:4001/api/v1",
+        "pathRewrite": {},
+        "security": true
+      },
+      {
+        "name": "Get Summary Daily Health Information",
+        "methods": [
+          "GET"
+        ],
+        "context": [
+          "/users/daily-health-summary"
+        ],
+        "target": "http://localhost:4001/api/v1",
+        "pathRewrite": {},
+        "security": true
+      },
+      {
+        "name": "Store FCM Token",
+        "methods": [
+          "POST"
+        ],
+        "context": [
+          "/users/fcm-token"
+        ],
+        "target": "http://localhost:4001/api/v1",
+        "pathRewrite": {},
+        "security": true
+      },
+      {
+        "name": "Generate Health Plan",
+        "methods": [
+          "POST"
+        ],
+        "context": [
+          "/users/generate-health-plan"
+        ],
+        "target": "http://localhost:4001/api/v1",
+        "pathRewrite": {},
+        "security": true
+      },
+      {
+        "name": "Create Zego Token",
+        "methods": [
+          "POST"
+        ],
+        "context": [
+          "/users/zego-token"
+        ],
+        "target": "http://localhost:4001/api/v1",
+        "pathRewrite": {},
+        "security": true
+      },
+      {
+        "name": "Search dish by ingredient name",
+        "methods": [
+          "GET"
+        ],
+        "context": [
+          "/dishes/search-by-ingredient"
+        ],
+        "target": "http://localhost:4001/api/v1",
+        "pathRewrite": {},
+        "security": true
       }
   ]

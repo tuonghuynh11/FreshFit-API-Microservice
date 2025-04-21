@@ -1,6 +1,7 @@
 import User from '~/models/schemas/User.schema'
 import databaseService from './database.services'
 import {
+  CreateDailyHealthSummaryBody,
   CreateExpertUserBody,
   RegisterReqBody,
   UpdateMeReqBody,
@@ -9,8 +10,11 @@ import {
 import { hashPassword } from '~/utils/crypto'
 import { signToken, verifyToken } from '~/utils/jwt'
 import {
+  ActivityLevel,
+  Gender,
   GoalDetailStatus,
   HealthActivityQueryType,
+  HealthTarget,
   HealthTrackingType,
   TokenType,
   UserRole,
@@ -26,9 +30,21 @@ import { USERS_MESSAGES } from '~/constants/messages'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { sendForgotPasswordEmail, sendVerifyEmail } from '~/utils/mails'
 import OTP from '~/models/schemas/Otp.schema'
-import { generateExpertUniqueUsername, generateOTP, generatePassword, IsEmailExist } from '~/utils/commons'
+import {
+  calculateAge,
+  generateExpertUniqueUsername,
+  generateOTP,
+  generatePassword,
+  getStartAndEndISO,
+  IsEmailExist
+} from '~/utils/commons'
 import { GoalDetail } from '~/models/schemas/GoalDetail.schema'
 import appointmentService from './appointment.services'
+import { HealthData } from '~/models/schemas/HealthData.schema'
+import { GenerateHealthPlanBody } from '~/models/requests/HealthPlan.requests'
+import { calculateBMI, calculateBMR, calculateTDEE, calculateWaterNeed, getBMIStatus } from '~/utils/health-formulas'
+import { HealthPlanOutput } from '~/constants/classes'
+import { generateToken04 } from '~/utils/zego'
 
 class UserService {
   private signAccessToken({
@@ -1025,6 +1041,226 @@ class UserService {
     } finally {
       session.endSession()
     }
+  }
+
+  async createDailyHealthSummary({ user_id, payload }: { user_id: string; payload: CreateDailyHealthSummaryBody }) {
+    const user = await databaseService.users.findOne({
+      _id: new ObjectId(user_id)
+    })
+    if (!user) {
+      throw new ErrorWithStatus({
+        message: USERS_MESSAGES.USER_NOT_FOUND,
+        status: HTTP_STATUS.NOT_FOUND
+      })
+    }
+    const newHealthSummary = new HealthData({
+      userId: user_id,
+      date: payload.date,
+      caloriesConsumed: payload.caloriesConsumed,
+      caloriesBurned: payload.caloriesBurned,
+      waterIntake: payload.waterIntake,
+      sleep: payload.sleep,
+      heartRate: payload.heartRate,
+      bloodPressure: payload.bloodPressure,
+      height: payload.height,
+      weight: payload.weight
+    })
+    const result = await databaseService.healthData.insertOne(newHealthSummary)
+    await databaseService.users.updateOne(
+      {
+        _id: new ObjectId(user_id)
+      },
+      { $set: { height: payload.height, weight: payload.weight } }
+    )
+
+    return {
+      id: result.insertedId,
+      userId: user_id,
+      date: payload.date,
+      caloriesConsumed: payload.caloriesConsumed,
+      caloriesBurned: payload.caloriesBurned,
+      waterIntake: payload.waterIntake,
+      sleep: payload.sleep,
+      heartRate: payload.heartRate,
+      bloodPressure: payload.bloodPressure,
+      height: payload.height,
+      weight: payload.weight,
+      bmi: newHealthSummary.bmi
+    }
+  }
+
+  async getDailyHealthSummary({ date, user_id, timeZone }: { date: string; user_id: string; timeZone?: string }) {
+    //date
+    // Get By Year: "2021"
+    // Get By Month: "2021-09"
+    // Get By Day: "2021-09-01"
+
+    // const result = await databaseService.healthData
+    //   .find({
+    //     userId: user_id,
+    //     date: {
+    //       $regex: date.toString(),
+    //       $options: 'i'
+    //     }
+    //   })
+    //   .sort({ date: 1 })
+    //   .toArray()
+
+    // return result
+
+    // Nếu không có timeZone, mặc định là Asia/Ho_Chi_Minh
+    const userTimeZone = timeZone || 'Asia/Ho_Chi_Minh'
+    const { start, end } = getStartAndEndISO(date, userTimeZone)
+
+    // Truy vấn cơ sở dữ liệu với date đã tính toán theo timezone
+    const result = await databaseService.healthData
+      .find({
+        userId: user_id,
+        date: {
+          $gte: start,
+          $lt: end
+        }
+      })
+      .sort({ date: 1 })
+      .toArray()
+
+    return result
+  }
+
+  async storeFcmToken({ user_id, token }: { user_id: string; token: string }) {
+    const user = await databaseService.users.findOne({
+      _id: new ObjectId(user_id)
+    })
+    if (!user) {
+      throw new ErrorWithStatus({
+        message: USERS_MESSAGES.USER_NOT_FOUND,
+        status: HTTP_STATUS.NOT_FOUND
+      })
+    }
+    await databaseService.users.updateOne(
+      { _id: new ObjectId(user_id) },
+      {
+        $set: {
+          fcmToken: token
+        },
+        $currentDate: {
+          updated_at: true
+        }
+      }
+    )
+    return token
+  }
+
+  async generateHealthPlan({
+    user_id,
+    payload
+  }: {
+    user_id: string
+    payload: GenerateHealthPlanBody
+  }): Promise<HealthPlanOutput> {
+    const user = await databaseService.users.findOne({
+      _id: new ObjectId(user_id)
+    })
+    if (!user) {
+      throw new ErrorWithStatus({
+        message: USERS_MESSAGES.USER_NOT_FOUND,
+        status: HTTP_STATUS.NOT_FOUND
+      })
+    }
+    const { target } = payload
+    let { percentDietaryDeficit = 7, percentWorkoutDeficit = 3 } = payload
+    const { date_of_birth, height, weight, gender, activityLevel } = user
+    const age = calculateAge(date_of_birth!)
+
+    const bmi = calculateBMI(Number(weight), Number(height))
+
+    const bmiStatus = getBMIStatus(bmi)
+    const healthyBMIRange = '18.5 - 24.9'
+    const bmr = calculateBMR({
+      activityLevel: activityLevel as ActivityLevel,
+      age: age,
+      gender: gender as Gender,
+      height: Number(height),
+      weight: Number(weight)
+    })
+    const tdee = calculateTDEE(bmr, activityLevel as ActivityLevel)
+    const goalCaloriesMap: Record<HealthTarget, number> = {
+      Maintain: 0,
+      'Mild Weight Loss': -250,
+      'Weight Loss': -500,
+      'Extreme Weight Loss': -1000,
+      'Mild Weight Gain': 250,
+      'Weight Gain': 500,
+      'Extreme Weight Gain': 1000
+    }
+
+    if (
+      target === HealthTarget.ExtremeWeightGain ||
+      target === HealthTarget.WeightGain ||
+      target === HealthTarget.MildWeightGain ||
+      target === HealthTarget.Maintain
+    ) {
+      percentDietaryDeficit = 100
+      percentWorkoutDeficit = 0
+    }
+
+    // Calculate total calories intake
+    const calorieDelta = goalCaloriesMap[target]
+    const calorieDeltaForDiet = (calorieDelta * percentDietaryDeficit) / 100
+    const intakeCalories = tdee + calorieDeltaForDiet
+
+    // Calculate total calories burned
+    const workoutCalories = Math.abs((calorieDelta * percentWorkoutDeficit) / 100)
+    const totalCaloriesBurned = workoutCalories
+
+    // Water Intake
+    const waterPerDay = calculateWaterNeed(gender as Gender) // liters
+
+    return {
+      BMI: bmi,
+      BMIStatus: bmiStatus,
+      healthyBMIRange,
+      waterPerDay,
+      totalCaloriesIntake: intakeCalories,
+      totalCaloriesBurned
+    }
+  }
+
+  async createZegoToken(user_id: string) {
+    const user = await databaseService.users.findOne({
+      _id: new ObjectId(user_id)
+    })
+    if (!user) {
+      throw new ErrorWithStatus({
+        message: USERS_MESSAGES.USER_NOT_FOUND,
+        status: HTTP_STATUS.NOT_FOUND
+      })
+    }
+    // Please modify appID to your own appId. appid is a number.
+    // Example: 1234567890
+    const appID = Number(envConfig.zegoAppId) // type: number
+
+    // Please modify serverSecret to your own serverSecret. serverSecret is a string.
+    // Example: 'sdfsdfsd323sdfsdf'
+    const serverSecret = envConfig.zegoServerSecret // type: 32 byte length string
+
+    // Please modify userId to the user's userId.
+    const userId = user_id // type: string
+
+    const effectiveTimeInSeconds = Number(envConfig.zegoEffectiveTimeInSeconds) //type: number; unit: s; expiration time of token, in seconds.
+
+    // When generating a basic authentication token, the payload should be set to an empty string.
+    const payload = ''
+    // Build token
+    const token = generateToken04(appID, userId, serverSecret, effectiveTimeInSeconds, payload)
+    await databaseService.users.updateOne(
+      {
+        _id: new ObjectId(user_id)
+      },
+      { $set: { zegoToken: token } }
+    )
+
+    return token
   }
 }
 

@@ -6,6 +6,7 @@ import {
   getDishByIdController,
   getDishIngredientDetailController,
   ratingDishController,
+  searchDishesByIngredientsController,
   searchDishesController,
   updateDishController,
   updateDishIngredientController
@@ -14,6 +15,7 @@ import { filterMiddleware } from '~/middlewares/common.middlewares'
 import {
   addDishIngredientValidator,
   addDishValidator,
+  dishesSearchByIngredientValidator,
   dishesSearchValidator,
   updateDishIngredientValidator,
   updateDishValidator
@@ -36,6 +38,19 @@ dishesRouter.get(
   paginationNavigator,
   dishesSearchValidator,
   wrapRequestHandler(searchDishesController)
+)
+
+/**
+ * Description: Search dish by ingredient name
+ * Path: /search-by-ingredient?ingredients = ingredient1|ingredient2 &page = 1 &limit = 10 & order_by & sort_by
+ * Method: GET
+ * **/
+dishesRouter.get(
+  '/search-by-ingredient',
+  accessTokenValidator,
+  paginationNavigator,
+  dishesSearchByIngredientValidator,
+  wrapRequestHandler(searchDishesByIngredientsController)
 )
 
 /**

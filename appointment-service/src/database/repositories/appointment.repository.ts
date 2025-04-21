@@ -19,6 +19,7 @@ import {
 import { omit } from "../../utils";
 import { AppointmentReview } from "../entities/AppointmentReview";
 import { ExpertReview } from "../entities/ExpertReview";
+import { AppDataSource } from "../data-source";
 
 export default class AppointmentRepository {
   static getAptByUserId = async (req: Request) => {
@@ -120,9 +121,9 @@ export default class AppointmentRepository {
     // ✅ Map appointments with user info
     const result = appointments.map((apt: Appointment, index: number) => ({
       id: apt.id,
-      date: new Date(apt.available.date).toISOString().split("T")[0], // YYYY-MM-DD
-      startTime: apt.available.startTime,
-      endTime: apt.available.endTime,
+      date: new Date(apt!.available!.date).toISOString().split("T")[0], // YYYY-MM-DD
+      startTime: apt!.available!.startTime,
+      endTime: apt!.available!.endTime,
       status: apt.status,
       type: apt.type,
       userId: apt.userId,
@@ -248,9 +249,9 @@ export default class AppointmentRepository {
     // ✅ Map appointments with user info
     const result = appointments.map((apt: Appointment, index: number) => ({
       id: apt.id,
-      date: new Date(apt.available.date).toISOString().split("T")[0], // YYYY-MM-DD
-      startTime: apt.available.startTime,
-      endTime: apt.available.endTime,
+      date: new Date(apt.available!.date).toISOString().split("T")[0], // YYYY-MM-DD
+      startTime: apt.available!.startTime,
+      endTime: apt.available!.endTime,
       status: apt.status,
       type: apt.type,
       userId: apt.userId,
@@ -309,9 +310,9 @@ export default class AppointmentRepository {
     // ✅ Map appointments with user info
     const result = {
       id: appointment.id,
-      date: new Date(appointment.available.date).toISOString().split("T")[0], // YYYY-MM-DD
-      startTime: appointment.available.startTime,
-      endTime: appointment.available.endTime,
+      date: new Date(appointment.available!.date).toISOString().split("T")[0], // YYYY-MM-DD
+      startTime: appointment.available!.startTime,
+      endTime: appointment.available!.endTime,
       status: appointment.status,
       type: appointment.type,
       user: omit(user, [
@@ -466,9 +467,9 @@ export default class AppointmentRepository {
     // ✅ Map appointments with user info
     const result = appointments.map((apt: Appointment, index: number) => ({
       id: apt.id,
-      date: new Date(apt.available.date).toISOString().split("T")[0], // YYYY-MM-DD
-      startTime: apt.available.startTime,
-      endTime: apt.available.endTime,
+      date: new Date(apt.available!.date).toISOString().split("T")[0], // YYYY-MM-DD
+      startTime: apt.available!.startTime,
+      endTime: apt.available!.endTime,
       status: apt.status,
       type: apt.type,
       userId: apt.userId,
@@ -558,7 +559,80 @@ export default class AppointmentRepository {
       }
     });
   };
+  static addUsingRabbitMQ = async ({
+    userId,
+    expertId,
+    availableId,
+    issues,
+    notes,
+    type,
+  }: {
+    userId: any;
+    expertId: any;
+    availableId: any;
+    issues: any;
+    notes: any;
+    type: any;
+  }) => {
+    const expertAvailabilityRepository =
+      AppDataSource.getRepository(ExpertAvailability);
 
+    // Check schedule is available
+    const expertAvailability = await expertAvailabilityRepository.findOne({
+      where: {
+        id: availableId,
+        expert: {
+          id: expertId,
+        },
+      },
+    });
+
+    if (!expertAvailability || !expertAvailability.isAvailable) {
+      throw new BadRequestError(APPOINTMENT_MESSAGES.SCHEDULE_NOT_AVAILABLE);
+    }
+
+    return await AppDataSource.transaction(async (manager: EntityManager) => {
+      try {
+        const newAppointment = manager.getRepository(Appointment).create({
+          createdBy: userId,
+          userId,
+          expert: expertId,
+          available: availableId,
+          fees:
+            type === AppointmentType.CALL
+              ? DEFAULT_FEES.EXPERT_CALL_FEES
+              : DEFAULT_FEES.EXPERT_MESSAGE_FEES,
+          type,
+          issues,
+          notes,
+          paymentStatus: PaymentStatus.PAID,
+        });
+
+        await manager.getRepository(Appointment).save(newAppointment);
+
+        // Mark the availability as unavailable
+        expertAvailability.isAvailable = false;
+        await manager
+          .getRepository(ExpertAvailability)
+          .save(expertAvailability);
+
+        // Ensure UserService transaction is also within the same transaction
+        await UserService.makeBookingTransaction({
+          userId,
+          amount:
+            -1 *
+            (type === AppointmentType.CALL
+              ? DEFAULT_FEES.EXPERT_CALL_FEES
+              : DEFAULT_FEES.EXPERT_MESSAGE_FEES),
+        });
+
+        return newAppointment;
+      } catch (error) {
+        console.error("Transaction failed:", error);
+        throw new InternalServerError("Failed to create appointment.");
+      }
+    });
+  };
   static updateAppointmentStatus = async ({
     req,
     res,
@@ -606,7 +680,7 @@ export default class AppointmentRepository {
             .getRepository(ExpertAvailability)
             .findOne({
               where: {
-                id: appointment.available.id,
+                id: appointment.available!.id,
               },
             });
 
@@ -685,7 +759,7 @@ export default class AppointmentRepository {
           .getRepository(ExpertAvailability)
           .findOne({
             where: {
-              id: appointment.available.id,
+              id: appointment.available!.id,
             },
           });
 

@@ -3,12 +3,14 @@ import { ParamsDictionary } from 'express-serve-static-core'
 import { ObjectId } from 'mongodb'
 import { HealthActivityQueryType, UserRole, UserVerifyStatus } from '~/constants/enums'
 import HTTP_STATUS from '~/constants/httpStatus'
-import { RECOMMEND_MESSAGES, USERS_MESSAGES } from '~/constants/messages'
+import { HEALTH_MESSAGES, RECOMMEND_MESSAGES, USERS_MESSAGES } from '~/constants/messages'
+import { GenerateHealthPlanBody } from '~/models/requests/HealthPlan.requests'
 import { HealthTrackingBody } from '~/models/requests/HealthTracking.requests'
 import { HealthTrackingDetailBody } from '~/models/requests/HealthTrackingDetail.requests'
 import {
   BanUserReqParams,
   ChangePasswordReqBody,
+  CreateDailyHealthSummaryBody,
   CreateExpertUserBody,
   ForgotPasswordReqBody,
   LoginGoogleReqBody,
@@ -25,10 +27,12 @@ import {
 } from '~/models/requests/User.requests'
 import { WaterBody } from '~/models/requests/Water.requests'
 import User from '~/models/schemas/User.schema'
+import alertService from '~/services/alert.services'
 import appointmentService from '~/services/appointment.services'
 import databaseService from '~/services/database.services'
 import healthTrackingService from '~/services/healthTracking.services'
 import healthTrackingDetailService from '~/services/healthTrackingDetail.services'
+import notificationService from '~/services/notification.services'
 import recommendService from '~/services/recommend.services'
 import userService from '~/services/users.services'
 import waterService from '~/services/water.services'
@@ -350,6 +354,66 @@ export const createExpertUserController = async (
   const result = await userService.createExpertUser(req.body)
   return res.json({
     message: USERS_MESSAGES.CREATE_EXPERT_USER_SUCCESS,
+    result
+  })
+}
+export const createDailyHealthSummaryController = async (
+  req: Request<ParamsDictionary, any, CreateDailyHealthSummaryBody>,
+  res: Response,
+  next: NextFunction
+) => {
+  const { user_id } = req.decoded_authorization as TokenPayload
+  const result = await userService.createDailyHealthSummary({ user_id, payload: req.body })
+  const alerts = await alertService.checkHealthRisks(user_id)
+  console.log('Alerts', alerts)
+  if (alerts.length > 0) {
+    for (const alert of alerts) {
+      await notificationService.sendPushNotification(user_id, alert)
+    }
+  }
+  return res.json({
+    message: HEALTH_MESSAGES.CREATE_DAILY_HEALTH_SUMMARY_SUCCESS,
+    result
+  })
+}
+
+export const getDailyHealthSummaryController = async (req: Request<ParamsDictionary, any, any>, res: Response) => {
+  const { user_id } = req.decoded_authorization as TokenPayload
+
+  const date = req.query.date!.toString()
+  const result = await userService.getDailyHealthSummary({ date, user_id })
+  return res.json({
+    message: HEALTH_MESSAGES.GET_DAILY_HEALTH_SUMMARY_SUCCESS,
+    result
+  })
+}
+export const storeFcmTokenController = async (req: Request<ParamsDictionary, any, any>, res: Response) => {
+  const { user_id } = req.decoded_authorization as TokenPayload
+
+  const result = await userService.storeFcmToken({ user_id, token: req.body.token })
+  return res.json({
+    message: USERS_MESSAGES.STORE_FCM_TOKEN_SUCCESS,
+    result
+  })
+}
+export const createZegoTokenController = async (req: Request<ParamsDictionary, any, any>, res: Response) => {
+  const { user_id } = req.decoded_authorization as TokenPayload
+
+  const result = await userService.createZegoToken(user_id)
+  return res.json({
+    message: USERS_MESSAGES.CREATE_ZEGO_TOKEN_SUCCESS,
+    token: result
+  })
+}
+export const generateHealthPlanController = async (
+  req: Request<ParamsDictionary, any, GenerateHealthPlanBody>,
+  res: Response
+) => {
+  const { user_id } = req.decoded_authorization as TokenPayload
+
+  const result = await userService.generateHealthPlan({ user_id, payload: req.body })
+  return res.json({
+    message: HEALTH_MESSAGES.GENERATE_HEALTH_PLAN_SUCCESS,
     result
   })
 }

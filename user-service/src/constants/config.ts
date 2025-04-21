@@ -41,6 +41,7 @@ export const envConfig = {
   dbPostReactionsCollection: process.env.DB_POST_REACTIONS_COLLECTION as string,
   dbPostCommentsCollection: process.env.DB_POST_COMMENTS_COLLECTION as string,
   dbPostBookmarksCollection: process.env.DB_POST_BOOKMARKS_COLLECTION as string,
+  dbHealthDataCollection: process.env.DB_HEALTH_DATA_COLLECTION as string,
 
   passwordSecret: process.env.PASSWORD_SECRET as string,
   jwtSecretAccessToken: process.env.JWT_SECRET_ACCESS_TOKEN as string,
@@ -62,7 +63,6 @@ export const envConfig = {
   // sesFromAddress: process.env.SES_FROM_ADDRESS as string,
   // s3BucketName: process.env.S3_BUCKET_NAME as string
 
-  //ZaloPay
   //ZALO PAY
   zalo_app_id: process.env.ZALO_APP_ID || '',
   zalo_key_1: process.env.ZALO_KEY_1 || '',
@@ -71,5 +71,10 @@ export const envConfig = {
   zalo_redirect_url: process.env.ZALO_REDIRECT_URL || '',
   zalo_app_user: process.env.ZALO_APP_USER || '',
   // DEFAULT PASSWORD
-  defaultExpertPassword: process.env.DEFAULT_EXPERT_PASSWORD || '12345678expert@Ex'
+  defaultExpertPassword: process.env.DEFAULT_EXPERT_PASSWORD || '12345678expert@Ex',
+
+  // ZEGO SERVICE
+  zegoAppId: process.env.ZEGO_APP_ID || 0,
+  zegoServerSecret: process.env.ZEGO_SERVER_SECRET || '',
+  zegoEffectiveTimeInSeconds: process.env.ZEGO_EFFECTIVE_TIME_IN_SECONDS || 3600 * 24 * 365 // 1 year
 }

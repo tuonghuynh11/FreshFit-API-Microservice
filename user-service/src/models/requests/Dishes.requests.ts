@@ -44,3 +44,9 @@ export interface UpdateDishReqBody {
 }
 
 export interface DishReqQuery extends PaginationReqQuery, Filter {}
+
+export interface SearchDishByIngredientReqQuery extends PaginationReqQuery {
+  ingredients: string
+  sort_by: string
+  order_by: string
+}

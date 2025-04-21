@@ -36,6 +36,7 @@ interface ConfigValues {
   smtpSecure: boolean;
   smtpUser: string;
   smtpPassword: string;
+  rabbitMQHost: string;
 }
 
 class Config implements ConfigValues {
@@ -116,6 +117,9 @@ class Config implements ConfigValues {
   api_secret = process.env.API_SECRET as string;
 
   admin_mail = process.env.ADMIN_MAIL as string;
+
+  // RabbitMQ
+  rabbitMQHost = process.env.RABBITMQ_HOST || "amqp://localhost";
 }
 
 export default new Config();

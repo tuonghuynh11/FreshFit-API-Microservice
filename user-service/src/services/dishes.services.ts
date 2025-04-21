@@ -1,4 +1,4 @@
-import { ObjectId } from 'mongodb'
+import { Filter, ObjectId } from 'mongodb'
 import databaseService from './database.services'
 import { UserRole } from '~/constants/enums'
 import { DISH_MESSAGES, EXERCISE_MESSAGES, INGREDIENT_MESSAGES } from '~/constants/messages'
@@ -360,6 +360,125 @@ class DishService {
     )
 
     return result
+  }
+
+  async searchByIngredients({
+    ingredients,
+    page,
+    limit,
+    sort_by = 'name',
+    order_by = 'ASC'
+  }: {
+    ingredients: string
+    page?: number
+    limit?: number
+    sort_by: string
+    order_by: string
+  }) {
+    const ingredientNames = ingredients.split('|').map((ingredient) => ingredient.trim())
+    const ingredientList = await databaseService.ingredients
+      .find({
+        $or: ingredientNames.map((ingredient) => ({ name: { $regex: ingredient, $options: 'i' } }))
+      })
+      .toArray()
+
+    const ingredientIds = ingredientList.map((ingredient) => new ObjectId(ingredient._id))
+
+    // Nếu không tìm thấy thành phần, trả về rỗng
+    if (!ingredientIds.length) {
+      return {
+        dishes: [],
+        total: 0
+      }
+    }
+
+    const conditions: Filter<Dishes> = {
+      ingredients: {
+        $elemMatch: {
+          ingredientId: {
+            $in: ingredientIds
+          }
+        }
+      }
+    }
+
+    // Aggregation pipeline để tìm và sắp xếp món ăn theo số lượng thành phần khớp
+    const dishesPipeline = [
+      // Lọc các món ăn có ít nhất một thành phần trong ingredientIds
+      {
+        $match: conditions
+      },
+      // Thêm trường matchedIngredientsCount để đếm số lượng thành phần khớp
+      {
+        $addFields: {
+          matchedIngredientsCount: {
+            $size: {
+              $filter: {
+                input: '$ingredients',
+                as: 'ingredient',
+                cond: { $in: ['$$ingredient.ingredientId', ingredientIds] }
+              }
+            }
+          }
+        }
+      },
+      // Lookup để lấy thông tin từ collection Ingredients
+      {
+        $lookup: {
+          from: 'ingredients', // Tên collection Ingredients
+          localField: 'ingredients.ingredientId', // Trường trong Dishes
+          foreignField: '_id', // Trường trong Ingredients
+          as: 'ingredientDetails' // Tên mảng chứa kết quả lookup
+        }
+      },
+      // Cập nhật mảng ingredients để thêm trường name
+      {
+        $set: {
+          ingredients: {
+            $map: {
+              input: '$ingredients',
+              as: 'ingredient',
+              in: {
+                $mergeObjects: [
+                  '$$ingredient',
+                  {
+                    name: {
+                      $arrayElemAt: [
+                        '$ingredientDetails.name',
+                        {
+                          $indexOfArray: ['$ingredientDetails._id', '$$ingredient.ingredientId']
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      // Loại bỏ mảng ingredientDetails tạm thời
+      {
+        $unset: 'ingredientDetails'
+      },
+      {
+        $sort: {
+          matchedIngredientsCount: -1, // Sắp xếp theo số lượng thành phần khớp giảm dần
+          [sort_by]: order_by === 'ASC' ? 1 : -1 // Sắp xếp thứ tự theo sort_by
+        }
+      },
+      // Phân trang
+      ...(page && limit ? [{ $skip: (page - 1) * limit }, { $limit: limit }] : [])
+    ]
+
+    const [dishes, total] = await Promise.all([
+      databaseService.dishes.aggregate(dishesPipeline).toArray(),
+      await databaseService.dishes.countDocuments(conditions)
+    ])
+    return {
+      dishes,
+      total
+    }
   }
 }
 const dishService = new DishService()

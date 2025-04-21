@@ -1,5 +1,14 @@
 import { JwtPayload } from 'jsonwebtoken'
-import { ActivityLevel, DegreeType, Gender, LevelType, TokenType, UserRole, UserVerifyStatus } from '~/constants/enums'
+import {
+  ActivityLevel,
+  DegreeType,
+  Gender,
+  LevelType,
+  SleepQuality,
+  TokenType,
+  UserRole,
+  UserVerifyStatus
+} from '~/constants/enums'
 import { ParamsDictionary } from 'express-serve-static-core'
 export interface LoginReqBody {
   username?: string
@@ -117,4 +126,17 @@ export interface CreateExpertUserBody {
   mainSkills: string[]
   experiences: CreateExperienceBody[]
   educations: CreateEducationBody[]
+}
+
+export interface CreateDailyHealthSummaryBody {
+  date?: string
+  height: number
+  weight: number
+  bmi: number
+  heartRate: number
+  bloodPressure: { systolic: number; diastolic: number }
+  sleep: { duration: number; quality: SleepQuality }
+  caloriesConsumed: number
+  waterIntake: number
+  caloriesBurned: number
 }

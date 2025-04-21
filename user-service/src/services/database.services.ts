@@ -23,6 +23,7 @@ import Post from '~/models/schemas/Post.schema'
 import PostReaction from '~/models/schemas/PostReaction.schema'
 import PostComment from '~/models/schemas/PostComment.schema'
 import PostBookmark from '~/models/schemas/PostBookmark.schema'
+import { HealthData } from '~/models/schemas/HealthData.schema'
 dotenv.config()
 const uri = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.dlxrr.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`
 
@@ -124,6 +125,9 @@ class DatabaseService {
   }
   get postBookmarks(): Collection<PostBookmark> {
     return this.db.collection(envConfig.dbPostBookmarksCollection as string)
+  }
+  get healthData(): Collection<HealthData> {
+    return this.db.collection(envConfig.dbHealthDataCollection as string)
   }
 }
 const databaseService = new DatabaseService()

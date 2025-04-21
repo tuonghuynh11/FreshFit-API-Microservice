@@ -8,7 +8,8 @@ import { verifyToken } from './jwt'
 import { envConfig } from '~/constants/config'
 import databaseService from '~/services/database.services'
 import { SetType } from '~/constants/enums'
-
+import { toDate } from 'date-fns'
+import { formatInTimeZone, toZonedTime } from 'date-fns-tz'
 interface ExerciseData {
   calories_per_rep: number
   calories_per_minute: number
@@ -316,4 +317,51 @@ export const generateExpertUniqueUsername = async (): Promise<string> => {
   } while (isTaken)
 
   return username
+}
+
+export const calculateAge = (birthDate: Date): number => {
+  const today = new Date()
+  let age = today.getFullYear() - birthDate.getFullYear()
+
+  const hasHadBirthdayThisYear =
+    today.getMonth() > birthDate.getMonth() ||
+    (today.getMonth() === birthDate.getMonth() && today.getDate() >= birthDate.getDate())
+
+  if (!hasHadBirthdayThisYear) {
+    age--
+  }
+
+  return age
+}
+
+export const getStartAndEndISO = (dateStr: string, timeZone: string): { start: string; end: string } => {
+  const parts = dateStr.split('-')
+  let start: Date
+  let end: Date
+
+  if (parts.length === 1) {
+    // YYYY
+    start = toDate(`${dateStr}-01-01T00:00:00`)
+    end = toDate(`${+parts[0] + 1}-01-01T00:00:00`)
+  } else if (parts.length === 2) {
+    // YYYY-MM
+    start = toDate(`${dateStr}-01T00:00:00`)
+    const nextMonth = new Date(+parts[0], +parts[1], 1)
+    end = toDate(nextMonth.toISOString().split('T')[0] + 'T00:00:00')
+  } else if (parts.length === 3) {
+    // YYYY-MM-DD
+    start = toDate(`${dateStr}T00:00:00`)
+    const startZoned = toZonedTime(start, timeZone)
+    const endZoned = new Date(startZoned)
+    endZoned.setDate(endZoned.getDate() + 1)
+    end = endZoned
+  } else {
+    throw new Error('Invalid date string')
+  }
+
+  // Use formatInTimeZone to handle timeZone formatting
+  return {
+    start: formatInTimeZone(start, timeZone, "yyyy-MM-dd'T'HH:mm:ssXXX"),
+    end: formatInTimeZone(end, timeZone, "yyyy-MM-dd'T'HH:mm:ssXXX")
+  }
 }

@@ -269,3 +269,27 @@ export enum DegreeType {
   MASTER = 'MASTER',
   DOCTORATE = 'DOCTORATE'
 }
+
+export enum SleepQuality {
+  Good = 'Good',
+  Average = 'Average',
+  Poor = 'Poor'
+}
+
+export enum HealthTarget {
+  MildWeightLoss = 'Mild Weight Loss',
+  WeightLoss = 'Weight Loss',
+  ExtremeWeightLoss = 'Extreme Weight Loss',
+  MildWeightGain = 'Mild Weight Gain',
+  WeightGain = 'Weight Gain',
+  ExtremeWeightGain = 'Extreme Weight Gain',
+  Maintain = 'Maintain'
+}
+
+export enum BMIStatus {
+  Underweight = 'Underweight',
+  Normal = 'Normal',
+  Overweight = 'Overweight',
+  Obesity = 'Obesity',
+  ExtremelyObesity = 'Extremely Obesity'
+}

@@ -8,6 +8,7 @@ import Logger from "./utils/logger";
 import config from "./configuration";
 import { AppDataSource } from "./database/data-source";
 import { createTransport } from "nodemailer";
+import { initMyRabbitMQ } from "./utils/rabbitmq";
 const { instance: app } = application;
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
@@ -41,6 +42,19 @@ AppDataSource.initialize()
     Logger.error("Error during Data Source initialization:", error);
   });
 app.locals.dataSource = AppDataSource;
+
+initMyRabbitMQ()
+  .then(() => {
+    Logger.info("RabbitMQ connection established");
+    // Consume the queue here
+    // consumeQueue("appointment-service", async (message) => {
+    //   console.log("Received message:", message);
+    // });
+  })
+  .catch((error) => {
+    Logger.error("Error connecting to RabbitMQ:", error);
+    process.exit(1); // Exit the process if RabbitMQ connection fails
+  });
 
 const nodeMailer = createTransport({
   host: config.smtpHost,
