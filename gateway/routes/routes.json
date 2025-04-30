@@ -2045,5 +2045,77 @@
         "target": "http://localhost:4002/api/v1",
         "pathRewrite": {},
         "security": true
+      },
+      {
+        "name": "Send Push Notification",
+        "methods": [
+          "POST"
+        ],
+        "context": [
+          "/users/send-notification"
+        ],
+        "target": "http://localhost:4001/api/v1",
+        "pathRewrite": {},
+        "security": true
+      },
+      {
+        "name": "Get all notifications",
+        "methods": [
+          "GET"
+        ],
+        "context": [
+          "/notifications"
+        ],
+        "target": "http://localhost:4001/api/v1",
+        "pathRewrite": {},
+        "security": true
+      },
+      {
+        "name": "Mark read notifications",
+        "methods": [
+          "POST"
+        ],
+        "context": [
+          "/notifications/mark-read"
+        ],
+        "target": "http://localhost:4001/api/v1",
+        "pathRewrite": {},
+        "security": true
+      },
+      {
+        "name": "Mark all read notifications",
+        "methods": [
+          "POST"
+        ],
+        "context": [
+          "/notifications/mark-all-read"
+        ],
+        "target": "http://localhost:4001/api/v1",
+        "pathRewrite": {},
+        "security": true
+      },
+      {
+        "name": "Count total unread notifications",
+        "methods": [
+          "GET"
+        ],
+        "context": [
+          "/notifications/count-unread"
+        ],
+        "target": "http://localhost:4001/api/v1",
+        "pathRewrite": {},
+        "security": true
+      },
+      {
+        "name": "Create a notification",
+        "methods": [
+          "POST"
+        ],
+        "context": [
+          "/notifications/create"
+        ],
+        "target": "http://localhost:4001/api/v1",
+        "pathRewrite": {},
+        "security": true
       }
   ]
