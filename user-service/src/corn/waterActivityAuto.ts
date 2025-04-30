@@ -28,19 +28,19 @@ export const waterActivityAuto = async () => {
       })
     })
   )
-  await Promise.all(
-    users.map((user: any, index: number) => {
-      return databaseService.users.updateOne(
-        {
-          _id: user._id
-        },
-        {
-          $push: {
-            waters: waterInserted.insertedIds[index]
-          }
-        }
-      )
-    })
-  )
+  // await Promise.all(
+  //   users.map((user: any, index: number) => {
+  //     return databaseService.users.updateOne(
+  //       {
+  //         _id: user._id
+  //       },
+  //       {
+  //         $push: {
+  //           waters: waterInserted.insertedIds[index]
+  //         }
+  //       }
+  //     )
+  //   })
+  // )
   console.log('water inserted')
 }

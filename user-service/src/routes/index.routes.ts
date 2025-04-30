@@ -23,6 +23,7 @@ import transactionsRouter from './transactions.routes'
 import clientRouter from './client.routes'
 import postsRouter from './post.routes'
 import bookmarksRouter from './bookmarks.routes'
+import notificationsRouter from './notifications.routes'
 
 const file = fs.readFileSync(path.resolve('slda-swagger.yaml'), 'utf8')
 const swaggerDocument = YAML.parse(file)
@@ -49,4 +50,5 @@ versionOneRouter.use('/transactions', transactionsRouter)
 versionOneRouter.use('/clients', clientRouter)
 versionOneRouter.use('/posts', postsRouter)
 versionOneRouter.use('/bookmarks', bookmarksRouter)
+versionOneRouter.use('/notifications', notificationsRouter)
 export { versionOneRouter }

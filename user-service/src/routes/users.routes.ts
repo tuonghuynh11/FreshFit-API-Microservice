@@ -23,6 +23,7 @@ import {
   registerController,
   resendVerifyEmailController,
   resetPasswordTokenController,
+  sendNotificationController,
   startGoalController,
   storeFcmTokenController,
   unBanUserController,
@@ -498,6 +499,19 @@ usersRouter.post(
   verifiedUSerValidator,
   wrapRequestHandler(createZegoTokenController)
 )
+
+// Send notification
+// * Path: /send-notification
+// * Method: Post
+// * Body: {
+//    title:string,
+//    body:string,
+//    channelId: string,
+//    data: data as object,
+//    imageUrl:string
+// * }
+// * **/
+usersRouter.post('/send-notification', wrapRequestHandler(sendNotificationController))
 
 // =================================== External API ===================================
 /**
