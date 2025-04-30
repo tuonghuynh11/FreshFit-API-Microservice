@@ -10,7 +10,7 @@ const levels = {
 
 const level = () => {
   const env = process.env.NODE_ENV || 'development'
-  const isDevelopment = env === 'development'
+  const isDevelopment = env.trim().toString() === 'development'
   return isDevelopment ? 'debug' : 'warn'
 }
 

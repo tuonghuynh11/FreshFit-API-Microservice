@@ -32,7 +32,7 @@ import appointmentService from '~/services/appointment.services'
 import databaseService from '~/services/database.services'
 import healthTrackingService from '~/services/healthTracking.services'
 import healthTrackingDetailService from '~/services/healthTrackingDetail.services'
-import notificationService from '~/services/notification.services'
+import pushNotificationService from '~/services/push-notification.services'
 import recommendService from '~/services/recommend.services'
 import userService from '~/services/users.services'
 import waterService from '~/services/water.services'
@@ -368,7 +368,7 @@ export const createDailyHealthSummaryController = async (
   console.log('Alerts', alerts)
   if (alerts.length > 0) {
     for (const alert of alerts) {
-      await notificationService.sendPushNotification(user_id, alert)
+      await pushNotificationService.sendHealthPushNotification(user_id, alert)
     }
   }
   return res.json({
@@ -415,5 +415,22 @@ export const generateHealthPlanController = async (
   return res.json({
     message: HEALTH_MESSAGES.GENERATE_HEALTH_PLAN_SUCCESS,
     result
+  })
+}
+export const sendNotificationController = async (req: Request<ParamsDictionary, any, any>, res: Response) => {
+  const { userId, type, title, body, channelId, data, imageUrl } = req.body
+  await pushNotificationService.sendPushNotificationCustom({
+    userId,
+    type,
+    alert: {
+      title: title as string,
+      body: body as string,
+      channelId: channelId as string,
+      data: data as object,
+      imageUrl: imageUrl as string
+    }
+  })
+  return res.json({
+    message: 'Test send notification success'
   })
 }

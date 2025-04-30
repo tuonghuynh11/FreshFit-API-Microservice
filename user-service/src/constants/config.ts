@@ -42,6 +42,7 @@ export const envConfig = {
   dbPostCommentsCollection: process.env.DB_POST_COMMENTS_COLLECTION as string,
   dbPostBookmarksCollection: process.env.DB_POST_BOOKMARKS_COLLECTION as string,
   dbHealthDataCollection: process.env.DB_HEALTH_DATA_COLLECTION as string,
+  dbNotificationsCollection: process.env.DB_NOTIFICATIONS_COLLECTION as string,
 
   passwordSecret: process.env.PASSWORD_SECRET as string,
   jwtSecretAccessToken: process.env.JWT_SECRET_ACCESS_TOKEN as string,

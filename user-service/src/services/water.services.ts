@@ -38,16 +38,16 @@ class WaterService {
         progress: step
       })
     )
-    await databaseService.users.updateOne(
-      {
-        _id: new ObjectId(user_id)
-      },
-      {
-        $push: {
-          waters: waterInserted.insertedId
-        }
-      }
-    )
+    // await databaseService.users.updateOne(
+    //   {
+    //     _id: new ObjectId(user_id)
+    //   },
+    //   {
+    //     $push: {
+    //       waters: waterInserted.insertedId
+    //     }
+    //   }
+    // )
     return waterInserted
   }
 }

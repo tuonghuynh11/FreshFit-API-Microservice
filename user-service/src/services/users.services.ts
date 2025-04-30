@@ -799,8 +799,6 @@ class UserService {
       .toArray()
     healthTrackings.sort((a, b) => b.date.localeCompare(a.date))
     let water: any = []
-    // const consumed: any = {}
-    // const burned: any = {}
     let consumed: any = []
     let burned: any = []
 
@@ -1136,6 +1134,9 @@ class UserService {
         message: USERS_MESSAGES.USER_NOT_FOUND,
         status: HTTP_STATUS.NOT_FOUND
       })
+    }
+    if (user.fcmToken === token) {
+      return token
     }
     await databaseService.users.updateOne(
       { _id: new ObjectId(user_id) },

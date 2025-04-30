@@ -468,6 +468,15 @@ export const HEALTH_MESSAGES = {
   GENERATE_HEALTH_PLAN_SUCCESS: 'Generate health plan successful'
 }
 
+export const NOTIFICATION_MESSAGES = {
+  GET_NOTIFICATION_SUCCESS: 'Get notification successfully',
+  MARK_READ_NOTIFICATION_SUCCESS: 'Mark read notification successfully',
+  MARK_ALL_READ_NOTIFICATION_SUCCESS: 'Mark all read notification successfully',
+  GET_COUNT_UNREAD_NOTIFICATION_SUCCESS: 'Get count unread notification successfully',
+  INVALID_NOTIFICATION_TYPE: 'Invalid notification type',
+  CREATE_NOTIFICATION_SUCCESS: 'Create notification successfully'
+}
+
 export const COMMON_MESSAGES = {
   DATE_MUST_BE_ISO8601: 'Date must be ISO8601',
   'MSG 1': 'Incorrect username or password',
