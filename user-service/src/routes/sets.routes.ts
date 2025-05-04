@@ -46,11 +46,13 @@ setsRouter.get('/:id', accessTokenValidator, verifiedUSerValidator, wrapRequestH
     description: string
     user_id?: ObjectId
     number_of_exercise: number
-    status?: GeneralStatus
+    status?: SetStatus
     rating: number
     created_at?: Date
     updated_at?: Date
     set_exercises: SetExercises[]
+    time?: string
+    image?: string
  * }
  * **/
 setsRouter.post('/', accessTokenValidator, verifiedUSerValidator, addSetValidator, wrapRequestHandler(addSetController))
@@ -71,7 +73,7 @@ setsRouter.post('/:id/rating', accessTokenValidator, verifiedUSerValidator, wrap
     type: SetType
     description: string
     number_of_exercises: number
-    status: GeneralStatus
+    status: SetStatus
     rating: number
     set_exercises: SetExerciseReqBody[]
  * }

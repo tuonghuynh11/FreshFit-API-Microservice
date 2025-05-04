@@ -6,5 +6,6 @@ export interface HealthTrackingDetailBody {
   type: HealthTrackingType
   exercise?: Exercises
   meal?: Meals
+  setId?: string
   value: number
 }

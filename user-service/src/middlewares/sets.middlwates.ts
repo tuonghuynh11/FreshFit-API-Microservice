@@ -1,6 +1,6 @@
 import { checkSchema } from 'express-validator'
 import { ObjectId } from 'mongodb'
-import { GeneralStatus, RoleTypeQueryFilter, SetType } from '~/constants/enums'
+import { RoleTypeQueryFilter, SetStatus, SetType } from '~/constants/enums'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { FILTER_MESSAGES, SETS_MESSAGES } from '~/constants/messages'
 import { ErrorWithStatus } from '~/models/Errors'
@@ -106,7 +106,7 @@ export const updateSetValidator = validate(
         optional: true,
         isString: true,
         isIn: {
-          options: [GeneralStatus],
+          options: [SetStatus],
           errorMessage: SETS_MESSAGES.INVALID_SET_STATUS
         }
       },

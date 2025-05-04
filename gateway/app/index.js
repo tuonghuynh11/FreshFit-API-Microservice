@@ -1,5 +1,6 @@
 const express = require('express')
 const client = require('prom-client')
+const cors = require('cors');
 
 const error = require('../middlewares/error')
 const requestId = require('../middlewares/requestid')
@@ -15,6 +16,9 @@ module.exports = (callback = () => {}) => {
     const app = express();
     const router = express.Router();
 
+    app.use(cors({
+        origin: '*'
+    }));
     app.use(requestId);
     app.use(express.raw({ type: '*/*' }));
 
