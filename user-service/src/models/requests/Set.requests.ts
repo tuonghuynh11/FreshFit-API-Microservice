@@ -1,4 +1,4 @@
-import { GeneralStatus, SetType } from '~/constants/enums'
+import { SetStatus, SetType } from '~/constants/enums'
 import { SetExerciseReqBody, UpdateSetExerciseReqBody } from './SetExercise.requests'
 
 export interface SetReqBody {
@@ -13,7 +13,7 @@ export interface UpdateSetReqBody {
   type?: SetType
   description?: string
   number_of_exercises?: number
-  status?: GeneralStatus
+  status?: SetStatus
   rating?: number
   set_exercises?: UpdateSetExerciseReqBody[]
 }

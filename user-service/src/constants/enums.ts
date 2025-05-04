@@ -86,6 +86,11 @@ export enum GeneralStatus {
   Done = 'Done',
   Undone = 'Undone'
 }
+export enum SetStatus {
+  Done = 'Done',
+  Undone = 'Undone',
+  In_Progress = 'In_Progress'
+}
 export enum MealType {
   Breakfast = 'Breakfast',
   Lunch = 'Lunch',

@@ -7,6 +7,7 @@ interface IHealthTrackingDetail {
   health_tracking_id?: ObjectId
   exercise?: Exercises
   dish?: Dishes
+  setId?: string
   value: number
   created_at?: Date
   updated_at?: Date
@@ -17,6 +18,7 @@ export default class HealthTrackingDetail {
   health_tracking_id?: ObjectId
   exercise?: Exercises
   dish?: Dishes
+  setId?: ObjectId
   value: number
   created_at?: Date
   updated_at?: Date
@@ -28,6 +30,7 @@ export default class HealthTrackingDetail {
     this.exercise = healthTrackingDetail.exercise
     this.dish = healthTrackingDetail.dish
     this.value = healthTrackingDetail.value
+    this.setId = healthTrackingDetail?.setId ? new ObjectId(healthTrackingDetail.setId) : undefined
     this.created_at = healthTrackingDetail.created_at || date
     this.updated_at = healthTrackingDetail.updated_at || date
   }

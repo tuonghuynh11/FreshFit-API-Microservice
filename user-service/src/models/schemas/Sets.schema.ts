@@ -1,5 +1,5 @@
 import { ObjectId } from 'mongodb'
-import { GeneralStatus, SetType } from '~/constants/enums'
+import { SetStatus, SetType } from '~/constants/enums'
 import SetExercises from './SetExercises.schema'
 
 interface ISet {
@@ -9,11 +9,14 @@ interface ISet {
   description?: string
   user_id?: ObjectId
   number_of_exercises: number
-  status?: GeneralStatus
+  status?: SetStatus
   rating?: number
   created_at?: Date
   updated_at?: Date
   set_exercises: SetExercises[]
+  time?: string // 2 hour, 30 minutes
+  image?: string
+  total_calories?: number
 }
 
 export default class Sets {
@@ -23,12 +26,13 @@ export default class Sets {
   description?: string
   user_id?: ObjectId
   number_of_exercises: number
-  status?: GeneralStatus
+  status?: SetStatus
   rating?: number
   created_at?: Date
   updated_at?: Date
   set_exercises: SetExercises[]
-
+  time?: string
+  image?: string
   constructor(set: ISet) {
     const date = new Date()
     this._id = set._id
@@ -37,10 +41,12 @@ export default class Sets {
     this.description = set.description
     this.user_id = set.user_id
     this.number_of_exercises = set.number_of_exercises
-    this.status = set.status || GeneralStatus.Undone
+    this.status = set.status || SetStatus.Undone
     this.rating = set.rating || 0
     this.created_at = set.created_at || date
     this.updated_at = set.updated_at || date
     this.set_exercises = set.set_exercises || []
+    this.time = set.time || ''
+    this.image = set.image || 'https://res.cloudinary.com/dfo5tfret/image/upload/v1746290093/default-set-image.jpg'
   }
 }
