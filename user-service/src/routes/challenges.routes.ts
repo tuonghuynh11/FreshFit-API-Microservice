@@ -7,9 +7,7 @@ import {
   getChallengeByIdController,
   joinChallengeController,
   searchChallengesController,
-  updateChallengeController,
-  updateChallengeMealController,
-  updateChallengeWorkoutController
+  updateChallengeController
 } from '~/controllers/challenges.controllers'
 import {
   addChallengeValidator,
@@ -67,8 +65,7 @@ challengesRouter.get(
   image: string
   start_date: Date
   end_date: Date
-  meal?: Meals
-  workout_plan?: WorkoutPlans
+  health_plan_id: string
  * }
  * **/
 challengesRouter.post(
@@ -98,6 +95,7 @@ challengesRouter.post(
   start_date: Date
   end_date: Date
   status: ChallengeStatus
+  health_plan_id: string
  * }
  * **/
 challengesRouter.patch(
@@ -119,54 +117,10 @@ challengesRouter.patch(
     'image',
     'start_date',
     'end_date',
-    'status'
+    'status',
+    'health_plan_id'
   ]),
   wrapRequestHandler(updateChallengeController)
-)
-
-/**
- * Description: Update meal challenges
- * Path: /:id/meal
- * Method: Put
- * Body: {
- *  name: string
- *  date: Date
- *  description: string
- *  calories: number
- *  pre_time: number
- *  type: MealType
- *  dishes: Dishes[]
- * }
- * }
- * **/
-challengesRouter.put(
-  '/:id/meal',
-  accessTokenValidator,
-  verifiedUSerValidator,
-  adminRoleValidator,
-  wrapRequestHandler(updateChallengeMealController)
-)
-/**
- * Description: Update workout challenges
- * Path: /:id/workout
- * Method: Put
- * Body: {
- *  name: string
- *  description: string
- *  number_of_set: number
- *  estimated_calories_burned: number
- *  type: WorkoutType
- *  start_date?: Date
- *  end_date?: Date
- *  status: GeneralStatus
- * }
- * **/
-challengesRouter.put(
-  '/:id/workout',
-  accessTokenValidator,
-  verifiedUSerValidator,
-  adminRoleValidator,
-  wrapRequestHandler(updateChallengeWorkoutController)
 )
 
 /**

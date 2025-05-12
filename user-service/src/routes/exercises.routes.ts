@@ -60,6 +60,15 @@ exercisesRouter.get('/:id', accessTokenValidator, verifiedUSerValidator, wrapReq
  *  calories_burn_per_minutes: number
  *  image: string
  *  video: string
+ *  target_muscle?: MuscleGroup // nhóm cơ mà bài tập này tác động đến
+ *  type?: ExerciseType
+ *  equipment?: string // thiết bị cần thiết để thực hiện bài tập này
+ *  mechanics?: MechanicsType
+ *  forceType?: ForceType // loại lực tác động lên cơ bắp trong bài tập này
+ *  experience_level?: LevelType // trình độ người tập cần có để thực hiện bài tập này
+ *  secondary_muscle?: MuscleGroup // nhóm cơ phụ mà bài tập này tác động đến
+ *  instructions?: string // hướng dẫn thực hiện bài tập này
+ *  tips?: string // mẹo thực hiện bài tập này
  * }
  * **/
 exercisesRouter.post(
@@ -82,6 +91,15 @@ exercisesRouter.post(
  *  calories_burn_per_minutes: number
  *  image: string
  *  video: string
+ *  target_muscle?: MuscleGroup // nhóm cơ mà bài tập này tác động đến
+ *  type?: ExerciseType
+ *  equipment?: string // thiết bị cần thiết để thực hiện bài tập này
+ *  mechanics?: MechanicsType
+ *  forceType?: ForceType // loại lực tác động lên cơ bắp trong bài tập này
+ *  experience_level?: LevelType // trình độ người tập cần có để thực hiện bài tập này
+ *  secondary_muscle?: MuscleGroup // nhóm cơ phụ mà bài tập này tác động đến
+ *  instructions?: string // hướng dẫn thực hiện bài tập này
+ *  tips?: string // mẹo thực hiện bài tập này
  * }
  * **/
 exercisesRouter.patch(
@@ -96,7 +114,16 @@ exercisesRouter.patch(
     'category',
     'calories_burn_per_minutes',
     'image',
-    'video'
+    'video',
+    'target_muscle',
+    'type',
+    'equipment',
+    'mechanics',
+    'forceType',
+    'experience_level',
+    'secondary_muscle',
+    'instructions',
+    'tips'
   ]),
   wrapRequestHandler(updateExerciseController)
 )

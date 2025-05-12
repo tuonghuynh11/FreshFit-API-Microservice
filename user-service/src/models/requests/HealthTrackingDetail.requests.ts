@@ -1,11 +1,21 @@
-import { HealthTrackingType } from '~/constants/enums'
-import Exercises from '../schemas/Exercises.schema'
-import Meals from '../schemas/Meals.schema'
+import { GeneralStatus, HealthTrackingType, MealType } from '~/constants/enums'
 
 export interface HealthTrackingDetailBody {
   type: HealthTrackingType
-  exercise?: Exercises
-  meal?: Meals
+  exerciseId?: string
+  dishId?: string
   setId?: string
+  mealId?: string
   value: number
+}
+export interface UpdateHealthTrackingDetailBody {
+  status: GeneralStatus
+}
+
+export interface HealthTrackingDetailForMealBody {
+  mealType: MealType
+  dishIds: string[]
+}
+export interface DeleteDishesInHealthTrackingDetailForMealBody {
+  dishIds: string[]
 }

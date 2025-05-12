@@ -14,6 +14,14 @@ interface DishesType {
   created_at?: Date
   updated_at?: Date
   ingredients: DishesIngredients[]
+  fat?: number
+  saturatedFat?: number
+  cholesterol?: number
+  sodium?: number
+  carbohydrate?: number
+  fiber?: number
+  sugar?: number
+  protein?: number
 }
 
 export default class Dishes {
@@ -29,6 +37,14 @@ export default class Dishes {
   created_at?: Date
   updated_at?: Date
   ingredients: DishesIngredients[]
+  fat?: number
+  saturatedFat?: number
+  cholesterol?: number
+  sodium?: number
+  carbohydrate?: number
+  fiber?: number
+  sugar?: number
+  protein?: number
 
   constructor(dishesType: DishesType) {
     const date = new Date()
@@ -44,6 +60,14 @@ export default class Dishes {
     this.created_at = dishesType.created_at || date
     this.updated_at = dishesType.updated_at || date
     this.ingredients = dishesType.ingredients || []
+    this.fat = dishesType.fat || 0
+    this.saturatedFat = dishesType.saturatedFat || 0
+    this.cholesterol = dishesType.cholesterol || 0
+    this.sodium = dishesType.sodium || 0
+    this.carbohydrate = dishesType.carbohydrate || 0
+    this.fiber = dishesType.fiber || 0
+    this.sugar = dishesType.sugar || 0
+    this.protein = dishesType.protein || 0
   }
 }
 

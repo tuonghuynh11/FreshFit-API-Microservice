@@ -1,7 +1,8 @@
 import { checkSchema } from 'express-validator'
+import { ObjectId } from 'mongodb'
 import { ChallengeQueryTypeFilter, ChallengeTarget, ChallengeType } from '~/constants/enums'
 import HTTP_STATUS from '~/constants/httpStatus'
-import { CHALLENGE_MESSAGES } from '~/constants/messages'
+import { CHALLENGE_MESSAGES, HEALTH_PLAN_MESSAGES } from '~/constants/messages'
 import { ErrorWithStatus } from '~/models/Errors'
 import databaseService from '~/services/database.services'
 import { validate } from '~/utils/validation'
@@ -111,6 +112,23 @@ export const addChallengeValidator = validate(
             strictSeparator: true // KHông có chữ T trong chuỗi date string
           },
           errorMessage: CHALLENGE_MESSAGES.END_DATE_MUST_BE_ISO8601
+        }
+      },
+      health_plan_id: {
+        optional: true,
+        custom: {
+          options: async (value, { req }) => {
+            const isExist = await databaseService.healthPlans.findOne({
+              _id: new ObjectId(value)
+            })
+            if (!isExist) {
+              throw new ErrorWithStatus({
+                message: HEALTH_PLAN_MESSAGES.HEALTH_PLAN_NOT_FOUND,
+                status: HTTP_STATUS.FORBIDDEN
+              })
+            }
+            return true
+          }
         }
       }
     },

@@ -1,6 +1,10 @@
-import { ChallengeQueryTypeFilter, ChallengeStatus, ChallengeTarget, ChallengeType } from '~/constants/enums'
-import { MealReqBody } from './Meal.requests'
-import { WorkoutPlanReqBody } from './WorkoutPlan.requests'
+import {
+  ChallengeQueryStatusFilter,
+  ChallengeQueryTypeFilter,
+  ChallengeStatus,
+  ChallengeTarget,
+  ChallengeType
+} from '~/constants/enums'
 import { Filter } from './Index.request'
 import { PaginationReqQuery } from './Pagination.requests'
 
@@ -18,8 +22,7 @@ export interface ChallengeReqBody {
   status: ChallengeStatus
   start_date: Date
   end_date: Date
-  meal?: MealReqBody
-  workout_plan?: WorkoutPlanReqBody
+  health_plan_id?: string
 }
 export interface UpdateChallengeReqBody {
   name?: string
@@ -35,8 +38,10 @@ export interface UpdateChallengeReqBody {
   status?: ChallengeStatus
   start_date?: Date
   end_date?: Date
+  health_plan_id?: string
 }
 
 export interface ChallengeReqQuery extends PaginationReqQuery, Filter {
   type: ChallengeQueryTypeFilter
+  status: ChallengeQueryStatusFilter
 }

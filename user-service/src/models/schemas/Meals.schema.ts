@@ -1,6 +1,5 @@
 import { ObjectId } from 'mongodb'
 import { GeneralStatus, MealType } from '~/constants/enums'
-import Dishes from './Dishes.schema'
 
 interface IMeals {
   _id?: ObjectId
@@ -14,7 +13,8 @@ interface IMeals {
   status?: GeneralStatus
   created_at?: Date
   updated_at?: Date
-  dishes: Dishes[]
+  dishes: string[]
+  isPartOfHealthTrackingDetail?: boolean
 }
 
 export default class Meals {
@@ -29,7 +29,8 @@ export default class Meals {
   status?: GeneralStatus
   created_at?: Date
   updated_at?: Date
-  dishes: Dishes[]
+  dishes: ObjectId[]
+  isPartOfHealthTrackingDetail?: boolean
 
   constructor(meal: IMeals) {
     const date = new Date()
@@ -44,6 +45,7 @@ export default class Meals {
     this.status = meal.status || GeneralStatus.Undone
     this.created_at = meal.created_at || date
     this.updated_at = meal.updated_at || date
-    this.dishes = meal.dishes || []
+    this.dishes = meal?.dishes?.map((item) => new ObjectId(item)) || []
+    this.isPartOfHealthTrackingDetail = meal.isPartOfHealthTrackingDetail || false
   }
 }

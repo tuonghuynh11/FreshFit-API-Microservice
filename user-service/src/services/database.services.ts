@@ -25,8 +25,12 @@ import PostComment from '~/models/schemas/PostComment.schema'
 import PostBookmark from '~/models/schemas/PostBookmark.schema'
 import { HealthData } from '~/models/schemas/HealthData.schema'
 import Notifications from '~/models/schemas/Notifications.schema'
+import HealthPlans from '~/models/schemas/HealthPlans.schema'
+import HealthPlanDetails from '~/models/schemas/HealthPlanDetails.schema'
+import UserChallengeParticipation from '~/models/schemas/UserChallengeParticipation.schema'
+import UserChallengeParticipationProgress from '~/models/schemas/UserChallengeParticipationProgress.schema'
 dotenv.config()
-const uri = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.dlxrr.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`
+const uri = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster1.goql1th.mongodb.net/?retryWrites=true&w=majority&appName=Cluster1`
 
 class DatabaseService {
   private client: MongoClient
@@ -132,6 +136,18 @@ class DatabaseService {
   }
   get notifications(): Collection<Notifications> {
     return this.db.collection(envConfig.dbNotificationsCollection as string)
+  }
+  get healthPlans(): Collection<HealthPlans> {
+    return this.db.collection(envConfig.dbHealthPlansCollection as string)
+  }
+  get healthPlanDetails(): Collection<HealthPlanDetails> {
+    return this.db.collection(envConfig.dbHealthPlanDetailsCollection as string)
+  }
+  get userChallengeParticipation(): Collection<UserChallengeParticipation> {
+    return this.db.collection(envConfig.dbUserChallengeParticipationCollection as string)
+  }
+  get userChallengeParticipationProgress(): Collection<UserChallengeParticipationProgress> {
+    return this.db.collection(envConfig.dbUserChallengeParticipationProgressCollection as string)
   }
 }
 const databaseService = new DatabaseService()

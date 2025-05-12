@@ -3,10 +3,21 @@ import { ParamsDictionary } from 'express-serve-static-core'
 import { ObjectId } from 'mongodb'
 import { HealthActivityQueryType, UserRole, UserVerifyStatus } from '~/constants/enums'
 import HTTP_STATUS from '~/constants/httpStatus'
-import { HEALTH_MESSAGES, RECOMMEND_MESSAGES, USERS_MESSAGES } from '~/constants/messages'
+import {
+  HEALTH_MESSAGES,
+  HEALTH_TRACKING_DETAIL_MESSAGES,
+  HEALTH_TRACKING_MESSAGES,
+  RECOMMEND_MESSAGES,
+  USERS_MESSAGES
+} from '~/constants/messages'
 import { GenerateHealthPlanBody } from '~/models/requests/HealthPlan.requests'
-import { HealthTrackingBody } from '~/models/requests/HealthTracking.requests'
-import { HealthTrackingDetailBody } from '~/models/requests/HealthTrackingDetail.requests'
+import { HealthTrackingBody, UpdateHealthTrackingBody } from '~/models/requests/HealthTracking.requests'
+import {
+  DeleteDishesInHealthTrackingDetailForMealBody,
+  HealthTrackingDetailBody,
+  HealthTrackingDetailForMealBody,
+  UpdateHealthTrackingDetailBody
+} from '~/models/requests/HealthTrackingDetail.requests'
 import {
   BanUserReqParams,
   ChangePasswordReqBody,
@@ -293,7 +304,31 @@ export const addHealthTrackingController = async (
 
   await healthTrackingService.add({ user_id, healthTracking: req.body })
   return res.json({
-    message: USERS_MESSAGES.UPDATE_HEALTH_ACTIVITY_SUCCESS
+    message: USERS_MESSAGES.ADD_HEALTH_ACTIVITY_SUCCESS
+  })
+}
+export const getHealthTrackingMoreDetailController = async (
+  req: Request<ParamsDictionary, any, any>,
+  res: Response
+) => {
+  const { user_id } = req.decoded_authorization as TokenPayload
+  const { id } = req.params
+  const result = await healthTrackingService.getById({ user_id, id })
+  return res.json({
+    message: HEALTH_TRACKING_MESSAGES.GET_HEALTH_TRACKING_SUCCESS,
+    result
+  })
+}
+export const updateHealthTrackingController = async (
+  req: Request<ParamsDictionary, any, UpdateHealthTrackingBody>,
+  res: Response
+) => {
+  const { user_id } = req.decoded_authorization as TokenPayload
+  const { id } = req.params
+  const result = await healthTrackingService.update({ user_id, id, updateHealthTracking: req.body })
+  return res.json({
+    message: USERS_MESSAGES.UPDATE_HEALTH_ACTIVITY_SUCCESS,
+    result
   })
 }
 export const addHealthTrackingDetailController = async (
@@ -304,7 +339,55 @@ export const addHealthTrackingDetailController = async (
 
   await healthTrackingDetailService.add({ user_id, healthTrackingDetail: req.body })
   return res.json({
-    message: USERS_MESSAGES.UPDATE_HEALTH_ACTIVITY_DETAIL_SUCCESS
+    message: HEALTH_TRACKING_DETAIL_MESSAGES.ADD_HEALTH_TRACKING_DETAIL_SUCCESS
+  })
+}
+export const addHealthTrackingDetailForMealController = async (
+  req: Request<ParamsDictionary, any, HealthTrackingDetailForMealBody>,
+  res: Response
+) => {
+  const { user_id } = req.decoded_authorization as TokenPayload
+
+  await healthTrackingDetailService.addHealthTrackingDetailForMeal({ user_id, healthTrackingDetail: req.body })
+  return res.json({
+    message: HEALTH_TRACKING_DETAIL_MESSAGES.ADD_HEALTH_TRACKING_DETAIL_FOR_MEAL_SUCCESS
+  })
+}
+export const deleteDishesInHealthTrackingDetailForMealController = async (
+  req: Request<ParamsDictionary, any, DeleteDishesInHealthTrackingDetailForMealBody>,
+  res: Response
+) => {
+  const { user_id } = req.decoded_authorization as TokenPayload
+
+  const { id, healthTrackingId } = req.params
+  await healthTrackingDetailService.deleteDishesInHealthTrackingDetailForMeal({
+    user_id,
+    healthTrackingId,
+    id,
+    dishIds: req.body.dishIds
+  })
+  return res.json({
+    message: HEALTH_TRACKING_DETAIL_MESSAGES.DELETE_DISHES_IN_HEALTH_TRACKING_DETAIL_FOR_MEAL_SUCCESS
+  })
+}
+export const updateHealthTrackingDetailController = async (
+  req: Request<ParamsDictionary, any, UpdateHealthTrackingDetailBody>,
+  res: Response
+) => {
+  const { user_id } = req.decoded_authorization as TokenPayload
+  const { id, healthTrackingId } = req.params
+  await healthTrackingDetailService.update({ user_id, id, healthTrackingId, updateHealthTrackingDetail: req.body })
+  return res.json({
+    message: HEALTH_TRACKING_DETAIL_MESSAGES.UPDATE_HEALTH_TRACKING_DETAIL_SUCCESS
+  })
+}
+export const deleteHealthTrackingDetailController = async (req: Request<ParamsDictionary, any, any>, res: Response) => {
+  const { user_id } = req.decoded_authorization as TokenPayload
+  const { id, healthTrackingId } = req.params
+
+  await healthTrackingDetailService.delete({ user_id, id, healthTrackingId })
+  return res.json({
+    message: HEALTH_TRACKING_DETAIL_MESSAGES.DELETE_HEALTH_TRACKING_DETAIL_SUCCESS
   })
 }
 export const createCalorieAndTimeToGoalRecommendController = async (

@@ -24,7 +24,7 @@ export default class WorkoutPlans {
   name: string
   description: string
   number_of_set: number
-  estimated_calories_burned: number
+  estimated_calories_burned?: number
   status?: GeneralStatus
   type: WorkoutType
   start_date?: Date

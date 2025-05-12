@@ -47,10 +47,12 @@ setsExerciseRouter.get(
  * Body: {
     exercise_id: string
     duration: number
-    reps: number
+    reps?: number
+    timePerRound?:number
     round: number
     rest_per_round: number
     estimated_calories_burned: number
+    orderNumber: number
  * }
  * **/
 setsExerciseRouter.post(
@@ -69,9 +71,12 @@ setsExerciseRouter.post(
     exercise_id: string
     duration: number
     reps: number
+    timePerRound?:number
     round: number
     rest_per_round: number
     estimated_calories_burned: number
+    status: GeneralStatus
+    orderNumber: number
  * }
  * **/
 setsExerciseRouter.patch(
@@ -83,10 +88,12 @@ setsExerciseRouter.patch(
     'exercise_id',
     'duration',
     'reps',
+    'timePerRound',
     'round',
     'rest_per_round',
     'estimated_calories_burned',
-    'status'
+    'status',
+    'orderNumber'
   ]),
   wrapRequestHandler(updateSetExerciseController)
 )

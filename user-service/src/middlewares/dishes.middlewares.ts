@@ -153,7 +153,7 @@ export const updateDishIngredientValidator = validate(
       },
       quantity: {
         optional: true,
-        isNumeric: true
+        isString: true
       },
       unit: {
         optional: true,
@@ -187,7 +187,7 @@ export const addDishIngredientValidator = validate(
       },
       quantity: {
         notEmpty: true,
-        isNumeric: true
+        isString: true
       },
       unit: {
         notEmpty: true,

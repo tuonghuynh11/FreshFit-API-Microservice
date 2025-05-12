@@ -5,6 +5,8 @@ import Meals from '~/models/schemas/Meals.schema'
 import { MealQueryType, MealType, RoleTypeQueryFilter, UserRole } from '~/constants/enums'
 import { MEALS_MESSAGES } from '~/constants/messages'
 import { omit } from 'lodash'
+import { ErrorWithStatus } from '~/models/Errors'
+import HTTP_STATUS from '~/constants/httpStatus'
 
 class MealService {
   async getAll({
@@ -28,7 +30,9 @@ class MealService {
     sort_by: string
     order_by: string
   }) {
-    const conditions: any = {}
+    const conditions: any = {
+      isPartOfHealthTrackingDetail: false
+    }
     if (search) {
       conditions.name = {
         $regex: search,
@@ -67,9 +71,50 @@ class MealService {
     const meal = await databaseService.meals.findOne({
       _id: new ObjectId(meal_id)
     })
+
     if (!meal) {
       throw new Error(MEALS_MESSAGES.MEAL_NOT_FOUND)
     }
+
+    const result = await databaseService.meals
+      .aggregate([
+        {
+          $match: {
+            _id: new ObjectId(meal_id)
+          }
+        },
+        {
+          $lookup: {
+            from: 'dishes',
+            localField: 'dishes',
+            foreignField: '_id',
+            as: 'dishes'
+          }
+        },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'user_id',
+            foreignField: '_id',
+            as: 'user'
+          }
+        },
+        {
+          $project: {
+            _id: 1,
+            name: 1,
+            date: 1,
+            description: 1,
+            calories: 1,
+            pre_time: 1,
+            meal_type: 1,
+            user_id: 1,
+            dishes: 1,
+            user: { $arrayElemAt: ['$user', 0] }
+          }
+        }
+      ])
+      .toArray()
 
     // if (
     //   (!meal.user_id && role !== UserRole.Admin) ||
@@ -78,7 +123,7 @@ class MealService {
     // ) {
     //   throw new Error(MEALS_MESSAGES.NO_GET_PERMISSION)
     // }
-    return meal
+    return result[0]
   }
   async getMealByDate({ date, user_id }: { date: string; user_id: string }) {
     const inputDate = new Date(date)
@@ -124,18 +169,18 @@ class MealService {
       ...meal
     })
     const mealInserted = await databaseService.meals.insertOne(newMeal)
-    if (user_id) {
-      await databaseService.users.updateOne(
-        {
-          _id: new ObjectId(user_id)
-        },
-        {
-          $push: {
-            meals: mealInserted.insertedId
-          }
-        }
-      )
-    }
+    // if (user_id) {
+    //   await databaseService.users.updateOne(
+    //     {
+    //       _id: new ObjectId(user_id)
+    //     },
+    //     {
+    //       $push: {
+    //         meals: mealInserted.insertedId
+    //       }
+    //     }
+    //   )
+    // }
     return {
       ...newMeal,
       _id: mealInserted.insertedId
@@ -163,22 +208,23 @@ class MealService {
       return new Meals({
         ...omit(meal, ['_id', 'user_id']),
         user_id: new ObjectId(user_id),
-        date: date
+        date: date,
+        dishes: meal.dishes.map((item: ObjectId) => item.toString())
       })
     })
     const { insertedIds, insertedCount } = await databaseService.meals.insertMany(newMeals)
     const newMealIds: ObjectId[] = Object.values(insertedIds).map((id) => new ObjectId(id))
 
-    await databaseService.users.updateOne(
-      {
-        _id: new ObjectId(user_id)
-      },
-      {
-        $push: {
-          meals: { $each: newMealIds }
-        }
-      }
-    )
+    // await databaseService.users.updateOne(
+    //   {
+    //     _id: new ObjectId(user_id)
+    //   },
+    //   {
+    //     $push: {
+    //       meals: { $each: newMealIds }
+    //     }
+    //   }
+    // )
     return newMeals
   }
 
@@ -206,7 +252,7 @@ class MealService {
       throw new Error(MEALS_MESSAGES.NO_UPDATE_PERMISSION)
     }
 
-    const temp: any = { ...updateMeal }
+    const temp: any = { ...updateMeal, dishes: updateMeal?.dishes?.map((item) => new ObjectId(item)) }
     if (updateMeal.date) {
       temp.date = new Date(updateMeal.date)
     }
@@ -243,44 +289,36 @@ class MealService {
       throw new Error(MEALS_MESSAGES.NO_DELETE_PERMISSION)
     }
 
-    const user_conditions: any = {
-      meals: {
-        $in: [new ObjectId(meal_id)]
-      },
-      _id: {
-        $ne: new ObjectId(user_id)
-      }
+    // Check điều kiện trước khi xóa
+    // Check if meal is part of any health tracking details
+    if (meal.isPartOfHealthTrackingDetail) {
+      throw new ErrorWithStatus({
+        message: MEALS_MESSAGES.MEAL_IS_PART_OF_HEALTH_TRACKING,
+        status: HTTP_STATUS.BAD_REQUEST
+      })
     }
 
-    const [challenges, users] = await Promise.all([
-      databaseService.challenges
-        .find({
-          meal: {
-            _id: new ObjectId(meal_id)
-          }
-        })
-        .toArray(),
-      databaseService.users.find(user_conditions).toArray()
-    ])
-
-    if (challenges.length > 0 || users.length > 0) {
-      throw new Error(MEALS_MESSAGES.MEAL_ALREADY_USED)
-    }
-
-    const [result_1, result_2] = await Promise.all([
-      await databaseService.meals.deleteOne({
-        _id: new ObjectId(meal_id)
-      }),
-      await databaseService.users.updateOne(
-        {
-          _id: new ObjectId(user_id)
-        },
-        {
-          $pull: {
-            meals: new ObjectId(meal_id)
+    //kiểm tra xem meal này có thuộc  challenges nào không
+    const health_plan_details = await databaseService.healthPlanDetails
+      .find({
+        nutrition_details: {
+          $elemMatch: {
+            meal: new ObjectId(meal_id)
           }
         }
-      )
+      })
+      .toArray()
+    if (health_plan_details.length > 0) {
+      throw new ErrorWithStatus({
+        message: MEALS_MESSAGES.MEAL_IS_PART_OF_CHALLENGE,
+        status: HTTP_STATUS.BAD_REQUEST
+      })
+    }
+
+    const [result_1] = await Promise.all([
+      await databaseService.meals.deleteOne({
+        _id: new ObjectId(meal_id)
+      })
     ])
 
     return result_1
