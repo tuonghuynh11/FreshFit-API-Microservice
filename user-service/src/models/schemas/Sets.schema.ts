@@ -17,6 +17,8 @@ interface ISet {
   time?: string // 2 hour, 30 minutes
   image?: string
   total_calories?: number
+  is_youtube_workout?: boolean // true nếu là youtube workout, false nếu là set bài tập bình thường
+  youtube_id?: string // id của video youtube, dùng để lấy thông tin video từ youtube api
 }
 
 export default class Sets {
@@ -33,6 +35,10 @@ export default class Sets {
   set_exercises: SetExercises[]
   time?: string
   image?: string
+  total_calories?: number
+  is_youtube_workout?: boolean // true nếu là youtube workout, false nếu là set bài tập bình thường
+  youtube_id?: string // id của video youtube, dùng để lấy thông tin video từ youtube api
+
   constructor(set: ISet) {
     const date = new Date()
     this._id = set._id
@@ -48,5 +54,8 @@ export default class Sets {
     this.set_exercises = set.set_exercises || []
     this.time = set.time || ''
     this.image = set.image || 'https://res.cloudinary.com/dfo5tfret/image/upload/v1746290093/default-set-image.jpg'
+    this.total_calories = set.total_calories || 0
+    this.is_youtube_workout = false // mặc định là false, nếu là youtube workout thì sẽ được cập nhật sau
+    this.youtube_id = set.youtube_id || ''
   }
 }

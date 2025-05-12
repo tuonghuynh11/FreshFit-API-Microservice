@@ -43,6 +43,11 @@ export const envConfig = {
   dbPostBookmarksCollection: process.env.DB_POST_BOOKMARKS_COLLECTION as string,
   dbHealthDataCollection: process.env.DB_HEALTH_DATA_COLLECTION as string,
   dbNotificationsCollection: process.env.DB_NOTIFICATIONS_COLLECTION as string,
+  dbHealthPlansCollection: process.env.DB_HEALTH_PLANS_COLLECTION as string,
+  dbHealthPlanDetailsCollection: process.env.DB_HEALTH_PLAN_DETAILS_COLLECTION as string,
+  dbUserChallengeParticipationCollection: process.env.DB_USER_CHALLENGE_PARTICIPATION_COLLECTION as string,
+  dbUserChallengeParticipationProgressCollection: process.env
+    .DB_USER_CHALLENGE_PARTICIPATION_PROGRESS_COLLECTION as string,
 
   passwordSecret: process.env.PASSWORD_SECRET as string,
   jwtSecretAccessToken: process.env.JWT_SECRET_ACCESS_TOKEN as string,

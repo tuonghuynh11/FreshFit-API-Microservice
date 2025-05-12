@@ -3,7 +3,7 @@ import { ObjectId } from 'mongodb'
 interface DishesIngredientsType {
   _id?: ObjectId
   ingredientId: string
-  quantity: number
+  quantity: string
   unit: string
   created_at?: Date
   updated_at?: Date
@@ -12,7 +12,7 @@ interface DishesIngredientsType {
 export default class DishesIngredients {
   _id?: ObjectId
   ingredientId: ObjectId
-  quantity: number
+  quantity: string
   unit: string
   created_at?: Date
   updated_at?: Date

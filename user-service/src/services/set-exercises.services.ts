@@ -128,7 +128,8 @@ class SetExerciseService {
           set_exercises: setExercise
         },
         $inc: {
-          number_of_exercises: 1
+          number_of_exercises: 1,
+          total_calories: setExercise.estimated_calories_burned || 0
         }
       }
     )
@@ -172,6 +173,13 @@ class SetExerciseService {
         message: SET_EXERCISE_MESSAGES.SET_EXERCISE_NOT_FOUND
       })
     }
+    // Update the total calories burned in the set
+    const current_total_calories = set.total_calories || 0
+    const new_total_calories =
+      current_total_calories -
+      (set_exercise_existed.estimated_calories_burned || 0) +
+      (updateSetExercise.estimated_calories_burned || 0)
+    set.total_calories = new_total_calories
 
     const updateItem: any = {
       ...set_exercise_existed,
@@ -233,7 +241,8 @@ class SetExerciseService {
           }
         },
         $inc: {
-          number_of_exercises: -1
+          number_of_exercises: -1,
+          total_calories: -(set_exercise_existed.estimated_calories_burned || 0)
         }
       }
     )

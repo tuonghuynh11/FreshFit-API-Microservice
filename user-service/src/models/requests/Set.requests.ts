@@ -16,4 +16,6 @@ export interface UpdateSetReqBody {
   status?: SetStatus
   rating?: number
   set_exercises?: UpdateSetExerciseReqBody[]
+  is_youtube_workout?: boolean // true nếu là youtube workout, false nếu là set bài tập bình thường
+  youtube_id?: string
 }

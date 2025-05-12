@@ -5,16 +5,15 @@ import { CHALLENGE_MESSAGES, EXERCISE_MESSAGES } from '~/constants/messages'
 import exerciseService from '~/services/exercises.services'
 import { ChallengeReqBody, ChallengeReqQuery, UpdateChallengeReqBody } from '~/models/requests/Challenge.requests'
 import challengesService from '~/services/challenge.services'
-import { MealReqBody } from '~/models/requests/Meal.requests'
-import { UpdateWorkoutPlanReqBody } from '~/models/requests/WorkoutPlan.requests'
 
 export const searchChallengesController = async (
   req: Request<ParamsDictionary, any, any, ChallengeReqQuery>,
   res: Response
 ) => {
-  const { search, page, limit, type, sort_by, order_by } = req.query
+  const { search, page, limit, status, type, sort_by, order_by } = req.query
   const { challenges, total } = await challengesService.search({
     search: search?.toString(),
+    status,
     type,
     page,
     limit,
@@ -56,32 +55,7 @@ export const updateChallengeController = async (
     challenge: result
   })
 }
-export const updateChallengeMealController = async (
-  req: Request<ParamsDictionary, any, MealReqBody>,
-  res: Response
-) => {
-  const { id } = req.params
 
-  const result = await challengesService.updateMeal({ id, updateMeal: req.body })
-
-  return res.json({
-    message: CHALLENGE_MESSAGES.UPDATE_MEAL_CHALLENGE_SUCCESS,
-    meal: result
-  })
-}
-export const updateChallengeWorkoutController = async (
-  req: Request<ParamsDictionary, any, UpdateWorkoutPlanReqBody>,
-  res: Response
-) => {
-  const { id } = req.params
-
-  const result = await challengesService.updateWorkout({ id, updateWorkoutPlan: req.body })
-
-  return res.json({
-    message: CHALLENGE_MESSAGES.UPDATE_WORKOUT_CHALLENGE_SUCCESS,
-    workout: result
-  })
-}
 export const getChallengeByIdController = async (req: Request<ParamsDictionary, any, any>, res: Response) => {
   const { id } = req.params
   const result = await challengesService.getById({ id })
@@ -106,8 +80,7 @@ export const joinChallengeController = async (req: Request<ParamsDictionary, any
   const result = await challengesService.join({ user_id, id })
 
   return res.json({
-    message: CHALLENGE_MESSAGES.JOIN_CHALLENGE_SUCCESS,
-    user: result
+    message: CHALLENGE_MESSAGES.JOIN_CHALLENGE_SUCCESS
   })
 }
 export const activateChallengeController = async (req: Request<ParamsDictionary, any, any>, res: Response) => {

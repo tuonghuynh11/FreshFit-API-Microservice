@@ -1,5 +1,5 @@
 import { ObjectId } from 'mongodb'
-import { HealthTrackingType } from '~/constants/enums'
+import { GeneralStatus, HealthTrackingType } from '~/constants/enums'
 import HealthTrackingDetail from './HealthTrackingDetails.schema'
 
 interface IHealthTracking {
@@ -12,6 +12,7 @@ interface IHealthTracking {
   created_at?: Date
   updated_at?: Date
   healthTrackingDetails?: HealthTrackingDetail[]
+  status?: GeneralStatus
 }
 
 export default class HealthTracking {
@@ -24,6 +25,7 @@ export default class HealthTracking {
   created_at?: Date
   updated_at?: Date
   healthTrackingDetails: HealthTrackingDetail[]
+  status: GeneralStatus
 
   constructor(healthTracking: IHealthTracking) {
     const date = new Date()
@@ -36,5 +38,6 @@ export default class HealthTracking {
     this.created_at = healthTracking.created_at || date
     this.updated_at = healthTracking.updated_at || date
     this.healthTrackingDetails = healthTracking.healthTrackingDetails || []
+    this.status = healthTracking.status || GeneralStatus.Undone
   }
 }

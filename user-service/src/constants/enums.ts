@@ -171,6 +171,12 @@ export enum ChallengeQueryTypeFilter {
   Eating = 'Eating',
   Combo = 'Combo'
 }
+export enum ChallengeQueryStatusFilter {
+  All = 'All',
+  Active = 'Active',
+  Inactive = 'Inactive',
+  Expired = 'Expired'
+}
 export enum GoalDetailStatus {
   UnStart = 'UnStart',
   InProgress = 'InProgress',
@@ -297,4 +303,57 @@ export enum BMIStatus {
   Overweight = 'Overweight',
   Obesity = 'Obesity',
   ExtremelyObesity = 'Extremely Obesity'
+}
+
+export enum ExerciseType {
+  Activation = 'Activation',
+  Conditioning = 'Conditioning',
+  Olympic_Lifting = 'Olympic Lifting',
+  Plyometrics = 'Plyometrics',
+  Powerlifting = 'Powerlifting',
+  SMR = 'SMR',
+  Strength = 'Strength',
+  Stretching = 'Stretching',
+  Strongman = 'Strongman',
+  Warmup = 'Warmup'
+}
+export enum MechanicsType {
+  Compound = 'Compound',
+  Isolation = 'Isolation'
+}
+export enum ForceType {
+  Compression = 'Compression',
+  Dynamic_Stretching = 'Dynamic Stretching',
+  Hinge_Bilateral = 'Hinge Bilateral',
+  Hinge_Unilateral = 'Hinge Unilateral',
+  Isometric = 'Isometric',
+  Press_Bilateral = 'Press Bilateral',
+  Pull = 'Pull',
+  Pull_Bilateral = 'Pull Bilateral',
+  Pull_Unilateral = 'Pull Unilateral',
+  Push = 'Push',
+  Push_Bilateral = 'Push Bilateral',
+  Push_Unilateral = 'Push Unilateral',
+  Static = 'Static',
+  Static_Stretching = 'Static Stretching'
+}
+
+export enum ChallengeProgressStatus {
+  Undone = 'Undone',
+  Pending = 'Pending',
+  Done = 'Done',
+  Skipped = 'Skipped'
+}
+export enum UserChallengeParticipationStatus {
+  Pending = 'Pending',
+  Ongoing = 'Ongoing',
+  Completed = 'Completed',
+  Canceled = 'Canceled',
+  Expired = 'Expired'
+}
+export enum UserChallengeParticipationQueryTypeFilter {
+  All = 'All',
+  Ongoing = 'Ongoing',
+  Completed = 'Completed',
+  Canceled = 'Canceled'
 }

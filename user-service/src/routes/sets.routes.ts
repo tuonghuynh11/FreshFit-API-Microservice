@@ -53,6 +53,9 @@ setsRouter.get('/:id', accessTokenValidator, verifiedUSerValidator, wrapRequestH
     set_exercises: SetExercises[]
     time?: string
     image?: string
+    total_calories?: number
+    is_youtube_workout?: boolean // true nếu là youtube workout, false nếu là set bài tập bình thường
+    youtube_id?: string
  * }
  * **/
 setsRouter.post('/', accessTokenValidator, verifiedUSerValidator, addSetValidator, wrapRequestHandler(addSetController))
@@ -75,7 +78,9 @@ setsRouter.post('/:id/rating', accessTokenValidator, verifiedUSerValidator, wrap
     number_of_exercises: number
     status: SetStatus
     rating: number
-    set_exercises: SetExerciseReqBody[]
+    set_exercises: SetExerciseReqBody[],
+    is_youtube_workout?: boolean // true nếu là youtube workout, false nếu là set bài tập bình thường
+    youtube_id?: string
  * }
  * **/
 setsRouter.patch(
@@ -90,7 +95,9 @@ setsRouter.patch(
     'number_of_exercises',
     'status',
     'rating',
-    'set_exercises'
+    'set_exercises',
+    'is_youtube_workout',
+    'youtube_id'
   ]),
   wrapRequestHandler(updateSetController)
 )

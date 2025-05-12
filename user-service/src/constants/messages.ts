@@ -101,7 +101,9 @@ export const USERS_MESSAGES = {
   CREATE_EXPERT_USER_SUCCESS: 'Create expert user successful',
   NO_PERMISSION: 'No permission',
   STORE_FCM_TOKEN_SUCCESS: 'Store FCM token successful',
-  CREATE_ZEGO_TOKEN_SUCCESS: 'Create Zego token successful'
+  CREATE_ZEGO_TOKEN_SUCCESS: 'Create Zego token successful',
+  ADD_HEALTH_ACTIVITY_SUCCESS: 'Add health activity successful',
+  ADD_HEALTH_ACTIVITY_DETAIL_SUCCESS: 'Add health activity detail successful'
 } as const
 
 export const PAGINATION_MESSAGES = {
@@ -120,7 +122,10 @@ export const MEALS_MESSAGES = {
   NO_GET_PERMISSION: 'You do not have permission to get this meal information',
   INVALID_MEAL_TYPE: 'Invalid meal type',
   INVALID_MEAL_TYPE_FILTER: 'Invalid meal type filter',
-  CLONE_MEAL_SUCCESS: 'Clone meal successful'
+  CLONE_MEAL_SUCCESS: 'Clone meal successful',
+  SOME_MEALS_NOT_FOUND: 'Some meals are not found',
+  MEAL_IS_PART_OF_HEALTH_TRACKING: 'This meal is part of health tracking, so you cannot delete it',
+  MEAL_IS_PART_OF_CHALLENGE: 'This meal is part of challenge, so you cannot delete it'
 }
 
 export const DATE_MESSAGES = {
@@ -142,7 +147,11 @@ export const EXERCISE_MESSAGES = {
   GET_ALL_EXERCISE_SUCCESS: 'Get all exercise successful',
   EXERCISE_IS_USED: 'Exercise is used',
   EXERCISE_NOT_EXISTS: 'Exercise not exists',
-  RATING_EXERCISE_SUCCESS: 'Rating exercise successful'
+  RATING_EXERCISE_SUCCESS: 'Rating exercise successful',
+  INVALID_EXERCISE_CATEGORY: 'Invalid exercise category',
+  INVALID_MECHANICS_TYPE: 'Invalid mechanics type',
+  INVALID_FORCE_TYPE: " 'Invalid force type",
+  INVALID_EXPERIENCE_LEVEL: 'Invalid experience level'
 }
 
 export const SETS_MESSAGES = {
@@ -164,7 +173,8 @@ export const SETS_MESSAGES = {
   SET_NAME_EXISTS: 'Set name already exists',
   CLONE_SETS_SUCCESS: 'Clone sets successful',
   RATING_SUCCESS: 'Rating set successfully',
-  NO_RATING_PERMISSION: 'No permissions for rating this set'
+  NO_RATING_PERMISSION: 'No permissions for rating this set',
+  SOME_SET_NOT_FOUND: 'Some sets are not found'
 }
 
 export const FILTER_MESSAGES = {
@@ -254,7 +264,10 @@ export const CHALLENGE_MESSAGES = {
   JOIN_CHALLENGE_SUCCESS: 'Join challenge successful',
   CHALLENGE_IS_JOINED: 'Challenge is joined',
   ACTIVATE_CHALLENGE_SUCCESS: 'Activate challenge successful',
-  DEACTIVATE_CHALLENGE_SUCCESS: 'Deactivate challenge successful'
+  DEACTIVATE_CHALLENGE_SUCCESS: 'Deactivate challenge successful',
+  CHALLENGE_MUST_HAVE_HEALTH_PLAN: 'Challenge must have health plan',
+  CHALLENGE_EXPIRED: 'Challenge expired',
+  CHALLENGE_NOT_ACTIVE: 'Challenge not active'
 }
 export const DISH_MESSAGES = {
   ADD_DISH_SUCCESS: 'Add dish successful',
@@ -324,7 +337,7 @@ export const HEALTH_TRACKING_MESSAGES = {
   HEALTH_TRACKING_ALREADY_USED:
     'This health tracking is being used by other users or challenges so you cannot delete it',
   DELETE_HEALTH_TRACKING_SUCCESS: 'Delete health tracking successful',
-  GET_HEALTH_TRACKING_SUCCESSW: 'Get health tracking successful',
+  GET_HEALTH_TRACKING_SUCCESS: 'Get health tracking successful',
   NO_GET_PERMISSION: 'You do not have permission to get this health tracking information',
   INVALID_HEALTH_TRACKING_TYPE: 'Invalid health tracking type',
   HEALTH_TRACKING_EXISTS: 'Health tracking already exists',
@@ -334,6 +347,29 @@ export const HEALTH_TRACKING_MESSAGES = {
   ADD_HEALTH_TRACKING_DETAIL_SUCCESS: 'Add health tracking detail successful',
   DELETE_HEALTH_TRACKING_DETAIL_SUCCESS: 'Delete health tracking detail successful'
 }
+
+export const HEALTH_TRACKING_DETAIL_MESSAGES = {
+  ADD_HEALTH_TRACKING_DETAIL_SUCCESS: 'Add health tracking detail successful',
+  UPDATE_HEALTH_TRACKING_DETAIL_SUCCESS: 'Update health tracking detail successful',
+  HEALTH_TRACKING_DETAIL_NOT_FOUND: 'Health tracking detail not found',
+  NO_UPDATE_PERMISSION: 'You do not have permission to update this health tracking detail',
+  NO_DELETE_PERMISSION: 'You do not have permission to delete this health tracking detail',
+  HEALTH_TRACKING_DETAIL_ALREADY_USED:
+    'This health tracking detail is being used by other users or challenges so you cannot delete it',
+  DELETE_HEALTH_TRACKING_DETAIL_SUCCESS: 'Delete health tracking detail successful',
+  GET_HEALTH_TRACKING_DETAIL_SUCCESS: 'Get health tracking detail successful',
+  NO_GET_PERMISSION: 'You do not have permission to get this health tracking detail information',
+  INVALID_HEALTH_TRACKING_DETAIL_TYPE: 'Invalid health tracking detail type',
+  HEALTH_TRACKING_DETAIL_EXISTS: 'Health tracking detail already exists',
+  GET_ALL_HEALTH_TRACKING_DETAIL_SUCCESS: 'Get all health tracking detail successful',
+  HEALTH_TRACKING_DETAIL_IS_USED: 'Health tracking detail is used',
+  CANNOT_DELETE_CONSUMED_TRACKING: 'Cannot delete consumed tracking',
+  ADD_HEALTH_TRACKING_DETAIL_FOR_MEAL_SUCCESS: 'Add health tracking detail for meal successful',
+  DELETE_DISHES_IN_HEALTH_TRACKING_DETAIL_FOR_MEAL_SUCCESS:
+    'Delete dishes in health tracking detail for meal successful',
+  DISHES_NOT_IN_MEAL: 'Dishes not in meal'
+}
+
 export const RECOMMEND_MESSAGES = {
   CREATE_CALORIE_AND_TIME_TO_GOAL_RECOMMEND_FOR_USER_SUCCESS:
     'Create calorie and time to goal recommend for user successful',
@@ -477,6 +513,81 @@ export const NOTIFICATION_MESSAGES = {
   CREATE_NOTIFICATION_SUCCESS: 'Create notification successfully'
 }
 
+export const HEALTH_PLAN_MESSAGES = {
+  ADD_HEALTH_PLAN_SUCCESS: 'Add health plan successful',
+  UPDATE_HEALTH_PLAN_SUCCESS: 'Update health plan successful',
+  HEALTH_PLAN_NOT_FOUND: 'Health plan not found',
+  NO_UPDATE_PERMISSION: 'You do not have permission to update this health plan',
+  NO_DELETE_PERMISSION: 'You do not have permission to delete this health plan',
+  HEALTH_PLAN_ALREADY_USED: 'This health plan is being used by other users or challenges so you cannot delete it',
+  DELETE_HEALTH_PLAN_SUCCESS: 'Delete health plan successful',
+  GET_HEALTH_PLAN_SUCCESS: 'Get health plan successful',
+  NO_GET_PERMISSION: 'You do not have permission to get this health plan information',
+  INVALID_HEALTH_PLAN_TYPE: 'Invalid health plan type',
+  HEALTH_PLAN_EXISTS: 'Health plan already exists',
+  GET_ALL_HEALTH_PLAN_SUCCESS: 'Get all health plan successful',
+  HEALTH_PLAN_IS_USED: 'Health plan is used',
+  HEALTH_PLAN_NAME_EXISTS: 'Health plan name already exists',
+  INVALID_HEALTH_PLAN_LEVEL: ' Invalid health plan level',
+  INVALID_HEALTH_PLAN_STATUS: ' Invalid health plan status'
+}
+
+export const HEALTH_PLAN_DETAILS_MESSAGES = {
+  ADD_HEALTH_PLAN_DETAILS_SUCCESS: 'Add health plan details successful',
+  UPDATE_HEALTH_PLAN_DETAILS_SUCCESS: 'Update health plan details successful',
+  HEALTH_PLAN_DETAILS_NOT_FOUND: 'Health plan details not found',
+  NO_UPDATE_PERMISSION: 'You do not have permission to update this health plan details',
+  NO_DELETE_PERMISSION: 'You do not have permission to delete this health plan details',
+  HEALTH_PLAN_DETAILS_ALREADY_USED:
+    'This health plan details is being used by other users or challenges so you cannot delete it',
+  DELETE_HEALTH_PLAN_DETAILS_SUCCESS: 'Delete health plan details successful',
+  GET_HEALTH_PLAN_DETAILS_SUCCESS: 'Get health plan details successful',
+  NO_GET_PERMISSION: 'You do not have permission to get this health plan details information',
+  INVALID_HEALTH_PLAN_DETAILS_TYPE: 'Invalid health plan details type',
+  HEALTH_PLAN_DETAILS_EXISTS: 'Health plan details already exists',
+  GET_ALL_HEALTH_PLAN_DETAILS_SUCCESS: 'Get all health plan details successful',
+  HEALTH_PLAN_DETAILS_IS_USED: 'Health plan details is used',
+  INVALID_HEALTH_PLAN_DETAILS_STATUS: ' Invalid health plan details status',
+  ADD_SET_FOR_WORKOUT_DETAIL_SUCCESS: ' Add set for workout detail successful',
+  UPDATE_WORKOUT_DETAIL_STATUS_SUCCESS: 'Update workout detail status successful',
+  DELETE_ITEMS_IN_WORKOUT_DETAIL_SUCCESS: 'Delete items in workout detail successful',
+  ADD_MEALS_FOR_NUTRITION_DETAIL_SUCCESS: ' Add meals for nutrition detail successful',
+  UPDATE_ITEM_IN_NUTRITION_STATUS_SUCCESS: 'Update item in nutrition status successful',
+  DELETE_ITEMS_IN_NUTRITION_DETAIL_SUCCESS: 'Delete items in nutrition detail successful',
+  UPDATE_WORKOUT_DETAIL_ORDER_NUMBER_SUCCESS: 'Update workout detail order number successful'
+}
+
+export const USER_CHALLENGE_PARTICIPATION_MESSAGES = {
+  ADD_USER_CHALLENGE_PARTICIPATION_SUCCESS: 'Add user challenge participation successful',
+  UPDATE_USER_CHALLENGE_PARTICIPATION_SUCCESS: 'Update user challenge participation successful',
+  USER_CHALLENGE_PARTICIPATION_NOT_FOUND: 'User challenge participation not found',
+  NO_UPDATE_PERMISSION: 'You do not have permission to update this user challenge participation',
+  NO_DELETE_PERMISSION: 'You do not have permission to delete this user challenge participation',
+  USER_CHALLENGE_PARTICIPATION_ALREADY_USED:
+    'This user challenge participation is being used by other users or challenges so you cannot delete it',
+  DELETE_USER_CHALLENGE_PARTICIPATION_SUCCESS: 'Delete user challenge participation successful',
+  GET_USER_CHALLENGE_PARTICIPATION_SUCCESS: 'Get user challenge participation successful',
+  NO_GET_PERMISSION: 'You do not have permission to get this user challenge participation information',
+  INVALID_USER_CHALLENGE_PARTICIPATION_TYPE: 'Invalid user challenge participation type',
+  USER_CHALLENGE_PARTICIPATION_EXISTS: 'User challenge participation already exists',
+  GET_ALL_USER_CHALLENGE_PARTICIPATION_SUCCESS: 'Get all user challenge participation successful',
+  INVALID_USER_CHALLENGE_PARTICIPATION_STATUS: 'Invalid user challenge participation status',
+  UPDATE_PROGRESS_EACH_DAY_SUCCESS: 'Update progress each day successful',
+  USER_CHALLENGE_PARTICIPATION_PROGRESS_NOT_FOUND: 'User challenge participation progress not found',
+  GET_USER_CHALLENGE_PROGRESS_SUCCESS: 'Get user challenge progress successful',
+  GET_USER_CHALLENGE_OVERVIEW_SUCCESS: 'Get user challenge overview successful',
+  FINISH_CHALLENGE_SUCCESS: 'Finish challenge successful',
+  START_CHALLENGE_SUCCESS: 'Start challenge successful',
+  USER_CHALLENGE_PARTICIPATION_NOT_STARTED: 'User challenge participation not started',
+  USER_CHALLENGE_PARTICIPATION_NOT_PENDING: 'User challenge participation not pending',
+  USER_CHALLENGE_PARTICIPATION_NOT_BELONG_TO_USER: 'User challenge participation not belong to user',
+  YOU_HAVE_NOT_COMPLETED_ANY_PROGRESS: 'You have not completed any progress',
+  COMPLETED_WORKOUT_IDS_NOT_IN_HEALTH_PLAN_DETAIL: 'Completed workout ids not in health plan detail',
+  COMPLETED_NUTRITION_IDS_NOT_IN_HEALTH_PLAN_DETAIL: 'Completed nutrition ids not in health plan detail',
+  START_CHALLENGE_FAILED: 'Start challenge failed',
+  DELETE_CHALLENGE_FAILED: 'Delete challenge failed'
+}
+
 export const COMMON_MESSAGES = {
   DATE_MUST_BE_ISO8601: 'Date must be ISO8601',
   'MSG 1': 'Incorrect username or password',
@@ -504,5 +615,6 @@ export const COMMON_MESSAGES = {
   'MSG 23': 'Email is invalid',
   'MSG 24': 'Password is invalid',
   'MSG 25': 'Confirm Password is invalid',
-  'MSG 26': 'Contact message is invalid'
+  'MSG 26': 'Contact message is invalid',
+  INVALID_STATUS: 'Invalid status'
 }

@@ -1,6 +1,13 @@
 import { checkSchema } from 'express-validator'
 import { ObjectId } from 'mongodb'
-import { ExerciseCategories, ExerciseQueryTypeFilter } from '~/constants/enums'
+import {
+  ExerciseCategories,
+  ExerciseQueryTypeFilter,
+  ExerciseType,
+  ForceType,
+  LevelType,
+  MechanicsType
+} from '~/constants/enums'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { EXERCISE_MESSAGES } from '~/constants/messages'
 import { ErrorWithStatus } from '~/models/Errors'
@@ -59,7 +66,7 @@ export const addExerciseValidator = validate(
         isString: true,
         isIn: {
           options: [ExerciseCategories],
-          errorMessage: EXERCISE_MESSAGES.INVALID_EXERCISE_TYPE
+          errorMessage: EXERCISE_MESSAGES.INVALID_EXERCISE_CATEGORY
         }
       },
       calories_burn_per_minutes: {
@@ -73,6 +80,53 @@ export const addExerciseValidator = validate(
       video: {
         notEmpty: false,
         isString: true
+      },
+      target_muscle: {
+        optional: true
+      },
+      type: {
+        notEmpty: false,
+        isString: true,
+        isIn: {
+          options: [ExerciseType],
+          errorMessage: EXERCISE_MESSAGES.INVALID_EXERCISE_TYPE
+        }
+      },
+      equipment: {
+        optional: true
+      },
+      mechanics: {
+        notEmpty: false,
+        isString: true,
+        isIn: {
+          options: [MechanicsType],
+          errorMessage: EXERCISE_MESSAGES.INVALID_MECHANICS_TYPE
+        }
+      },
+      forceType: {
+        notEmpty: false,
+        isString: true,
+        isIn: {
+          options: [ForceType],
+          errorMessage: EXERCISE_MESSAGES.INVALID_FORCE_TYPE
+        }
+      },
+      experience_level: {
+        notEmpty: false,
+        isString: true,
+        isIn: {
+          options: [LevelType],
+          errorMessage: EXERCISE_MESSAGES.INVALID_EXPERIENCE_LEVEL
+        }
+      },
+      secondary_muscle: {
+        optional: true
+      },
+      instructions: {
+        optional: true
+      },
+      tips: {
+        optional: true
       }
     },
     ['body']

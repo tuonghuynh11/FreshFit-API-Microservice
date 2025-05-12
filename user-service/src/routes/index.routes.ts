@@ -24,6 +24,9 @@ import clientRouter from './client.routes'
 import postsRouter from './post.routes'
 import bookmarksRouter from './bookmarks.routes'
 import notificationsRouter from './notifications.routes'
+import healthPlansRouter from './health-plan.routes'
+import healthPlanDetailsRouter from './health-plan-details.routes'
+import userChallengeParticipationRouter from './user-challenge-participation.routes'
 
 const file = fs.readFileSync(path.resolve('slda-swagger.yaml'), 'utf8')
 const swaggerDocument = YAML.parse(file)
@@ -51,4 +54,7 @@ versionOneRouter.use('/clients', clientRouter)
 versionOneRouter.use('/posts', postsRouter)
 versionOneRouter.use('/bookmarks', bookmarksRouter)
 versionOneRouter.use('/notifications', notificationsRouter)
+versionOneRouter.use('/health-plans', healthPlansRouter)
+versionOneRouter.use('/health-plan-details', healthPlanDetailsRouter)
+versionOneRouter.use('/user-challenge-participation', userChallengeParticipationRouter)
 export { versionOneRouter }

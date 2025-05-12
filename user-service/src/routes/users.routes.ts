@@ -2,6 +2,7 @@ import { Router } from 'express'
 import {
   addHealthTrackingController,
   addHealthTrackingDetailController,
+  addHealthTrackingDetailForMealController,
   addWaterActivityController,
   banUserController,
   changePasswordController,
@@ -10,11 +11,14 @@ import {
   createDailyHealthSummaryController,
   createExpertUserController,
   createZegoTokenController,
+  deleteDishesInHealthTrackingDetailForMealController,
+  deleteHealthTrackingDetailController,
   forgotPasswordController,
   generateHealthPlanController,
   getAllUserController,
   getDailyHealthSummaryController,
   getHealthTrackingController,
+  getHealthTrackingMoreDetailController,
   getMeController,
   loginController,
   loginGoogleController,
@@ -28,6 +32,8 @@ import {
   storeFcmTokenController,
   unBanUserController,
   updateGoalStatusController,
+  updateHealthTrackingController,
+  updateHealthTrackingDetailController,
   updateMeController,
   updateUserNotifyController,
   verifyEmailController,
@@ -268,9 +274,37 @@ usersRouter.post(
   verifiedUSerValidator,
   wrapRequestHandler(addHealthTrackingController)
 )
+/**
+ * Description: Get Health Tracking By Id
+ * Path: /health-tracking/:id
+ * Method: GET
+ * Body: {
+ * }
+ * **/
+usersRouter.get(
+  '/health-tracking/:id',
+  accessTokenValidator,
+  verifiedUSerValidator,
+  wrapRequestHandler(getHealthTrackingMoreDetailController)
+)
 
 /**
- * Description: Add Health Tracking Detail
+ * Description: Update Health Activity
+ * Path: /health-tracking/:id
+ * Method: Patch
+ * Body: {
+ *UpdateHealthTrackingBody
+ * }
+ * **/
+usersRouter.patch(
+  '/health-tracking/:id',
+  accessTokenValidator,
+  verifiedUSerValidator,
+  wrapRequestHandler(updateHealthTrackingController)
+)
+
+/**
+ * Description: Add Health Tracking Detail (Use for workout, dish, exercise)
  * Path: /health-tracking-details
  * Method: Post
  * Body: {
@@ -282,6 +316,65 @@ usersRouter.post(
   accessTokenValidator,
   verifiedUSerValidator,
   wrapRequestHandler(addHealthTrackingDetailController)
+)
+
+/**
+ * Description: Add Health Tracking Detail (For meal)
+ * Path: /health-tracking-details/meals
+ * Method: Post
+ * Body: {
+ *   mealType: MealType,
+ *   dishIds: string[],
+ * }
+ * **/
+usersRouter.post(
+  '/health-tracking-details/meals',
+  accessTokenValidator,
+  verifiedUSerValidator,
+  wrapRequestHandler(addHealthTrackingDetailForMealController)
+)
+/**
+ * Description: Delete dish in Health Tracking Detail (For meal)
+ * Path: /health-tracking/:healthTrackingId/health-tracking-details/:id/dishes
+ * Method: Delete
+ * Body: {
+ *   dishIds: string[],
+ * }
+ * **/
+usersRouter.delete(
+  '/health-tracking/:healthTrackingId/health-tracking-details/:id/dishes',
+  accessTokenValidator,
+  verifiedUSerValidator,
+  wrapRequestHandler(deleteDishesInHealthTrackingDetailForMealController)
+)
+
+/**
+ * Description: Update Health Tracking Detail
+ * Path: /health-tracking/:healthTrackingId/health-tracking-details/:id
+ * Method: Patch
+ * Body: {
+ * status: GeneralStatus
+ * }
+ * **/
+usersRouter.patch(
+  '/health-tracking/:healthTrackingId/health-tracking-details/:id',
+  accessTokenValidator,
+  verifiedUSerValidator,
+  wrapRequestHandler(updateHealthTrackingDetailController)
+)
+/**
+ * Description: Delete Health Tracking Detail
+ * Path: /health-tracking/:healthTrackingId/health-tracking-details/:id
+ * Method: Delete
+ * Body: {
+
+ * }
+ * **/
+usersRouter.delete(
+  '/health-tracking/:healthTrackingId/health-tracking-details/:id',
+  accessTokenValidator,
+  verifiedUSerValidator,
+  wrapRequestHandler(deleteHealthTrackingDetailController)
 )
 
 /**

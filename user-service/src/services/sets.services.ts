@@ -71,13 +71,29 @@ class SetService {
     if (!set) {
       throw new ErrorWithStatus({ status: HTTP_STATUS.BAD_REQUEST, message: SETS_MESSAGES.SET_NOT_FOUND })
     }
-    if (
-      (role === UserRole.Admin && set?.user_id) ||
-      (role === UserRole.User && !set?.user_id) ||
-      (role === UserRole.User && set?.user_id && set?.user_id?.toString() !== user_id)
-    ) {
-      throw new ErrorWithStatus({ status: HTTP_STATUS.FORBIDDEN, message: SETS_MESSAGES.NO_DELETE_PERMISSION })
-    }
+    // if (
+    //   (role === UserRole.Admin && set?.user_id) ||
+    //   (role === UserRole.User && !set?.user_id) ||
+    //   (role === UserRole.User && set?.user_id && set?.user_id?.toString() !== user_id)
+    // ) {
+    //   throw new ErrorWithStatus({ status: HTTP_STATUS.FORBIDDEN, message: SETS_MESSAGES.NO_DELETE_PERMISSION })
+    // }
+
+    // Sort ascending set_exercises by order
+    set.set_exercises = set.set_exercises.sort((a: SetExercises, b: SetExercises) => a.orderNumber! - b.orderNumber!)
+
+    // Get all exercises by set_exercises
+    const exercisesList = await Promise.all(
+      set.set_exercises.map((set_exercise: SetExercises) => {
+        return databaseService.exercises.findOne({ _id: new ObjectId(set_exercise.exercise_id) })
+      })
+    )
+    set.set_exercises = set.set_exercises.map((set_exercise: SetExercises, index: number) => {
+      return {
+        ...set_exercise,
+        exercise: exercisesList[index]
+      }
+    })
     return set
   }
 

@@ -81,6 +81,14 @@ dishesRouter.get('/:id', accessTokenValidator, verifiedUSerValidator, wrapReques
  *  image: string
  *  instruction: string
  *  ingredients: DishesIngredients[]
+ *  fat?: number
+ *  saturatedFat?: number
+ *  cholesterol?: number
+ *  sodium?: number
+ *  carbohydrate?: number
+ *  fiber?: number
+ *  sugar?: number
+ *  protein?: number
  * }
  * **/
 dishesRouter.post(
@@ -103,6 +111,14 @@ dishesRouter.post(
  *  rating: number
  *  image: string
  *  instruction: string
+ *  fat?: number
+ *  saturatedFat?: number
+ *  cholesterol?: number
+ *  sodium?: number
+ *  carbohydrate?: number
+ *  fiber?: number
+ *  sugar?: number
+ *  protein?: number
  * }
  * **/
 dishesRouter.patch(
@@ -117,7 +133,15 @@ dishesRouter.patch(
     'prep_time',
     'rating',
     'image',
-    'instruction'
+    'instruction',
+    'fat',
+    'saturatedFat',
+    'cholesterol',
+    'sodium',
+    'carbohydrate',
+    'fiber',
+    'sugar',
+    'protein'
   ]),
   wrapRequestHandler(updateDishController)
 )
@@ -157,7 +181,7 @@ dishesRouter.get(
  * Method: Patch
  * Body: {
  *  ingredientId: string
- *  quantity: number
+ *  quantity: string
  *  unit: number
  * }
  * **/

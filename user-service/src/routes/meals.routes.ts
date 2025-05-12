@@ -28,6 +28,7 @@ mealsRouter.get(
   mealsSearchValidator,
   wrapRequestHandler(getMealsController)
 )
+
 /**
  * Description: Get meal of a day (User)
  * Path: /users
@@ -54,7 +55,7 @@ mealsRouter.get('/:meal_id', accessTokenValidator, verifiedUSerValidator, wrapRe
  *  calories: number
  *  pre_time: number
  *  type: MealType
- *  dishes: Dishes[]
+ *  dishes: string[]
  * }
  * **/
 mealsRouter.post('/', accessTokenValidator, verifiedUSerValidator, wrapRequestHandler(addMealController))
@@ -78,7 +79,7 @@ mealsRouter.post('/clone', accessTokenValidator, verifiedUSerValidator, wrapRequ
  *  calories: number
  *  pre_time: number
  *  type: MealType
- *  dishes: Dishes[]
+ *  dishes: string[]
  * }
  * **/
 mealsRouter.put('/:meal_id', accessTokenValidator, verifiedUSerValidator, wrapRequestHandler(updateMealController))

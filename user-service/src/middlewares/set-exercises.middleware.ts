@@ -33,7 +33,11 @@ export const addSetExerciseValidator = validate(
         isNumeric: true
       },
       reps: {
-        notEmpty: true,
+        optional: true,
+        isNumeric: true
+      },
+      timePerRound: {
+        optional: true,
         isNumeric: true
       },
       round: {
@@ -46,6 +50,10 @@ export const addSetExerciseValidator = validate(
       },
       estimated_calories_burned: {
         notEmpty: true,
+        isNumeric: true
+      },
+      orderNumber: {
+        optional: true,
         isNumeric: true
       }
     },
@@ -78,6 +86,10 @@ export const updateSetExerciseValidator = validate(
         isNumeric: true
       },
       reps: {
+        optional: true,
+        isNumeric: true
+      },
+      timePerRound: {
         optional: true,
         isNumeric: true
       },

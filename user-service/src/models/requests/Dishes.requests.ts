@@ -11,6 +11,14 @@ export interface DishReqBody {
   image: string
   instruction: string
   ingredients: DishesIngredients[]
+  fat?: number
+  saturatedFat?: number
+  cholesterol?: number
+  sodium?: number
+  carbohydrate?: number
+  fiber?: number
+  sugar?: number
+  protein?: number
 }
 export interface UpdateDishReqBody {
   name?: string
@@ -20,17 +28,25 @@ export interface UpdateDishReqBody {
   rating?: number
   image?: string
   instruction?: string
+  fat?: number
+  saturatedFat?: number
+  cholesterol?: number
+  sodium?: number
+  carbohydrate?: number
+  fiber?: number
+  sugar?: number
+  protein?: number
 }
 
 export interface DishIngredientReqBody {
   ingredientId: string
-  quantity: number
+  quantity: string
   unit: string
 }
 export interface UpdateDishIngredientReqBody {
   ingredientId?: string
-  quantity?: number
-  unit?: number
+  quantity?: string
+  unit?: string
 }
 
 export interface UpdateDishReqBody {
