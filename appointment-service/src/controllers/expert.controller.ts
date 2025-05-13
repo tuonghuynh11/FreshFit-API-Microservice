@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import Controller from "../decorators/controller";
-import { Delete, Get, Post, Put } from "../decorators/handlers";
+import { Delete, Get, Patch, Post, Put } from "../decorators/handlers";
 import {
   EXPERT_AVAILABILITY_MESSAGES,
   EXPERT_MESSAGES,
@@ -76,6 +76,31 @@ export default class ExpertController {
     }
     next();
   }
+
+  @Patch("/:id")
+  @Authorize([SystemRole.Expert, SystemRole.Admin])
+  public async updateExpertGeneralInfo(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const expertInfo = await ExpertRepository.updateExpertGeneralInfo({
+        req,
+        res,
+      });
+      res.locals.message = EXPERT_MESSAGES.UPDATE_EXPERT_GENERAL_INFO_SUCCESS;
+      res.locals.data = {
+        expertInfo,
+      };
+
+      next();
+    } catch (error) {
+      next(error);
+    }
+    next();
+  }
+
   @Get("/:userId")
   @Authorize([SystemRole.Admin])
   public async getExpertInfoByUserId(
@@ -254,6 +279,255 @@ export default class ExpertController {
       res.locals.data = {
         statistic,
       };
+
+      next();
+    } catch (error) {
+      next(error);
+    }
+    next();
+  }
+  @Post("/:id/certifications")
+  @Authorize([SystemRole.Expert, SystemRole.Admin])
+  public async addNewCertification(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const certification = await ExpertRepository.addNewCertification({
+        req,
+        res,
+      });
+      res.locals.message = EXPERT_MESSAGES.ADD_CERTIFICATION_SUCCESS;
+      res.locals.data = {
+        certification,
+      };
+
+      next();
+    } catch (error) {
+      next(error);
+    }
+    next();
+  }
+  @Patch("/:id/certifications/:certificationId")
+  @Authorize([SystemRole.Expert, SystemRole.Admin])
+  public async updateCertification(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const certification = await ExpertRepository.updateCertification({
+        req,
+        res,
+      });
+      res.locals.message = EXPERT_MESSAGES.UPDATE_CERTIFICATION_SUCCESS;
+      res.locals.data = {
+        certification,
+      };
+
+      next();
+    } catch (error) {
+      next(error);
+    }
+    next();
+  }
+  @Delete("/:id/certifications")
+  @Authorize([SystemRole.Expert, SystemRole.Admin])
+  public async deleteCertifications(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const certification = await ExpertRepository.deleteCertifications({
+        req,
+        res,
+      });
+      res.locals.message = EXPERT_MESSAGES.DELETE_CERTIFICATION_SUCCESS;
+      res.locals.data = {};
+
+      next();
+    } catch (error) {
+      next(error);
+    }
+    next();
+  }
+
+  @Put("/:id/languages")
+  @Authorize([SystemRole.Expert, SystemRole.Admin])
+  public async updateExpertLanguages(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const expert = await ExpertRepository.updateExpertLanguages({
+        req,
+        res,
+      });
+      res.locals.message = EXPERT_MESSAGES.UPDATE_LANGUAGES_SUCCESS;
+      res.locals.data = {
+        expert,
+      };
+
+      next();
+    } catch (error) {
+      next(error);
+    }
+    next();
+  }
+  @Put("/:id/skills")
+  @Authorize([SystemRole.Expert, SystemRole.Admin])
+  public async updateExpertSkills(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const skills = await ExpertRepository.updateExpertSkills({
+        req,
+        res,
+      });
+      res.locals.message = EXPERT_MESSAGES.UPDATE_MAIN_SKILLS_SUCCESS;
+      res.locals.data = {
+        skills,
+      };
+
+      next();
+    } catch (error) {
+      next(error);
+    }
+    next();
+  }
+  @Post("/:id/experiences")
+  @Authorize([SystemRole.Expert, SystemRole.Admin])
+  public async addNewExperiences(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const experience = await ExpertRepository.addNewExperiences({
+        req,
+        res,
+      });
+      res.locals.message = EXPERT_MESSAGES.ADD_NEW_EXPERIENCE_SUCCESS;
+      res.locals.data = {
+        experience,
+      };
+
+      next();
+    } catch (error) {
+      next(error);
+    }
+    next();
+  }
+  @Patch("/:id/experiences/:experienceId")
+  @Authorize([SystemRole.Expert, SystemRole.Admin])
+  public async updateExperiences(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const experience = await ExpertRepository.updateExperiences({
+        req,
+        res,
+      });
+      res.locals.message = EXPERT_MESSAGES.UPDATE_EXPERIENCE_SUCCESS;
+      res.locals.data = {
+        experience,
+      };
+
+      next();
+    } catch (error) {
+      next(error);
+    }
+    next();
+  }
+  @Delete("/:id/experiences")
+  @Authorize([SystemRole.Expert, SystemRole.Admin])
+  public async deleteExperiences(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const result = await ExpertRepository.deleteExperiences({
+        req,
+        res,
+      });
+      res.locals.message = EXPERT_MESSAGES.DELETE_EXPERIENCE_SUCCESS;
+      res.locals.data = {};
+
+      next();
+    } catch (error) {
+      next(error);
+    }
+    next();
+  }
+
+  @Post("/:id/educations")
+  @Authorize([SystemRole.Expert, SystemRole.Admin])
+  public async addNewEducations(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const education = await ExpertRepository.addNewEducations({
+        req,
+        res,
+      });
+      res.locals.message = EXPERT_MESSAGES.ADD_NEW_EDUCATION_SUCCESS;
+      res.locals.data = {
+        education,
+      };
+
+      next();
+    } catch (error) {
+      next(error);
+    }
+    next();
+  }
+  @Patch("/:id/educations/:educationId")
+  @Authorize([SystemRole.Expert, SystemRole.Admin])
+  public async updateEducations(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const education = await ExpertRepository.updateEducations({
+        req,
+        res,
+      });
+      res.locals.message = EXPERT_MESSAGES.UPDATE_EDUCATION__SUCCESS;
+      res.locals.data = {
+        education,
+      };
+
+      next();
+    } catch (error) {
+      next(error);
+    }
+    next();
+  }
+  @Delete("/:id/educations")
+  @Authorize([SystemRole.Expert, SystemRole.Admin])
+  public async deleteEducations(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const result = await ExpertRepository.deleteEducations({
+        req,
+        res,
+      });
+      res.locals.message = EXPERT_MESSAGES.DELETE_EDUCATION_SUCCESS;
+      res.locals.data = {};
 
       next();
     } catch (error) {

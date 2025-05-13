@@ -70,7 +70,20 @@ class Application {
 
               // verify token
               const decode: any = verify(tmp[1], config.jwtAccessKey);
+              // Decode Type:
+              //  {
+              // user_id: '67e02531fa4fdb3b41d1aa98',
+              // expert_id: 'c9054ff8-7e3e-4301-9a68-5a6ffb4e94f8',
+              // role: 2,
+              // token_type: 0,
+              // verify: 1,
+              // iat: 1747111747,
+              // }
+
               console.log(decode);
+              if (decode.verify !== 1) {
+                throw new UnauthorizedError("User not verified");
+              }
               res.locals.session = {
                 user: decode,
                 accessToken: tmp[1],

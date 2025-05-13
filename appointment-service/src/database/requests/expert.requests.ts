@@ -11,6 +11,16 @@ export interface CreateCertificateBody {
   expirationDate?: string;
   credentialUrl?: string;
 }
+export interface UpdateCertificateBody {
+  name?: string;
+  issuingOrganization?: string;
+  issueDate?: string;
+  expirationDate?: string;
+  credentialUrl?: string;
+}
+export interface DeleteCertificatesBody {
+  certificationIds: string[];
+}
 export interface CreateExperienceBody {
   company: string;
   position: string;
@@ -18,12 +28,33 @@ export interface CreateExperienceBody {
   startDate: string;
   endDate?: string;
 }
+export interface UpdateExperienceBody {
+  company?: string;
+  position?: string;
+  description?: string;
+  startDate?: string;
+  endDate?: string;
+}
+export interface DeleteExperiencesBody {
+  experienceIds: string[];
+}
 export interface CreateEducationBody {
   institution: string;
   degree: DegreeType;
   major: string;
   startYear: number;
   endYear?: number;
+}
+export interface UpdateEducationBody {
+  institution?: string;
+  degree?: DegreeType;
+  major?: string;
+  startYear?: number;
+  endYear?: number;
+}
+
+export interface DeleteEducationBody {
+  educationIds: string[];
 }
 export interface CreateExpertUserBody {
   email: string;
@@ -41,4 +72,22 @@ export interface CreateExpertUserBody {
   mainSkills: string[];
   experiences: CreateExperienceBody[];
   educations: CreateEducationBody[];
+}
+export interface UpdateExpertUserBody {
+  fullName?: string;
+  specialization?: string;
+  experience_years?: number;
+  bio?: string;
+  consultation_fee?: number;
+  languages?: string[];
+}
+
+export interface UpdateLanguagesBody {
+  languages: string[];
+}
+export interface UpdateExpertSkillsBody {
+  skills: {
+    id: string;
+    isMainSkill: boolean;
+  }[];
 }
