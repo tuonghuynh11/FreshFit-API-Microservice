@@ -5,6 +5,7 @@ import MediaController from "../controllers/media.controller";
 import OrderController from "../controllers/order.controller";
 import PaymentController from "../controllers/payment.controller";
 import RatingController from "../controllers/rating.controller";
+import SkillsController from "../controllers/skills.controller";
 
 export const appRouters = [
   {
@@ -17,6 +18,7 @@ export const appRouters = [
       RatingController,
       AppointmentController,
       ExpertController,
+      SkillsController,
     ],
   },
 ];

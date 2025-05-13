@@ -1433,6 +1433,134 @@
         "security": true
     },
     {
+        "name": "Update Expert General Info",
+        "methods": ["PATCH"],
+        "context": ["/experts/:id"],
+        "target": "http://appointments:4002/api/v1",
+        "pathRewrite": {},
+        "security": true
+    },
+    {
+        "name": "Add New Certification",
+        "methods": ["POST"],
+        "context": ["/experts/:id/certifications"],
+        "target": "http://appointments:4002/api/v1",
+        "pathRewrite": {},
+        "security": true
+    },
+    {
+        "name": "Update Certification",
+        "methods": ["PATCH"],
+        "context": ["/experts/:id/certifications/:certificationId"],
+        "target": "http://appointments:4002/api/v1",
+        "pathRewrite": {},
+        "security": true
+    },
+    {
+        "name": "Delete Certification",
+        "methods": ["DELETE"],
+        "context": ["/experts/:id/certifications"],
+        "target": "http://appointments:4002/api/v1",
+        "pathRewrite": {},
+        "security": true
+    },
+    {
+        "name": "Update Expert Language",
+        "methods": ["PUT"],
+        "context": ["/experts/:id/languages"],
+        "target": "http://appointments:4002/api/v1",
+        "pathRewrite": {},
+        "security": true
+    },
+    {
+        "name": "Update Expert Skills",
+        "methods": ["PUT"],
+        "context": ["/experts/:id/skills"],
+        "target": "http://appointments:4002/api/v1",
+        "pathRewrite": {},
+        "security": true
+    },
+    {
+        "name": "Create New Expert Experience",
+        "methods": ["POST"],
+        "context": ["/experts/:id/experiences"],
+        "target": "http://appointments:4002/api/v1",
+        "pathRewrite": {},
+        "security": true
+    },
+    {
+        "name": "Update Expert Experience",
+        "methods": ["PATCH"],
+        "context": ["/experts/:id/experiences/:experienceId"],
+        "target": "http://appointments:4002/api/v1",
+        "pathRewrite": {},
+        "security": true
+    },
+    {
+        "name": "Delete Expert Experience",
+        "methods": ["DELETE"],
+        "context": ["/experts/:id/experiences"],
+        "target": "http://appointments:4002/api/v1",
+        "pathRewrite": {},
+        "security": true
+    },
+    {
+        "name": "Create New Expert Educations",
+        "methods": ["POST"],
+        "context": ["/experts/:id/educations"],
+        "target": "http://appointments:4002/api/v1",
+        "pathRewrite": {},
+        "security": true
+    },
+    {
+        "name": "Update Expert Educations",
+        "methods": ["PATCH"],
+        "context": ["/experts/:id/educations/:educationId"],
+        "target": "http://appointments:4002/api/v1",
+        "pathRewrite": {},
+        "security": true
+    },
+    {
+        "name": "Delete Expert Educations",
+        "methods": ["DELETE"],
+        "context": ["/experts/:id/educations"],
+        "target": "http://appointments:4002/api/v1",
+        "pathRewrite": {},
+        "security": true
+    },
+    {
+        "name": "Get System Skills",
+        "methods": ["GET"],
+        "context": ["/skills"],
+        "target": "http://appointments:4002/api/v1",
+        "pathRewrite": {},
+        "security": true
+    },
+    {
+        "name": "Create System Skill",
+        "methods": ["POST"],
+        "context": ["/skills"],
+        "target": "http://appointments:4002/api/v1",
+        "pathRewrite": {},
+        "security": true
+    },
+    {
+        "name": "Update System Skill",
+        "methods": ["PATCH"],
+        "context": ["/skills/:id"],
+        "target": "http://appointments:4002/api/v1",
+        "pathRewrite": {},
+        "security": true
+    },
+    {
+        "name": "Delete System Skill",
+        "methods": ["DELETE"],
+        "context": ["/skills"],
+        "target": "http://appointments:4002/api/v1",
+        "pathRewrite": {},
+        "security": true
+    },
+    {
         "name": "Send Notification",
         "methods": ["POST"],
         "context": ["/users/send-notification"],

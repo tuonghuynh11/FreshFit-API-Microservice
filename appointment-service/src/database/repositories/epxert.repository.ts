@@ -1,5 +1,19 @@
 import { Request, Response } from "express";
-import { CreateExpertUserBody } from "../requests/expert.requests";
+import {
+  CreateCertificateBody,
+  CreateEducationBody,
+  CreateExperienceBody,
+  CreateExpertUserBody,
+  DeleteCertificatesBody,
+  DeleteEducationBody,
+  DeleteExperiencesBody,
+  UpdateCertificateBody,
+  UpdateEducationBody,
+  UpdateExperienceBody,
+  UpdateExpertSkillsBody,
+  UpdateExpertUserBody,
+  UpdateLanguagesBody,
+} from "../requests/expert.requests";
 import { Expert } from "../entities/Expert";
 import { ExpertSkill } from "../entities/ExpertSkill";
 import { ExpertCertification } from "../entities/ExpertCertification";
@@ -9,18 +23,21 @@ import {
   EXPERT_MESSAGES,
 } from "../../common/messages/index.messages";
 import { ExpertExperience } from "../entities/ExpertExperience";
-import { ExpertEducation } from "../entities/ExpertEducation";
+import { DegreeType, ExpertEducation } from "../entities/ExpertEducation";
 import UserService from "../../services/user.services";
 import { ExpertAvailabilityTypeRequest } from "../../common/constants/expert-availability.enum";
 import { ExpertAvailability } from "../entities/ExpertAvailability";
 import {
   Between,
   FindManyOptions,
+  In,
   LessThanOrEqual,
   MoreThanOrEqual,
 } from "typeorm";
 import { getDaysInMonth } from "../../utils";
 import { Appointment, AppointmentStatus } from "../entities/Appointments";
+import { SystemRole } from "../../utils/enums";
+import { Skill } from "../entities/Skill";
 
 export default class ExpertRepository {
   static async create(req: Request) {
@@ -148,6 +165,58 @@ export default class ExpertRepository {
     );
     return expertInfo;
   };
+  static updateExpertGeneralInfo = async ({
+    req,
+    res,
+  }: {
+    req: Request;
+    res: Response;
+  }) => {
+    const { user } = res.locals.session;
+    const userId = user.user_id;
+    const role = user.role;
+    const { id } = req.params;
+    const { dataSource } = req.app.locals;
+    const expertRepository = dataSource.getRepository(Expert);
+    const expertInfo = await expertRepository.findOne({
+      where: {
+        id,
+      },
+    });
+    if (!expertInfo) {
+      throw new NotFoundError(EXPERT_MESSAGES.EXPERT_NOT_FOUND);
+    }
+
+    if (role !== SystemRole.Admin) {
+      if (expertInfo.userId !== userId) {
+        throw new BadRequestError(
+          EXPERT_MESSAGES.NOT_PERMISSION_TO_UPDATE_THIS_EXPERT
+        );
+      }
+    }
+
+    const {
+      fullName,
+      specialization,
+      experience_years,
+      bio,
+      consultation_fee,
+      languages,
+    } = req.body as UpdateExpertUserBody;
+    expertRepository.merge(expertInfo, {
+      fullName,
+      specialization,
+      experience_years,
+      bio,
+      consultation_fee,
+      languages,
+      updatedBy: userId,
+    });
+    await expertRepository.save(expertInfo);
+
+    return expertInfo;
+  };
+
   static getExpertInfoByUserId = async ({
     req,
     res,
@@ -985,5 +1054,634 @@ export default class ExpertRepository {
       totalCompleteAppointmentsLastMonth,
       totalCompleteAppointmentsThisMonth,
     };
+  };
+
+  static addNewCertification = async ({
+    req,
+    res,
+  }: {
+    req: Request;
+    res: Response;
+  }) => {
+    const { user } = res.locals.session;
+    const userId = user.user_id;
+    const role = user.role;
+    const { id } = req.params;
+    const { dataSource } = req.app.locals;
+    const expertRepository = dataSource.getRepository(Expert);
+    const expertCertificationRepository =
+      dataSource.getRepository(ExpertCertification);
+    const expertInfo = await expertRepository.findOne({
+      where: {
+        id,
+      },
+    });
+    if (!expertInfo) {
+      throw new NotFoundError(EXPERT_MESSAGES.EXPERT_NOT_FOUND);
+    }
+
+    if (role !== SystemRole.Admin) {
+      if (expertInfo.userId !== userId) {
+        throw new BadRequestError(
+          EXPERT_MESSAGES.NOT_PERMISSION_TO_ADD_CERTIFICATION
+        );
+      }
+    }
+
+    const {
+      name,
+      issuingOrganization,
+      issueDate,
+      expirationDate,
+      credentialUrl,
+    } = req.body as CreateCertificateBody;
+
+    const newCertification = expertCertificationRepository.create({
+      name,
+      issuingOrganization,
+      issueDate,
+      expirationDate,
+      credentialUrl,
+      expert: expertInfo,
+    });
+    const result = await expertCertificationRepository.save(newCertification);
+
+    return result;
+  };
+  static updateCertification = async ({
+    req,
+    res,
+  }: {
+    req: Request;
+    res: Response;
+  }) => {
+    const { user } = res.locals.session;
+    const userId = user.user_id;
+    const role = user.role;
+    const { id, certificationId } = req.params;
+    const { dataSource } = req.app.locals;
+    const expertRepository = dataSource.getRepository(Expert);
+    const expertCertificationRepository =
+      dataSource.getRepository(ExpertCertification);
+    const expertInfo = await expertRepository.findOne({
+      where: {
+        id,
+      },
+    });
+    if (!expertInfo) {
+      throw new NotFoundError(EXPERT_MESSAGES.EXPERT_NOT_FOUND);
+    }
+
+    if (role !== SystemRole.Admin) {
+      if (expertInfo.userId !== userId) {
+        throw new BadRequestError(
+          EXPERT_MESSAGES.NOT_PERMISSION_TO_UPDATE_CERTIFICATION
+        );
+      }
+    }
+
+    //Check if the certification exists
+    const certification = await expertCertificationRepository.findOne({
+      where: {
+        id: certificationId,
+        expert: {
+          id,
+        },
+      },
+    });
+
+    if (!certification) {
+      throw new NotFoundError(EXPERT_MESSAGES.CERTIFICATION_NOT_FOUND);
+    }
+
+    const {
+      name,
+      issuingOrganization,
+      issueDate,
+      expirationDate,
+      credentialUrl,
+    } = req.body as UpdateCertificateBody;
+
+    expertCertificationRepository.merge(certification, {
+      name,
+      issuingOrganization,
+      issueDate,
+      expirationDate,
+      credentialUrl,
+    });
+    const result = await expertCertificationRepository.save(certification);
+    return result;
+  };
+  static deleteCertifications = async ({
+    req,
+    res,
+  }: {
+    req: Request;
+    res: Response;
+  }) => {
+    const { user } = res.locals.session;
+    const userId = user.user_id;
+    const role = user.role;
+    const { id } = req.params;
+
+    const { certificationIds } = req.body as DeleteCertificatesBody;
+
+    const { dataSource } = req.app.locals;
+    const expertRepository = dataSource.getRepository(Expert);
+    const expertCertificationRepository =
+      dataSource.getRepository(ExpertCertification);
+    const expertInfo = await expertRepository.findOne({
+      where: {
+        id,
+      },
+    });
+    if (!expertInfo) {
+      throw new NotFoundError(EXPERT_MESSAGES.EXPERT_NOT_FOUND);
+    }
+
+    if (role !== SystemRole.Admin) {
+      if (expertInfo.userId !== userId) {
+        throw new BadRequestError(
+          EXPERT_MESSAGES.NOT_PERMISSION_TO_DELETE_CERTIFICATION
+        );
+      }
+    }
+
+    //Check if the certification exists
+    const certification = await expertCertificationRepository.find({
+      where: {
+        id: In(certificationIds),
+        expert: {
+          id,
+        },
+      },
+    });
+    if (certification.length !== certificationIds.length) {
+      throw new NotFoundError(EXPERT_MESSAGES.CERTIFICATION_NOT_FOUND);
+    }
+
+    // Delete the certifications
+    await expertCertificationRepository.remove(certification);
+  };
+  static updateExpertLanguages = async ({
+    req,
+    res,
+  }: {
+    req: Request;
+    res: Response;
+  }) => {
+    const { user } = res.locals.session;
+    const userId = user.user_id;
+    const role = user.role;
+    const { id } = req.params;
+
+    const { dataSource } = req.app.locals;
+    const expertRepository = dataSource.getRepository(Expert);
+
+    const expertInfo = await expertRepository.findOne({
+      where: {
+        id,
+      },
+    });
+    if (!expertInfo) {
+      throw new NotFoundError(EXPERT_MESSAGES.EXPERT_NOT_FOUND);
+    }
+
+    if (role !== SystemRole.Admin) {
+      if (expertInfo.userId !== userId) {
+        throw new BadRequestError(
+          EXPERT_MESSAGES.NOT_PERMISSION_TO_UPDATE_LANGUAGES
+        );
+      }
+    }
+    const { languages } = req.body as UpdateLanguagesBody;
+    if (!languages || languages.length === 0) {
+      throw new BadRequestError(EXPERT_MESSAGES.LANGUAGES_REQUIRED);
+    }
+
+    expertRepository.merge(expertInfo, {
+      languages,
+    });
+    await expertRepository.save(expertInfo);
+    return expertInfo;
+  };
+  static updateExpertSkills = async ({
+    req,
+    res,
+  }: {
+    req: Request;
+    res: Response;
+  }) => {
+    const { user } = res.locals.session;
+    const userId = user.user_id;
+    const role = user.role;
+    const { id } = req.params;
+
+    const { dataSource } = req.app.locals;
+    const expertRepository = dataSource.getRepository(Expert);
+    const expertSkillsRepository = dataSource.getRepository(ExpertSkill);
+    const skillsRepository = dataSource.getRepository(Skill);
+
+    const expertInfo = await expertRepository.findOne({
+      where: {
+        id,
+      },
+    });
+    if (!expertInfo) {
+      throw new NotFoundError(EXPERT_MESSAGES.EXPERT_NOT_FOUND);
+    }
+
+    if (role !== SystemRole.Admin) {
+      if (expertInfo.userId !== userId) {
+        throw new BadRequestError(
+          EXPERT_MESSAGES.NOT_PERMISSION_TO_UPDATE_LANGUAGES
+        );
+      }
+    }
+    const { skills } = req.body as UpdateExpertSkillsBody;
+    if (!skills || skills.length === 0) {
+      throw new BadRequestError(EXPERT_MESSAGES.SKILLS_REQUIRED);
+    }
+
+    // Check if the skills exist
+    const skillExist = await skillsRepository.find({
+      where: {
+        id: In(skills.map((skill) => skill.id)),
+      },
+    });
+
+    if (skillExist.length !== skills.length) {
+      throw new NotFoundError(EXPERT_MESSAGES.SKILL_NOT_FOUND);
+    }
+
+    const expertSkills = skills.map(
+      (skill: { id: string; isMainSkill: boolean }) => {
+        return expertSkillsRepository.create({
+          expertId: expertInfo.id,
+          skillId: skill.id,
+          isMainSkill: skill.isMainSkill,
+        });
+      }
+    );
+    await expertSkillsRepository.delete({
+      expertId: expertInfo.id,
+    });
+    const result = await expertSkillsRepository.save(expertSkills);
+
+    return result;
+  };
+  static addNewExperiences = async ({
+    req,
+    res,
+  }: {
+    req: Request;
+    res: Response;
+  }) => {
+    const { user } = res.locals.session;
+    const userId = user.user_id;
+    const role = user.role;
+    const { id } = req.params;
+
+    const { dataSource } = req.app.locals;
+    const expertRepository = dataSource.getRepository(Expert);
+    const expertExperienceRepository =
+      dataSource.getRepository(ExpertExperience);
+    const expertInfo = await expertRepository.findOne({
+      where: {
+        id,
+      },
+    });
+    if (!expertInfo) {
+      throw new NotFoundError(EXPERT_MESSAGES.EXPERT_NOT_FOUND);
+    }
+
+    if (role !== SystemRole.Admin) {
+      if (expertInfo.userId !== userId) {
+        throw new BadRequestError(
+          EXPERT_MESSAGES.NOT_PERMISSION_TO_ADD_NEW_EXPERIENCE
+        );
+      }
+    }
+    const { company, position, description, startDate, endDate } =
+      req.body as CreateExperienceBody;
+    if (!company) {
+      throw new BadRequestError(EXPERT_MESSAGES.COMPANY_REQUIRED);
+    }
+    if (!position) {
+      throw new BadRequestError(EXPERT_MESSAGES.POSITION_REQUIRED);
+    }
+    if (!startDate) {
+      throw new BadRequestError(EXPERT_MESSAGES.START_DATE_REQUIRED);
+    }
+    const newExperience = expertExperienceRepository.create({
+      company,
+      position,
+      description,
+      startDate,
+      endDate,
+      expert: expertInfo,
+    });
+    const result = await expertExperienceRepository.save(newExperience);
+    return result;
+  };
+  static updateExperiences = async ({
+    req,
+    res,
+  }: {
+    req: Request;
+    res: Response;
+  }) => {
+    const { user } = res.locals.session;
+    const userId = user.user_id;
+    const role = user.role;
+    const { id, experienceId } = req.params;
+
+    const { dataSource } = req.app.locals;
+    const expertRepository = dataSource.getRepository(Expert);
+    const expertExperienceRepository =
+      dataSource.getRepository(ExpertExperience);
+    const expertInfo = await expertRepository.findOne({
+      where: {
+        id,
+      },
+    });
+    if (!expertInfo) {
+      throw new NotFoundError(EXPERT_MESSAGES.EXPERT_NOT_FOUND);
+    }
+
+    if (role !== SystemRole.Admin) {
+      if (expertInfo.userId !== userId) {
+        throw new BadRequestError(
+          EXPERT_MESSAGES.NOT_PERMISSION_TO_UPDATE_EXPERIENCE
+        );
+      }
+    }
+    //Check if the experience exists
+    const experience = await expertExperienceRepository.findOne({
+      where: {
+        id: experienceId,
+        expert: {
+          id,
+        },
+      },
+    });
+    if (!experience) {
+      throw new NotFoundError(EXPERT_MESSAGES.EXPERIENCE_NOT_FOUND);
+    }
+    const { company, position, description, startDate, endDate } =
+      req.body as UpdateExperienceBody;
+    if (!company) {
+      throw new BadRequestError(EXPERT_MESSAGES.COMPANY_REQUIRED);
+    }
+    if (!position) {
+      throw new BadRequestError(EXPERT_MESSAGES.POSITION_REQUIRED);
+    }
+    if (!startDate) {
+      throw new BadRequestError(EXPERT_MESSAGES.START_DATE_REQUIRED);
+    }
+    expertExperienceRepository.merge(experience, {
+      company,
+      position,
+      description,
+      startDate,
+      endDate,
+    });
+    const result = await expertExperienceRepository.save(experience);
+    return result;
+  };
+  static deleteExperiences = async ({
+    req,
+    res,
+  }: {
+    req: Request;
+    res: Response;
+  }) => {
+    const { user } = res.locals.session;
+    const userId = user.user_id;
+    const role = user.role;
+    const { id } = req.params;
+
+    const { dataSource } = req.app.locals;
+    const expertRepository = dataSource.getRepository(Expert);
+    const expertExperienceRepository =
+      dataSource.getRepository(ExpertExperience);
+    const expertInfo = await expertRepository.findOne({
+      where: {
+        id,
+      },
+    });
+    if (!expertInfo) {
+      throw new NotFoundError(EXPERT_MESSAGES.EXPERT_NOT_FOUND);
+    }
+
+    if (role !== SystemRole.Admin) {
+      if (expertInfo.userId !== userId) {
+        throw new BadRequestError(
+          EXPERT_MESSAGES.NOT_PERMISSION_TO_DELETE_EXPERIENCE
+        );
+      }
+    }
+    const { experienceIds } = req.body as DeleteExperiencesBody;
+    // Check if the experienceIds is empty
+    if (!experienceIds || experienceIds.length === 0) {
+      throw new BadRequestError(EXPERT_MESSAGES.EXPERIENCE_IDS_REQUIRED);
+    }
+    //Check if the experience exists
+    const experience = await expertExperienceRepository.find({
+      where: {
+        id: In(experienceIds),
+        expert: {
+          id,
+        },
+      },
+    });
+    if (experience.length !== experienceIds.length) {
+      throw new NotFoundError(EXPERT_MESSAGES.EXPERIENCE_NOT_FOUND);
+    }
+    // Delete the experience
+    await expertExperienceRepository.remove(experience);
+    return null;
+  };
+  // --------------------EDUCATION--------------------
+  static addNewEducations = async ({
+    req,
+    res,
+  }: {
+    req: Request;
+    res: Response;
+  }) => {
+    const { user } = res.locals.session;
+    const userId = user.user_id;
+    const role = user.role;
+    const { id } = req.params;
+
+    const { dataSource } = req.app.locals;
+    const expertRepository = dataSource.getRepository(Expert);
+    const ExpertEducationRepository = dataSource.getRepository(ExpertEducation);
+    const expertInfo = await expertRepository.findOne({
+      where: {
+        id,
+      },
+    });
+    if (!expertInfo) {
+      throw new NotFoundError(EXPERT_MESSAGES.EXPERT_NOT_FOUND);
+    }
+
+    if (role !== SystemRole.Admin) {
+      if (expertInfo.userId !== userId) {
+        throw new BadRequestError(
+          EXPERT_MESSAGES.NOT_PERMISSION_TO_ADD_NEW_EDUCATION
+        );
+      }
+    }
+    const { institution, degree, major, startYear, endYear } =
+      req.body as CreateEducationBody;
+    if (!institution) {
+      throw new BadRequestError(EXPERT_MESSAGES.INSTITUTION_REQUIRED);
+    }
+    if (!degree) {
+      throw new BadRequestError(EXPERT_MESSAGES.DEGREE_REQUIRED);
+    }
+    if (DegreeType[degree] === undefined) {
+      throw new BadRequestError(EXPERT_MESSAGES.DEGREE_INVALID);
+    }
+    if (!major) {
+      throw new BadRequestError(EXPERT_MESSAGES.MAJOR_REQUIRED);
+    }
+    if (!startYear) {
+      throw new BadRequestError(EXPERT_MESSAGES.START_YEAR_REQUIRED);
+    }
+    const newEducation = ExpertEducationRepository.create({
+      institution,
+      degree,
+      major,
+      startYear,
+      endYear,
+      expert: expertInfo,
+    });
+    const result = await ExpertEducationRepository.save(newEducation);
+    return result;
+  };
+  static updateEducations = async ({
+    req,
+    res,
+  }: {
+    req: Request;
+    res: Response;
+  }) => {
+    const { user } = res.locals.session;
+    const userId = user.user_id;
+    const role = user.role;
+    const { id, educationId } = req.params;
+
+    const { dataSource } = req.app.locals;
+    const expertRepository = dataSource.getRepository(Expert);
+    const expertEducationRepository = dataSource.getRepository(ExpertEducation);
+    const expertInfo = await expertRepository.findOne({
+      where: {
+        id,
+      },
+    });
+    if (!expertInfo) {
+      throw new NotFoundError(EXPERT_MESSAGES.EXPERT_NOT_FOUND);
+    }
+
+    if (role !== SystemRole.Admin) {
+      if (expertInfo.userId !== userId) {
+        throw new BadRequestError(
+          EXPERT_MESSAGES.NOT_PERMISSION_TO_UPDATE_EDUCATION
+        );
+      }
+    }
+    //Check if the experience exists
+    const education = await expertEducationRepository.findOne({
+      where: {
+        id: educationId,
+        expert: {
+          id,
+        },
+      },
+    });
+    if (!education) {
+      throw new NotFoundError(EXPERT_MESSAGES.EDUCATION_NOT_FOUND);
+    }
+    const { institution, degree, major, startYear, endYear } =
+      req.body as UpdateEducationBody;
+    if (!institution) {
+      throw new BadRequestError(EXPERT_MESSAGES.INSTITUTION_REQUIRED);
+    }
+    if (!degree) {
+      throw new BadRequestError(EXPERT_MESSAGES.DEGREE_REQUIRED);
+    }
+    if (DegreeType[degree] === undefined) {
+      throw new BadRequestError(EXPERT_MESSAGES.DEGREE_INVALID);
+    }
+    if (!major) {
+      throw new BadRequestError(EXPERT_MESSAGES.MAJOR_REQUIRED);
+    }
+    if (!startYear) {
+      throw new BadRequestError(EXPERT_MESSAGES.START_YEAR_REQUIRED);
+    }
+    expertEducationRepository.merge(education, {
+      institution,
+      degree,
+      major,
+      startYear,
+      endYear,
+    });
+    const result = await expertEducationRepository.save(education);
+    return result;
+  };
+  static deleteEducations = async ({
+    req,
+    res,
+  }: {
+    req: Request;
+    res: Response;
+  }) => {
+    const { user } = res.locals.session;
+    const userId = user.user_id;
+    const role = user.role;
+    const { id } = req.params;
+
+    const { dataSource } = req.app.locals;
+    const expertRepository = dataSource.getRepository(Expert);
+    const expertEducationRepository = dataSource.getRepository(ExpertEducation);
+    const expertInfo = await expertRepository.findOne({
+      where: {
+        id,
+      },
+    });
+    if (!expertInfo) {
+      throw new NotFoundError(EXPERT_MESSAGES.EXPERT_NOT_FOUND);
+    }
+
+    if (role !== SystemRole.Admin) {
+      if (expertInfo.userId !== userId) {
+        throw new BadRequestError(
+          EXPERT_MESSAGES.NOT_PERMISSION_TO_DELETE_EDUCATION
+        );
+      }
+    }
+    const { educationIds } = req.body as DeleteEducationBody;
+    // Check if the educationIds is empty
+    if (!educationIds || educationIds.length === 0) {
+      throw new BadRequestError(EXPERT_MESSAGES.EDUCATION_IDS_REQUIRED);
+    }
+    //Check if the education exists
+    const educations = await expertEducationRepository.find({
+      where: {
+        id: In(educationIds),
+        expert: {
+          id,
+        },
+      },
+    });
+    if (educations.length !== educationIds.length) {
+      throw new NotFoundError(EXPERT_MESSAGES.EDUCATION_NOT_FOUND);
+    }
+    // Delete the education
+    await expertEducationRepository.remove(educations);
+    return null;
   };
 }
