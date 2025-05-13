@@ -763,6 +763,95 @@ class UserService {
     // Get By Year: "2021"
     // Get By Month: "2021-09"
     // Get By Day: "2021-09-01"
+
+    const isDayQuery = date.length === 10
+
+    const conditionalStages = isDayQuery
+      ? [
+          { $unwind: { path: '$healthTrackingDetails', preserveNullAndEmptyArrays: true } },
+          {
+            $lookup: {
+              from: 'exercises',
+              let: { exerciseId: '$healthTrackingDetails.exerciseId' },
+              pipeline: [{ $match: { $expr: { $eq: ['$_id', '$$exerciseId'] } } }],
+              as: 'healthTrackingDetails.exercise'
+            }
+          },
+          {
+            $set: {
+              'healthTrackingDetails.exercise': { $arrayElemAt: ['$healthTrackingDetails.exercise', 0] }
+            }
+          },
+          {
+            $lookup: {
+              from: 'dishes',
+              let: { dishId: '$healthTrackingDetails.dishId' },
+              pipeline: [{ $match: { $expr: { $eq: ['$_id', '$$dishId'] } } }],
+              as: 'healthTrackingDetails.dish'
+            }
+          },
+          {
+            $set: {
+              'healthTrackingDetails.dish': { $arrayElemAt: ['$healthTrackingDetails.dish', 0] }
+            }
+          },
+          {
+            $lookup: {
+              from: 'sets',
+              let: { setId: '$healthTrackingDetails.setId' },
+              pipeline: [{ $match: { $expr: { $eq: ['$_id', '$$setId'] } } }],
+              as: 'healthTrackingDetails.set'
+            }
+          },
+          {
+            $set: {
+              'healthTrackingDetails.set': { $arrayElemAt: ['$healthTrackingDetails.set', 0] }
+            }
+          },
+          {
+            $lookup: {
+              from: 'meals',
+              let: { mealId: '$healthTrackingDetails.mealId' },
+              pipeline: [
+                {
+                  $match: {
+                    $expr: { $eq: ['$_id', '$$mealId'] }
+                  }
+                },
+                {
+                  $lookup: {
+                    from: 'dishes',
+                    localField: 'dishes', // meal.dishes là mảng các ObjectId
+                    foreignField: '_id',
+                    as: 'dishes' // gán dishes chi tiết vào field mới
+                  }
+                }
+              ],
+              as: 'healthTrackingDetails.meal'
+            }
+          },
+          {
+            $set: {
+              'healthTrackingDetails.meal': { $arrayElemAt: ['$healthTrackingDetails.meal', 0] }
+            }
+          },
+          {
+            $group: {
+              _id: '$_id',
+              date: { $first: '$date' },
+              type: { $first: '$type' },
+              user_id: { $first: '$user_id' },
+              value: { $first: '$value' },
+              target: { $first: '$target' },
+              created_at: { $first: '$created_at' },
+              updated_at: { $first: '$updated_at' },
+              status: { $first: '$status' },
+              healthTrackingDetails: { $push: '$healthTrackingDetails' }
+            }
+          }
+        ]
+      : []
+
     const healthTrackings = await databaseService.users
       .aggregate([
         {
@@ -794,7 +883,8 @@ class UserService {
           $replaceRoot: {
             newRoot: '$healthTrackings'
           }
-        }
+        },
+        ...conditionalStages
       ])
       .toArray()
     healthTrackings.sort((a, b) => b.date.localeCompare(a.date))
