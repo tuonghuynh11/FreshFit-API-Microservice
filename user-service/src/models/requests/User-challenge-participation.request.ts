@@ -6,7 +6,10 @@ export interface UserChallengeParticipationReqQuery extends PaginationReqQuery, 
   status: UserChallengeParticipationQueryTypeFilter
 }
 export interface UpdateProgressEachDayReqBody {
-  completed_workouts: string[]
+  completed_workouts: {
+    workout_detail_id: string
+    actual_finish_time: number // thời gian thực tế hoàn thành bài tập
+  }[]
   completed_nutritions: string[]
 }
 export interface GetUserChallengeProgressReqQuery {

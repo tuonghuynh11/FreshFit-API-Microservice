@@ -8,6 +8,7 @@ interface IHealthTrackingDetail {
   dishId?: string
   setId?: string
   mealId?: string
+  actual_finish_time?: number // thời gian thực tế hoàn thành bài tập
   value: number
   status?: GeneralStatus
   created_at?: Date
@@ -21,6 +22,7 @@ export default class HealthTrackingDetail {
   dishId?: ObjectId
   setId?: ObjectId
   mealId?: ObjectId
+  actual_finish_time?: number
   value: number
   status: GeneralStatus
   created_at?: Date
@@ -38,5 +40,6 @@ export default class HealthTrackingDetail {
     this.created_at = healthTrackingDetail.created_at || date
     this.updated_at = healthTrackingDetail.updated_at || date
     this.status = healthTrackingDetail.status || GeneralStatus.Undone
+    this.actual_finish_time = healthTrackingDetail?.actual_finish_time || 0
   }
 }

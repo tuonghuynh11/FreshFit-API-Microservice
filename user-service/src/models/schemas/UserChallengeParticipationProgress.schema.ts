@@ -8,11 +8,15 @@ export interface UserChallengeParticipationProgressType {
   day: number
   week: number
   health_plan_detail_id: ObjectId
-  completed_workouts: ObjectId[] // workout_detail_id array
+  completed_workouts: CompleteWorkoutType[] // workout_detail_id array
   completed_nutritions: ObjectId[] // nutrition_detail_id array
   status: GeneralStatus // Undone | Done
   created_at?: Date
   updated_at?: Date
+}
+interface CompleteWorkoutType {
+  workout_detail_id: ObjectId
+  actual_finish_time: number // thời gian thực tế hoàn thành bài tập
 }
 export default class UserChallengeParticipationProgress {
   _id?: ObjectId
@@ -21,7 +25,7 @@ export default class UserChallengeParticipationProgress {
   health_plan_detail_id: ObjectId
   day: number
   week: number
-  completed_workouts: ObjectId[] // workout_detail_id array
+  completed_workouts: CompleteWorkoutType[] // workout_detail_id array
   completed_nutritions: ObjectId[] // nutrition_detail_id array
   status: GeneralStatus // Undone | Done
   created_at?: Date

@@ -151,6 +151,14 @@ export const setsSearchValidator = validate(
           options: [RoleTypeQueryFilter],
           errorMessage: FILTER_MESSAGES.INVALID_ROLE_TYPE
         }
+      },
+      min_calories: {
+        optional: true,
+        isNumeric: true
+      },
+      max_calories: {
+        optional: true,
+        isNumeric: true
       }
     },
     ['query']

@@ -7,7 +7,7 @@ import { MEALS_MESSAGES } from '~/constants/messages'
 
 export const getMealsController = async (req: Request<ParamsDictionary, any, any, MealReqQuery>, res: Response) => {
   const { user_id, role } = req.decoded_authorization as TokenPayload
-  const { search, page, limit, meal_type, type, sort_by, order_by } = req.query
+  const { search, page, limit, meal_type, type, sort_by, order_by, max_calories, min_calories } = req.query
   const { meals, total } = await mealService.getAll({
     search: search?.toString(),
     meal_type,
@@ -17,7 +17,9 @@ export const getMealsController = async (req: Request<ParamsDictionary, any, any
     sort_by,
     order_by,
     user_id,
-    role
+    role,
+    max_calories: max_calories ? Number(max_calories) : undefined,
+    min_calories: min_calories ? Number(min_calories) : undefined
   })
   return res.json({
     message: MEALS_MESSAGES.GET_MEAL_SUCCESS,

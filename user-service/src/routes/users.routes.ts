@@ -354,6 +354,7 @@ usersRouter.delete(
  * Method: Patch
  * Body: {
  * status: GeneralStatus
+ *  actual_finish_time: number // thời gian thực tế hoàn thành bài tập
  * }
  * **/
 usersRouter.patch(

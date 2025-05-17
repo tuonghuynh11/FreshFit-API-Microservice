@@ -1,13 +1,6 @@
 import { checkSchema } from 'express-validator'
 import { ObjectId } from 'mongodb'
-import {
-  ExerciseCategories,
-  ExerciseQueryTypeFilter,
-  ExerciseType,
-  ForceType,
-  LevelType,
-  MechanicsType
-} from '~/constants/enums'
+import { ExerciseCategories, ExerciseType, ForceType, LevelType, MechanicsType } from '~/constants/enums'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { EXERCISE_MESSAGES } from '~/constants/messages'
 import { ErrorWithStatus } from '~/models/Errors'
@@ -20,17 +13,17 @@ export const exercisesSearchValidator = validate(
       search: {
         optional: true,
         isString: true
-      }, // exercise name
+      } // exercise name
 
-      type: {
-        optional: false,
-        notEmpty: true,
-        isString: true,
-        isIn: {
-          options: [ExerciseQueryTypeFilter],
-          errorMessage: EXERCISE_MESSAGES.INVALID_EXERCISE_TYPE
-        }
-      }
+      // type: {
+      //   optional: false,
+      //   notEmpty: false,
+      //   isString: true,
+      //   isIn: {
+      //     options: [ExerciseType],
+      //     errorMessage: EXERCISE_MESSAGES.INVALID_EXERCISE_TYPE
+      //   }
+      // }
     },
     ['query']
   )

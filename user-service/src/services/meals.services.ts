@@ -18,7 +18,9 @@ class MealService {
     user_id,
     role,
     meal_type,
-    type
+    type,
+    max_calories,
+    min_calories
   }: {
     search?: string
     meal_type: MealQueryType
@@ -29,6 +31,8 @@ class MealService {
     role: UserRole
     sort_by: string
     order_by: string
+    max_calories?: number
+    min_calories?: number
   }) {
     const conditions: any = {
       isPartOfHealthTrackingDetail: false
@@ -37,6 +41,12 @@ class MealService {
       conditions.name = {
         $regex: search,
         $options: 'i'
+      }
+    }
+    if (max_calories && min_calories) {
+      conditions.calories = {
+        $gte: min_calories,
+        $lte: max_calories
       }
     }
 

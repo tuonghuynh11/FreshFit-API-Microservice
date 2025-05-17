@@ -23,7 +23,8 @@ const exercisesRouter = Router()
 
 /**
  * Description: Search exercise by name
- * Path: ?search = "" &page = 1 &limit = 10 & type = ExerciseCategories & order_by & sort_by
+ * Path: ?search = "" &page = 1 &limit = 10 & type = ExerciseType
+ *        & target_muscle= MUSCLE_GROUP_NAME & experience_level = LevelType & order_by & sort_by
  * Method: GET
  * **/
 exercisesRouter.get(

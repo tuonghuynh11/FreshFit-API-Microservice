@@ -318,7 +318,10 @@ class UserChallengeParticipationService {
     role
   }: {
     userChallengeParticipationProgressId: string
-    completed_workouts: string[]
+    completed_workouts: {
+      workout_detail_id: string
+      actual_finish_time: number // thời gian thực tế hoàn thành bài tập
+    }[]
     completed_nutritions: string[]
     user_id: string
     role: UserRole
@@ -332,7 +335,12 @@ class UserChallengeParticipationService {
         status: HTTP_STATUS.NOT_FOUND
       })
     }
-    const completed_workouts_ids = completed_workouts.map((workout) => new ObjectId(workout))
+    const completed_workouts_update = completed_workouts.map((workout) => {
+      return {
+        workout_detail_id: new ObjectId(workout.workout_detail_id),
+        actual_finish_time: workout.actual_finish_time
+      }
+    })
     const completed_nutritions_ids = completed_nutritions.map((nutrition) => new ObjectId(nutrition))
 
     // check if completed_workouts_ids and completed_nutritions_ids are already in the health_plan_detail
@@ -348,7 +356,7 @@ class UserChallengeParticipationService {
     }
 
     const isCompletedWorkoutIdsExist = isIds1ContainInId2(
-      completed_workouts_ids,
+      completed_workouts_update.map((item) => item.workout_detail_id),
       healthPlanDetail.workout_details!.map((item) => item._id!)
     )
 
@@ -372,10 +380,10 @@ class UserChallengeParticipationService {
     }
 
     // Filter new completed_workouts_ids and completed_nutritions_ids
-    const newCompletedWorkouts = completed_workouts_ids.filter(
-      (workoutId) =>
-        !userChallengeParticipationProgress.completed_workouts.some((completedWorkoutId) =>
-          completedWorkoutId.equals(workoutId)
+    const newCompletedWorkouts = completed_workouts_update.filter(
+      (workout) =>
+        !userChallengeParticipationProgress.completed_workouts.some((completedWorkout) =>
+          completedWorkout.workout_detail_id.equals(workout.workout_detail_id)
         )
     )
 

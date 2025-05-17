@@ -29,7 +29,7 @@ const dishesRouter = Router()
 
 /**
  * Description: Search dish by name
- * Path: ?search = "" &page = 1 &limit = 10 & order_by & sort_by
+ * Path: ?search = "" &page = 1 &limit = 10 & order_by & sort_by & min_calories & max_calories
  * Method: GET
  * **/
 dishesRouter.get(
@@ -42,7 +42,7 @@ dishesRouter.get(
 
 /**
  * Description: Search dish by ingredient name
- * Path: /search-by-ingredient?ingredients = ingredient1|ingredient2 &page = 1 &limit = 10 & order_by & sort_by
+ * Path: /search-by-ingredient?ingredients = ingredient1|ingredient2 &page = 1 &limit = 10 & order_by & sort_by& min_calories & max_calories
  * Method: GET
  * **/
 dishesRouter.get(

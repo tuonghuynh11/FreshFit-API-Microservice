@@ -9,12 +9,14 @@ export const searchExercisesController = async (
   req: Request<ParamsDictionary, any, any, ExerciseReqQuery>,
   res: Response
 ) => {
-  const { search, page, limit, type, sort_by, order_by } = req.query
+  const { search, page, limit, type, sort_by, order_by, target_muscle, experience_level } = req.query
   const { exercises, total } = await exerciseService.search({
     search: search?.toString(),
     type,
-    page,
-    limit,
+    target_muscle,
+    experience_level,
+    page: Number(page),
+    limit: Number(limit),
     sort_by,
     order_by
   })

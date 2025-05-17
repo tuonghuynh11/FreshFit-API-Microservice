@@ -3,13 +3,12 @@ import { TokenPayload } from '~/models/requests/User.requests'
 import { ParamsDictionary } from 'express-serve-static-core'
 import { SETS_MESSAGES } from '~/constants/messages'
 import setService from '~/services/sets.services'
-import { SetReqBody, UpdateSetReqBody } from '~/models/requests/Set.requests'
-import { BaseReqQuery } from '~/models/requests/Index.request'
+import { SetReqBody, SetReqQuery, UpdateSetReqBody } from '~/models/requests/Set.requests'
 
-export const searchSetsController = async (req: Request<ParamsDictionary, any, any, BaseReqQuery>, res: Response) => {
+export const searchSetsController = async (req: Request<ParamsDictionary, any, any, SetReqQuery>, res: Response) => {
   const { user_id, role } = req.decoded_authorization as TokenPayload
 
-  const { search, type, page, limit, sort_by, order_by } = req.query
+  const { search, type, page, limit, sort_by, order_by, max_calories, min_calories, isRecommended } = req.query
   const { sets, total } = await setService.search({
     search: search?.toString(),
     page,
@@ -18,7 +17,10 @@ export const searchSetsController = async (req: Request<ParamsDictionary, any, a
     order_by,
     type,
     user_id,
-    role
+    role,
+    max_calories: max_calories ? Number(max_calories) : undefined,
+    min_calories: min_calories ? Number(min_calories) : undefined,
+    isRecommended: isRecommended && isRecommended === 'true' ? true : undefined
   })
   return res.json({
     message: SETS_MESSAGES.GET_SET_SUCCESS,
