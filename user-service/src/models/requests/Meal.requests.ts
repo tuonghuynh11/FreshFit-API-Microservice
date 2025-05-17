@@ -14,4 +14,6 @@ export interface MealReqBody {
 export interface MealReqQuery extends PaginationReqQuery, Filter {
   type: RoleTypeQueryFilter
   meal_type: MealQueryType
+  min_calories?: number
+  max_calories?: number
 }

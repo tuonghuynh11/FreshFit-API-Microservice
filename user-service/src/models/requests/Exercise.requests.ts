@@ -1,14 +1,8 @@
-import {
-  ExerciseCategories,
-  ExerciseQueryTypeFilter,
-  ExerciseType,
-  ForceType,
-  LevelType,
-  MechanicsType
-} from '~/constants/enums'
+import { ExerciseCategories, ExerciseType, ForceType, LevelType, MechanicsType } from '~/constants/enums'
 import { PaginationReqQuery } from './Pagination.requests'
 import { Filter } from './Index.request'
 import MuscleGroup from '../schemas/MuscleGroup.schema'
+import { MUSCLE_GROUP_NAME } from '~/constants'
 
 export interface ExerciseReqBody {
   name: string
@@ -46,5 +40,7 @@ export interface UpdateExerciseReqBody {
 }
 
 export interface ExerciseReqQuery extends PaginationReqQuery, Filter {
-  type: ExerciseQueryTypeFilter
+  type: ExerciseType
+  target_muscle: MUSCLE_GROUP_NAME
+  experience_level: LevelType
 }

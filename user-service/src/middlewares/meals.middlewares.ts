@@ -28,6 +28,14 @@ export const mealsSearchValidator = validate(
           options: [MealQueryType],
           errorMessage: MEALS_MESSAGES.INVALID_MEAL_TYPE
         }
+      },
+      min_calories: {
+        optional: true,
+        isNumeric: true
+      },
+      max_calories: {
+        optional: true,
+        isNumeric: true
       }
     },
     ['query']

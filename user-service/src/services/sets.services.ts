@@ -19,7 +19,10 @@ class SetService {
     sort_by = 'name',
     order_by = 'ASC',
     user_id,
-    role
+    role,
+    max_calories,
+    min_calories,
+    isRecommended
   }: {
     search?: string
     page?: number
@@ -29,6 +32,9 @@ class SetService {
     type: RoleTypeQueryFilter
     user_id?: string
     role: UserRole
+    max_calories?: number
+    min_calories?: number
+    isRecommended?: boolean
   }) {
     const conditions: any = {}
     if (search) {
@@ -38,6 +44,12 @@ class SetService {
       }
     }
 
+    if (max_calories && min_calories) {
+      conditions.total_calories = {
+        $gte: min_calories,
+        $lte: max_calories
+      }
+    }
     if (type !== RoleTypeQueryFilter.All) {
       if (type === RoleTypeQueryFilter.System) {
         conditions.user_id = undefined
@@ -45,15 +57,21 @@ class SetService {
         conditions.user_id = new ObjectId(user_id)
       }
     }
+    // Build sort object
+    const sort: Record<string, 1 | -1> = {}
 
+    if (isRecommended) {
+      sort.rating = -1 // Ưu tiên rating giảm dần
+    }
+
+    // Luôn thêm sort_by để bảo toàn tiêu chí người dùng
+    sort[sort_by] = order_by === 'ASC' ? 1 : -1
     const [sets, total] = await Promise.all([
       databaseService.sets
         .find(conditions, {
           skip: page && limit ? (page - 1) * limit : undefined,
           limit: limit,
-          sort: {
-            [sort_by]: order_by === 'ASC' ? 1 : -1
-          }
+          sort
         })
         .toArray(),
       await databaseService.sets.countDocuments(conditions)

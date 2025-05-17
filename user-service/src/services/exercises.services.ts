@@ -1,12 +1,13 @@
 import { ObjectId } from 'mongodb'
 import databaseService from './database.services'
 import Meals from '~/models/schemas/Meals.schema'
-import { ExerciseQueryTypeFilter, MealType } from '~/constants/enums'
+import { ExerciseType, LevelType, MealType } from '~/constants/enums'
 import { EXERCISE_MESSAGES, MEALS_MESSAGES } from '~/constants/messages'
 import { ExerciseReqBody, UpdateExerciseReqBody } from '~/models/requests/Exercise.requests'
 import Exercises from '~/models/schemas/Exercises.schema'
 import { ErrorWithStatus } from '~/models/Errors'
 import HTTP_STATUS from '~/constants/httpStatus'
+import { MUSCLE_GROUP_NAME } from '~/constants'
 
 class ExerciseService {
   async search({
@@ -15,14 +16,18 @@ class ExerciseService {
     limit,
     sort_by = 'name',
     order_by = 'ASC',
-    type
+    type,
+    target_muscle,
+    experience_level
   }: {
     search?: string
-    type: ExerciseQueryTypeFilter
+    type: ExerciseType
     page?: number
     limit?: number
     sort_by: string
     order_by: string
+    target_muscle?: MUSCLE_GROUP_NAME
+    experience_level: LevelType
   }) {
     const conditions: any = {}
     if (search) {
@@ -32,10 +37,15 @@ class ExerciseService {
       }
     }
 
-    if (type !== ExerciseQueryTypeFilter.All) {
-      conditions.category = type
+    if (type) {
+      conditions.type = type
     }
-
+    if (target_muscle) {
+      conditions['target_muscle.name'] = target_muscle
+    }
+    if (experience_level) {
+      conditions.experience_level = experience_level
+    }
     const [exercises, total] = await Promise.all([
       databaseService.exercises
         .find(conditions, {

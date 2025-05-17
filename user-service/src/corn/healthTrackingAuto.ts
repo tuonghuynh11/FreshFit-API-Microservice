@@ -10,16 +10,72 @@ export const healthTrackingAuto = async () => {
     target: 0
   }
 
-  const users = await databaseService.users
-    .find({
-      role: UserRole.User,
-      verify: UserVerifyStatus.Verified
-    })
-    .toArray()
+  const [usersNoHaveBurnedTracking, usersNoHaveConsumedTracking] = await Promise.all([
+    databaseService.users
+      .aggregate([
+        {
+          $match: {
+            role: UserRole.User,
+            verify: UserVerifyStatus.Verified
+          }
+        },
+        {
+          $lookup: {
+            from: 'health_trackings',
+            localField: 'healthTrackings',
+            foreignField: '_id',
+            as: 'healthTrackingDocs'
+          }
+        },
+        {
+          $match: {
+            healthTrackingDocs: {
+              $not: {
+                $elemMatch: {
+                  date: date,
+                  type: HealthTrackingType.Calories_Burned
+                }
+              }
+            }
+          }
+        }
+      ])
+      .toArray(),
+    databaseService.users
+      .aggregate([
+        {
+          $match: {
+            role: UserRole.User,
+            verify: UserVerifyStatus.Verified
+          }
+        },
+        {
+          $lookup: {
+            from: 'health_trackings',
+            localField: 'healthTrackings',
+            foreignField: '_id',
+            as: 'healthTrackingDocs'
+          }
+        },
+        {
+          $match: {
+            healthTrackingDocs: {
+              $not: {
+                $elemMatch: {
+                  date: date,
+                  type: HealthTrackingType.Calories_Consumed
+                }
+              }
+            }
+          }
+        }
+      ])
+      .toArray()
+  ])
 
   const [healthTrackingBurnedInserted, healthTrackingConsumedInserted] = await Promise.all([
     databaseService.healthTrackings.insertMany(
-      users.map((user: any) => {
+      usersNoHaveBurnedTracking.map((user: any) => {
         return new HealthTracking({
           user_id: user._id,
           date,
@@ -30,7 +86,7 @@ export const healthTrackingAuto = async () => {
       })
     ),
     databaseService.healthTrackings.insertMany(
-      users.map((user: any) => {
+      usersNoHaveConsumedTracking.map((user: any) => {
         return new HealthTracking({
           user_id: user._id,
           date,
@@ -41,8 +97,8 @@ export const healthTrackingAuto = async () => {
       })
     )
   ])
-  await Promise.all(
-    users.map((user: any, index: number) => {
+  await Promise.all([
+    ...usersNoHaveBurnedTracking.map((user: any, index: number) => {
       return databaseService.users.updateOne(
         {
           _id: user._id
@@ -50,15 +106,30 @@ export const healthTrackingAuto = async () => {
         {
           $push: {
             healthTrackings: {
-              $each: [
-                healthTrackingBurnedInserted.insertedIds[index],
-                healthTrackingConsumedInserted.insertedIds[index]
-              ]
+              $each: [healthTrackingBurnedInserted.insertedIds[index]]
+            }
+          }
+        }
+      )
+    }),
+    ...usersNoHaveConsumedTracking.map((user: any, index: number) => {
+      return databaseService.users.updateOne(
+        {
+          _id: user._id
+        },
+        {
+          $push: {
+            healthTrackings: {
+              $each: [healthTrackingConsumedInserted.insertedIds[index]]
             }
           }
         }
       )
     })
-  )
+  ])
   console.log('health tracking inserted')
 }
+
+/// ---- First Version ---- ///
+// export const healthTrackingAuto = async () => {
+// }

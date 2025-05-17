@@ -82,3 +82,25 @@ export const MUSCLE_GROUP: MuscleGroup[] = [
     image: 'https://cdn.muscleandstrength.com/sites/default/files/taxonomy/image/videos/triceps_0.jpg'
   }
 ]
+export enum MUSCLE_GROUP_NAME {
+  Abductors = 'Abductors',
+  Abs = 'Abs',
+  Biceps = 'Biceps',
+  Calves = 'Calves',
+  Chest = 'Chest',
+  Forearms = 'Forearms',
+  Glutes = 'Glutes',
+  Hamstrings = 'Hamstrings',
+  HipFlexors = 'Hip Flexors',
+  ITBand = 'IT Band',
+  Lats = 'Lats',
+  LowerBack = 'Lower Back',
+  UpperBack = 'Upper Back',
+  Neck = 'Neck',
+  Obliques = 'Obliques',
+  PalmarFascia = 'Palmar Fascia',
+  Quads = 'Quads',
+  Shoulders = 'Shoulders',
+  Traps = 'Traps',
+  Triceps = 'Triceps'
+}

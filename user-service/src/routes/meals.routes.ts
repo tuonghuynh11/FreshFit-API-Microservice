@@ -18,7 +18,7 @@ const mealsRouter = Router()
 
 /**
  * Description: Search meal by name
- * Path: ?search = "" &page = 1 &limit = 10 & type = MealQueryTypeFilter & meal_type = MealQueryType & order_by & sort_by
+ * Path: ?search = "" &page = 1 &limit = 10 & type = MealQueryTypeFilter & meal_type = MealQueryType & order_by & sort_by & min_calories & max_calories
  * Method: GET
  * **/
 mealsRouter.get(

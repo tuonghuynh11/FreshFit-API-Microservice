@@ -19,6 +19,8 @@ class DishService {
     search,
     page,
     limit,
+    max_calories,
+    min_calories,
     sort_by = 'name',
     order_by = 'ASC'
   }: {
@@ -27,6 +29,8 @@ class DishService {
     limit?: number
     sort_by: string
     order_by: string
+    max_calories?: number
+    min_calories?: number
   }) {
     const conditions: any = {}
     if (search) {
@@ -35,18 +39,66 @@ class DishService {
         $options: 'i'
       }
     }
+    if (max_calories && min_calories) {
+      conditions.calories = {
+        $gte: min_calories,
+        $lte: max_calories
+      }
+    }
 
-    const [dishes, total] = await Promise.all([
-      databaseService.dishes
-        .find(conditions, {
-          skip: page && limit ? (page - 1) * limit : undefined,
-          limit: limit,
-          sort: {
-            [sort_by]: order_by === 'ASC' ? 1 : -1
+    // const [dishes, total] = await Promise.all([
+    //   databaseService.dishes
+    //     .find(conditions, {
+    //       skip: page && limit ? (page - 1) * limit : undefined,
+    //       limit: limit,
+    //       sort: {
+    //         [sort_by]: order_by === 'ASC' ? 1 : -1
+    //       }
+    //     })
+    //     .toArray(),
+    //   await databaseService.dishes.countDocuments(conditions)
+    // ])
+    const pipeline: any[] = []
+
+    if (search) {
+      pipeline.push({
+        $match: {
+          name: {
+            $regex: search,
+            $options: 'i'
           }
-        })
-        .toArray(),
-      await databaseService.dishes.countDocuments(conditions)
+        }
+      })
+    }
+
+    if (max_calories && min_calories) {
+      pipeline.push({
+        $match: {
+          calories: {
+            $gte: min_calories,
+            $lte: max_calories
+          }
+        }
+      })
+    }
+
+    // Sắp xếp
+    pipeline.push({
+      $sort: {
+        [sort_by]: order_by === 'ASC' ? 1 : -1
+      }
+    })
+
+    // Phân trang
+    if (page && limit) {
+      pipeline.push({ $skip: (page - 1) * limit })
+      pipeline.push({ $limit: limit })
+    }
+
+    // Chạy aggregate với allowDiskUse
+    const [dishes, total] = await Promise.all([
+      databaseService.dishes.aggregate(pipeline, { allowDiskUse: true }).toArray(),
+      databaseService.dishes.countDocuments(conditions)
     ])
     return {
       dishes,
@@ -362,20 +414,156 @@ class DishService {
     return result
   }
 
+  ///** Chậm nhất */
+  // async searchByIngredients({
+  //   ingredients,
+  //   page,
+  //   limit,
+  //   max_calories,
+  //   min_calories,
+  //   sort_by = 'name',
+  //   order_by = 'ASC'
+  // }: {
+  //   ingredients: string
+  //   page?: number
+  //   limit?: number
+  //   max_calories?: number
+  //   min_calories?: number
+  //   sort_by: string
+  //   order_by: string
+  // }) {
+  //   const ingredientNames = ingredients.split('|').map((ingredient) => ingredient.trim())
+  //   const ingredientList = await databaseService.ingredients
+  //     .find({
+  //       $or: ingredientNames.map((ingredient) => ({ name: { $regex: ingredient, $options: 'i' } }))
+  //     })
+  //     .toArray()
+
+  //   const ingredientIds = ingredientList.map((ingredient) => new ObjectId(ingredient._id))
+
+  //   // Nếu không tìm thấy thành phần, trả về rỗng
+  //   if (!ingredientIds.length) {
+  //     return {
+  //       dishes: [],
+  //       total: 0
+  //     }
+  //   }
+
+  //   const conditions: Filter<Dishes> = {
+  //     ingredients: {
+  //       $elemMatch: {
+  //         ingredientId: {
+  //           $in: ingredientIds
+  //         }
+  //       }
+  //     }
+  //   }
+
+  //   if (max_calories && min_calories) {
+  //     conditions.calories = {
+  //       $gte: min_calories,
+  //       $lte: max_calories
+  //     }
+  //   }
+  //   // Aggregation pipeline để tìm và sắp xếp món ăn theo số lượng thành phần khớp
+  //   const dishesPipeline = [
+  //     // Lọc các món ăn có ít nhất một thành phần trong ingredientIds
+  //     {
+  //       $match: conditions
+  //     },
+  //     // Thêm trường matchedIngredientsCount để đếm số lượng thành phần khớp
+  //     {
+  //       $addFields: {
+  //         matchedIngredientsCount: {
+  //           $size: {
+  //             $filter: {
+  //               input: '$ingredients',
+  //               as: 'ingredient',
+  //               cond: { $in: ['$$ingredient.ingredientId', ingredientIds] }
+  //             }
+  //           }
+  //         }
+  //       }
+  //     },
+  //     // Lookup để lấy thông tin từ collection Ingredients
+  //     {
+  //       $lookup: {
+  //         from: 'ingredients', // Tên collection Ingredients
+  //         localField: 'ingredients.ingredientId', // Trường trong Dishes
+  //         foreignField: '_id', // Trường trong Ingredients
+  //         as: 'ingredientDetails' // Tên mảng chứa kết quả lookup
+  //       }
+  //     },
+  //     // Cập nhật mảng ingredients để thêm trường name
+  //     {
+  //       $set: {
+  //         ingredients: {
+  //           $map: {
+  //             input: '$ingredients',
+  //             as: 'ingredient',
+  //             in: {
+  //               $mergeObjects: [
+  //                 '$$ingredient',
+  //                 {
+  //                   name: {
+  //                     $arrayElemAt: [
+  //                       '$ingredientDetails.name',
+  //                       {
+  //                         $indexOfArray: ['$ingredientDetails._id', '$$ingredient.ingredientId']
+  //                       }
+  //                     ]
+  //                   }
+  //                 }
+  //               ]
+  //             }
+  //           }
+  //         }
+  //       }
+  //     },
+  //     // Loại bỏ mảng ingredientDetails tạm thời
+  //     {
+  //       $unset: 'ingredientDetails'
+  //     },
+  //     {
+  //       $sort: {
+  //         matchedIngredientsCount: -1, // Sắp xếp theo số lượng thành phần khớp giảm dần
+  //         [sort_by]: order_by === 'ASC' ? 1 : -1 // Sắp xếp thứ tự theo sort_by
+  //       }
+  //     },
+  //     // Phân trang
+  //     ...(page && limit ? [{ $skip: (page - 1) * limit }, { $limit: limit }] : [])
+  //   ]
+
+  //   const [dishes, total] = await Promise.all([
+  //     databaseService.dishes.aggregate(dishesPipeline).toArray(),
+  //     await databaseService.dishes.countDocuments(conditions)
+  //   ])
+  //   return {
+  //     dishes,
+  //     total
+  //   }
+  // }
+
+  ///** Vừa */
   async searchByIngredients({
     ingredients,
     page,
     limit,
+    max_calories,
+    min_calories,
     sort_by = 'name',
     order_by = 'ASC'
   }: {
     ingredients: string
     page?: number
     limit?: number
+    max_calories?: number
+    min_calories?: number
     sort_by: string
     order_by: string
   }) {
     const ingredientNames = ingredients.split('|').map((ingredient) => ingredient.trim())
+
     const ingredientList = await databaseService.ingredients
       .find({
         $or: ingredientNames.map((ingredient) => ({ name: { $regex: ingredient, $options: 'i' } }))
@@ -384,7 +572,6 @@ class DishService {
 
     const ingredientIds = ingredientList.map((ingredient) => new ObjectId(ingredient._id))
 
-    // Nếu không tìm thấy thành phần, trả về rỗng
     if (!ingredientIds.length) {
       return {
         dishes: [],
@@ -402,13 +589,15 @@ class DishService {
       }
     }
 
-    // Aggregation pipeline để tìm và sắp xếp món ăn theo số lượng thành phần khớp
+    if (max_calories && min_calories) {
+      conditions.calories = {
+        $gte: min_calories,
+        $lte: max_calories
+      }
+    }
+
     const dishesPipeline = [
-      // Lọc các món ăn có ít nhất một thành phần trong ingredientIds
-      {
-        $match: conditions
-      },
-      // Thêm trường matchedIngredientsCount để đếm số lượng thành phần khớp
+      { $match: conditions },
       {
         $addFields: {
           matchedIngredientsCount: {
@@ -422,16 +611,14 @@ class DishService {
           }
         }
       },
-      // Lookup để lấy thông tin từ collection Ingredients
       {
         $lookup: {
-          from: 'ingredients', // Tên collection Ingredients
-          localField: 'ingredients.ingredientId', // Trường trong Dishes
-          foreignField: '_id', // Trường trong Ingredients
-          as: 'ingredientDetails' // Tên mảng chứa kết quả lookup
+          from: 'ingredients',
+          localField: 'ingredients.ingredientId',
+          foreignField: '_id',
+          as: 'ingredientDetails'
         }
       },
-      // Cập nhật mảng ingredients để thêm trường name
       {
         $set: {
           ingredients: {
@@ -457,29 +644,161 @@ class DishService {
           }
         }
       },
-      // Loại bỏ mảng ingredientDetails tạm thời
-      {
-        $unset: 'ingredientDetails'
-      },
+      { $unset: 'ingredientDetails' },
       {
         $sort: {
-          matchedIngredientsCount: -1, // Sắp xếp theo số lượng thành phần khớp giảm dần
-          [sort_by]: order_by === 'ASC' ? 1 : -1 // Sắp xếp thứ tự theo sort_by
+          matchedIngredientsCount: -1,
+          [sort_by]: order_by === 'ASC' ? 1 : -1
         }
       },
-      // Phân trang
       ...(page && limit ? [{ $skip: (page - 1) * limit }, { $limit: limit }] : [])
     ]
 
     const [dishes, total] = await Promise.all([
-      databaseService.dishes.aggregate(dishesPipeline).toArray(),
-      await databaseService.dishes.countDocuments(conditions)
+      databaseService.dishes.aggregate(dishesPipeline, { allowDiskUse: true }).toArray(),
+      databaseService.dishes.countDocuments(conditions)
     ])
+
     return {
       dishes,
       total
     }
   }
+
+  ///** Same cái thứ 2 nhưng chưa test kĩ */
+  // async searchByIngredients({
+  //   ingredients,
+  //   page,
+  //   limit,
+  //   max_calories,
+  //   min_calories,
+  //   sort_by = 'name',
+  //   order_by = 'ASC'
+  // }: {
+  //   ingredients: string
+  //   page?: number
+  //   limit?: number
+  //   max_calories?: number
+  //   min_calories?: number
+  //   sort_by: string
+  //   order_by: string
+  // }) {
+  //   const ingredientNames = ingredients.split('|').map((ingredient) => ingredient.trim())
+
+  //   const ingredientList = await databaseService.ingredients
+  //     .find({
+  //       $or: ingredientNames.map((ingredient) => ({ name: { $regex: ingredient, $options: 'i' } }))
+  //     })
+  //     .project({ _id: 1 }) // Chỉ lấy _id
+  //     .toArray()
+
+  //   const ingredientIds = ingredientList.map((ingredient) => new ObjectId(ingredient._id))
+
+  //   if (!ingredientIds.length) {
+  //     return {
+  //       dishes: [],
+  //       total: 0
+  //     }
+  //   }
+
+  //   const conditions: Filter<Dishes> = {
+  //     ingredients: {
+  //       $elemMatch: {
+  //         ingredientId: {
+  //           $in: ingredientIds
+  //         }
+  //       }
+  //     }
+  //   }
+
+  //   if (max_calories && min_calories) {
+  //     conditions.calories = {
+  //       $gte: min_calories,
+  //       $lte: max_calories
+  //     }
+  //   }
+
+  //   const dishesPipeline = [
+  //     { $match: conditions },
+  //     {
+  //       $addFields: {
+  //         matchedIngredientsCount: {
+  //           $size: {
+  //             $filter: {
+  //               input: '$ingredients',
+  //               as: 'ingredient',
+  //               cond: { $in: ['$$ingredient.ingredientId', ingredientIds] }
+  //             }
+  //           }
+  //         }
+  //       }
+  //     },
+  //     {
+  //       $lookup: {
+  //         from: 'ingredients',
+  //         localField: 'ingredients.ingredientId',
+  //         foreignField: '_id',
+  //         as: 'ingredientDetails',
+  //         pipeline: [
+  //           { $project: { _id: 1, name: 1 } } // Chỉ lấy _id và name để tiết kiệm tài nguyên
+  //         ]
+  //       }
+  //     },
+  //     {
+  //       $set: {
+  //         ingredients: {
+  //           $map: {
+  //             input: '$ingredients',
+  //             as: 'ingredient',
+  //             in: {
+  //               $mergeObjects: [
+  //                 '$$ingredient',
+  //                 {
+  //                   name: {
+  //                     $arrayElemAt: [
+  //                       '$ingredientDetails.name',
+  //                       {
+  //                         $indexOfArray: ['$ingredientDetails._id', '$$ingredient.ingredientId']
+  //                       }
+  //                     ]
+  //                   }
+  //                 }
+  //               ]
+  //             }
+  //           }
+  //         }
+  //       }
+  //     },
+  //     { $unset: 'ingredientDetails' },
+  //     {
+  //       $sort: {
+  //         matchedIngredientsCount: -1,
+  //         [sort_by]: order_by === 'ASC' ? 1 : -1
+  //       }
+  //     },
+  //     ...(page && limit ? [{ $skip: (page - 1) * limit }, { $limit: limit }] : [])
+  //   ]
+
+  //   // Sử dụng facet để tính tổng số món ăn trong cùng một aggregation pipeline
+  //   const aggregateWithFacet = [
+  //     ...dishesPipeline,
+  //     {
+  //       $facet: {
+  //         dishes: [{ $skip: (page! - 1) * limit! }, { $limit: limit }],
+  //         totalCount: [{ $count: 'total' }]
+  //       }
+  //     }
+  //   ]
+
+  //   const result = await databaseService.dishes.aggregate(aggregateWithFacet, { allowDiskUse: true }).toArray()
+  //   const total = result[0]?.totalCount[0]?.total || 0
+  //   const dishes = result[0]?.dishes || []
+
+  //   return {
+  //     dishes,
+  //     total
+  //   }
+  // }
 }
 const dishService = new DishService()
 export default dishService

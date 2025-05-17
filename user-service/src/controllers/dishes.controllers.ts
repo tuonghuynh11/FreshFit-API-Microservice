@@ -14,13 +14,15 @@ import {
 import dishService from '~/services/dishes.services'
 
 export const searchDishesController = async (req: Request<ParamsDictionary, any, any, DishReqQuery>, res: Response) => {
-  const { search, page, limit, sort_by, order_by } = req.query
+  const { search, page, limit, sort_by, order_by, max_calories, min_calories } = req.query
   const { dishes, total } = await dishService.search({
     search: search?.toString(),
-    page,
-    limit,
+    page: Number(page),
+    limit: Number(limit),
     sort_by,
-    order_by
+    order_by,
+    max_calories: max_calories ? Number(max_calories) : undefined,
+    min_calories: min_calories ? Number(min_calories) : undefined
   })
   return res.json({
     message: DISH_MESSAGES.GET_DISH_SUCCESS,
@@ -142,11 +144,13 @@ export const searchDishesByIngredientsController = async (
   req: Request<ParamsDictionary, any, any, SearchDishByIngredientReqQuery>,
   res: Response
 ) => {
-  const { ingredients, page, limit, sort_by, order_by } = req.query
+  const { ingredients, page, limit, sort_by, order_by, min_calories, max_calories } = req.query
   const { dishes, total } = await dishService.searchByIngredients({
     ingredients: ingredients?.toString(),
     page: Number(page),
     limit: Number(limit),
+    min_calories: min_calories ? Number(min_calories) : undefined,
+    max_calories: max_calories ? Number(max_calories) : undefined,
     sort_by,
     order_by
   })

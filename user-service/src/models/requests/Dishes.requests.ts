@@ -59,10 +59,15 @@ export interface UpdateDishReqBody {
   instruction?: string
 }
 
-export interface DishReqQuery extends PaginationReqQuery, Filter {}
+export interface DishReqQuery extends PaginationReqQuery, Filter {
+  min_calories?: number
+  max_calories?: number
+}
 
 export interface SearchDishByIngredientReqQuery extends PaginationReqQuery {
   ingredients: string
   sort_by: string
   order_by: string
+  min_calories?: number
+  max_calories?: number
 }

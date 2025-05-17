@@ -17,7 +17,13 @@ import { isIds1ContainInId2 } from './user-challenge-participation.services'
 class HealthTrackingDetailService {
   async add({ user_id, healthTrackingDetail }: { user_id: string; healthTrackingDetail: HealthTrackingDetailBody }) {
     const now = new Date()
-    const formattedDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
+    let formattedDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
+
+    if (healthTrackingDetail.date) {
+      formattedDate = healthTrackingDetail.date
+    }
+    console.log('formattedDate', formattedDate)
+
     const isExist = await databaseService.healthTrackings.findOne({
       user_id: new ObjectId(user_id),
       date: formattedDate,
@@ -104,7 +110,11 @@ class HealthTrackingDetailService {
     healthTrackingDetail: HealthTrackingDetailForMealBody
   }) {
     const now = new Date()
-    const formattedDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
+    let formattedDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
+
+    if (healthTrackingDetail.date) {
+      formattedDate = healthTrackingDetail.date
+    }
 
     const [isExist, dishes] = await Promise.all([
       databaseService.healthTrackings.findOne({

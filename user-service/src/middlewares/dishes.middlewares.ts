@@ -12,7 +12,15 @@ export const dishesSearchValidator = validate(
       search: {
         optional: true,
         isString: true
-      } // dish name
+      }, // dish name
+      min_calories: {
+        optional: true,
+        isNumeric: true
+      },
+      max_calories: {
+        optional: true,
+        isNumeric: true
+      }
     },
     ['query']
   )
@@ -25,7 +33,15 @@ export const dishesSearchByIngredientValidator = validate(
           errorMessage: 'Ingredients is required'
         },
         isString: true
-      } // ingredient name
+      }, // ingredient name
+      min_calories: {
+        optional: true,
+        isNumeric: true
+      },
+      max_calories: {
+        optional: true,
+        isNumeric: true
+      }
     },
     ['query']
   )
