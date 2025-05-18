@@ -73,6 +73,10 @@ export const addHealthPlanValidator = validate(
           },
           errorMessage: WORKOUT_PLAN_MESSAGES.END_DATE_MUST_BE_ISO8601
         }
+      },
+      number_of_weeks: {
+        notEmpty: false,
+        isNumeric: true
       }
     },
     ['body']

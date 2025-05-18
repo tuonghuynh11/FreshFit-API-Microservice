@@ -18,6 +18,7 @@ export interface HealthPlanReqBody {
   level: WorkoutType
   start_date?: Date
   end_date?: Date
+  number_of_weeks: number
 }
 export interface UpdateHealthPlanReqBody {
   name?: string
@@ -28,6 +29,7 @@ export interface UpdateHealthPlanReqBody {
   level?: WorkoutType
   start_date?: Date
   end_date?: Date
+  number_of_weeks?: number
 }
 
 export interface HealthPlanReqQuery extends PaginationReqQuery, Filter {

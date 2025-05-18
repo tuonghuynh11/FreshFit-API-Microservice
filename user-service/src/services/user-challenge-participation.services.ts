@@ -214,6 +214,85 @@ class UserChallengeParticipationService {
 
     return result
   }
+  async getUserChallengeProgressByChallengeId({
+    id,
+    week,
+    day,
+    user_id,
+    role
+  }: {
+    id: string
+    user_id: string
+    role: UserRole
+    week: number
+    day: number
+  }) {
+    const userChallenge = await databaseService.userChallengeParticipation.findOne({
+      challenge_id: new ObjectId(id)
+    })
+    if (!userChallenge) {
+      throw new ErrorWithStatus({
+        message: USER_CHALLENGE_PARTICIPATION_MESSAGES.USER_HAVE_NOT_JOINED_CHALLENGE,
+        status: HTTP_STATUS.NOT_FOUND
+      })
+    }
+
+    const conditions: Filter<UserChallengeParticipationProgress> = {
+      user_challenge_participation_id: new ObjectId(userChallenge._id)
+    }
+    if (week) {
+      conditions.week = week
+    }
+    if (day) {
+      conditions.day = day
+    }
+    const userChallengeParticipationProgress = await databaseService.userChallengeParticipationProgress
+      .aggregate([
+        {
+          $match: conditions
+        },
+        {
+          $lookup: {
+            from: 'health_plan_details',
+            localField: 'health_plan_detail_id',
+            foreignField: '_id',
+            as: 'health_plan_detail'
+          }
+        },
+        {
+          $project: {
+            _id: 1,
+            user_challenge_participation_id: 1,
+            date: 1,
+            week: 1,
+            day: 1,
+            health_plan_detail_id: 1,
+            completed_workouts: 1,
+            completed_nutritions: 1,
+            status: 1,
+            created_at: 1,
+            updated_at: 1,
+            health_plan_detail: 1
+          }
+        }
+      ])
+      .toArray()
+
+    const result = userChallengeParticipationProgress.map((item) => {
+      const total_workouts = item.health_plan_detail[0]?.workout_details?.length || 0
+      const total_nutritions = item.health_plan_detail[0]?.nutrition_details?.length || 0
+      const totalItem = total_workouts + total_nutritions
+      const completedItem = item.completed_workouts.length + item.completed_nutritions.length
+      return {
+        ...item,
+        total_workouts: item.health_plan_detail[0]?.workout_details?.length || 0,
+        total_nutritions: item.health_plan_detail[0]?.nutrition_details?.length || 0,
+        finish_percent: totalItem > 0 ? Math.round((completedItem / totalItem) * 100) : 0
+      }
+    })
+
+    return result
+  }
   async getUserChallengeOverview({ id, user_id, role }: { id: string; user_id: string; role: UserRole }) {
     const userChallenge = await databaseService.userChallengeParticipation.findOne({
       _id: new ObjectId(id)
@@ -286,6 +365,89 @@ class UserChallengeParticipationService {
       return acc + (detail.nutrition_details?.length || 0)
     }, 0)
     return {
+      id: userChallenge._id,
+      total_days: totalDays,
+      completed_days: completedDays,
+      total_workouts: totalWorkouts,
+      total_nutritions: totalNutritions,
+      completed_workouts: totalCompletedWorkoutsCount,
+      completed_nutritions: totalCompletedNutritionsCount,
+      completion_percentage_by_days: Math.round((completedDays / totalDays) * 100)
+    }
+  }
+  async getUserChallengeOverviewByChallengeId({ id, user_id, role }: { id: string; user_id: string; role: UserRole }) {
+    const userChallenge = await databaseService.userChallengeParticipation.findOne({
+      challenge_id: new ObjectId(id)
+    })
+    if (!userChallenge) {
+      throw new ErrorWithStatus({
+        message: USER_CHALLENGE_PARTICIPATION_MESSAGES.USER_HAVE_NOT_JOINED_CHALLENGE,
+        status: HTTP_STATUS.NOT_FOUND
+      })
+    }
+    const healthPlan = await databaseService.healthPlans.findOne({
+      _id: userChallenge.health_plan_id
+    })
+    if (!healthPlan) {
+      throw new ErrorWithStatus({
+        message: HEALTH_PLAN_MESSAGES.HEALTH_PLAN_NOT_FOUND,
+        status: HTTP_STATUS.NOT_FOUND
+      })
+    }
+    const [completedDays, totalCompletedWorkouts, totalCompletedNutritions, healthPlanDetails] = await Promise.all([
+      databaseService.userChallengeParticipationProgress.countDocuments({
+        user_challenge_participation_id: new ObjectId(userChallenge._id),
+        status: GeneralStatus.Done
+      }),
+      databaseService.userChallengeParticipationProgress
+        .aggregate([
+          {
+            $match: {
+              user_challenge_participation_id: new ObjectId(userChallenge._id)
+            }
+          },
+          {
+            $group: {
+              _id: null,
+              totalCompletedWorkouts: { $sum: { $size: '$completed_workouts' } }
+            }
+          }
+        ])
+        .toArray(),
+      databaseService.userChallengeParticipationProgress
+        .aggregate([
+          {
+            $match: {
+              user_challenge_participation_id: new ObjectId(userChallenge._id)
+            }
+          },
+          {
+            $group: {
+              _id: null,
+              totalCompletedNutritions: { $sum: { $size: '$completed_nutritions' } }
+            }
+          }
+        ])
+        .toArray(),
+      databaseService.healthPlanDetails
+        .find({
+          _id: { $in: healthPlan.details }
+        })
+        .toArray()
+    ])
+
+    const totalDays = healthPlan.details.length
+
+    const totalCompletedWorkoutsCount = totalCompletedWorkouts[0]?.totalCompletedWorkouts || 0
+    const totalCompletedNutritionsCount = totalCompletedNutritions[0]?.totalCompletedNutritions || 0
+    const totalWorkouts = healthPlanDetails.reduce((acc, detail) => {
+      return acc + (detail.workout_details?.length || 0)
+    }, 0)
+    const totalNutritions = healthPlanDetails.reduce((acc, detail) => {
+      return acc + (detail.nutrition_details?.length || 0)
+    }, 0)
+    return {
+      id: userChallenge._id,
       total_days: totalDays,
       completed_days: completedDays,
       total_workouts: totalWorkouts,

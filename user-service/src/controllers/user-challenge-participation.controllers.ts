@@ -94,11 +94,50 @@ export const getGetUserChallengeProgressController = async (
     user_challenge_process: result
   })
 }
+export const getGetUserChallengeProgressByIdController = async (
+  req: Request<ParamsDictionary, any, GetUserChallengeProgressReqQuery>,
+  res: Response
+) => {
+  const { user_id, role } = req.decoded_authorization as TokenPayload
+
+  const { id } = req.params
+  const { week, day } = req.query
+  const result = await userChallengeParticipationService.getUserChallengeProgressByChallengeId({
+    id,
+    user_id,
+    role,
+    week: Number(week),
+    day: Number(day)
+  })
+
+  return res.json({
+    message: USER_CHALLENGE_PARTICIPATION_MESSAGES.GET_USER_CHALLENGE_PROGRESS_SUCCESS,
+    user_challenge_process: result
+  })
+}
 export const getUserChallengeOverviewController = async (req: Request<ParamsDictionary, any, any>, res: Response) => {
   const { user_id, role } = req.decoded_authorization as TokenPayload
 
   const { id } = req.params
   const result = await userChallengeParticipationService.getUserChallengeOverview({
+    id,
+    user_id,
+    role
+  })
+
+  return res.json({
+    message: USER_CHALLENGE_PARTICIPATION_MESSAGES.GET_USER_CHALLENGE_OVERVIEW_SUCCESS,
+    user_challenge_overview: result
+  })
+}
+export const getUserChallengeOverviewByChallengeIdController = async (
+  req: Request<ParamsDictionary, any, any>,
+  res: Response
+) => {
+  const { user_id, role } = req.decoded_authorization as TokenPayload
+
+  const { id } = req.params
+  const result = await userChallengeParticipationService.getUserChallengeOverviewByChallengeId({
     id,
     user_id,
     role

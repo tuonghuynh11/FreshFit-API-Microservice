@@ -2,7 +2,9 @@ import { Router } from 'express'
 import {
   deleteUserChallengeController,
   finishChallengeController,
+  getGetUserChallengeProgressByIdController,
   getGetUserChallengeProgressController,
+  getUserChallengeOverviewByChallengeIdController,
   getUserChallengeOverviewController,
   searchUserChallengeParticipationController,
   startChallengeController,
@@ -64,6 +66,21 @@ userChallengeParticipationRouter.get(
   getUserChallengeProgressValidator,
   wrapRequestHandler(getGetUserChallengeProgressController)
 )
+/**
+ * Description: Get user challenge progress by challenge id
+ * Path: /challenges/:id/progress? week=1 &day=1
+ * Method: Get
+ * Body:{
+ *
+ * }
+ * **/
+userChallengeParticipationRouter.get(
+  '/challenges/:id/progress',
+  accessTokenValidator,
+  verifiedUSerValidator,
+  getUserChallengeProgressValidator,
+  wrapRequestHandler(getGetUserChallengeProgressByIdController)
+)
 
 /**
  * Description: Get user challenge overview
@@ -78,6 +95,20 @@ userChallengeParticipationRouter.get(
   verifiedUSerValidator,
   // adminRoleValidator,
   wrapRequestHandler(getUserChallengeOverviewController)
+)
+/**
+ * Description: Get user challenge overview by challenge id
+ * Path:  /challenges/:id/overview
+ * Method: Get
+ * Body: {
+ * }
+ * **/
+userChallengeParticipationRouter.get(
+  '/challenges/:id/overview',
+  accessTokenValidator,
+  verifiedUSerValidator,
+  // adminRoleValidator,
+  wrapRequestHandler(getUserChallengeOverviewByChallengeIdController)
 )
 
 /**

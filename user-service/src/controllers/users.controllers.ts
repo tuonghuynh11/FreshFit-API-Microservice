@@ -337,9 +337,16 @@ export const addHealthTrackingDetailController = async (
 ) => {
   const { user_id } = req.decoded_authorization as TokenPayload
 
-  await healthTrackingDetailService.add({ user_id, healthTrackingDetail: req.body })
+  const { healthTrackingDetail, health_tracking_detail_id, health_tracking_id } = await healthTrackingDetailService.add(
+    { user_id, healthTrackingDetail: req.body }
+  )
   return res.json({
-    message: HEALTH_TRACKING_DETAIL_MESSAGES.ADD_HEALTH_TRACKING_DETAIL_SUCCESS
+    message: HEALTH_TRACKING_DETAIL_MESSAGES.ADD_HEALTH_TRACKING_DETAIL_SUCCESS,
+    result: {
+      healthTrackingDetail,
+      health_tracking_detail_id,
+      health_tracking_id
+    }
   })
 }
 export const addHealthTrackingDetailForMealController = async (
@@ -348,9 +355,17 @@ export const addHealthTrackingDetailForMealController = async (
 ) => {
   const { user_id } = req.decoded_authorization as TokenPayload
 
-  await healthTrackingDetailService.addHealthTrackingDetailForMeal({ user_id, healthTrackingDetail: req.body })
+  const response = await healthTrackingDetailService.addHealthTrackingDetailForMeal({
+    user_id,
+    healthTrackingDetail: req.body
+  })
   return res.json({
-    message: HEALTH_TRACKING_DETAIL_MESSAGES.ADD_HEALTH_TRACKING_DETAIL_FOR_MEAL_SUCCESS
+    message: HEALTH_TRACKING_DETAIL_MESSAGES.ADD_HEALTH_TRACKING_DETAIL_FOR_MEAL_SUCCESS,
+    result: {
+      healthTrackingDetail: response!.healthTrackingDetail,
+      health_tracking_detail_id: response!.health_tracking_detail_id,
+      health_tracking_id: response!.health_tracking_id
+    }
   })
 }
 export const deleteDishesInHealthTrackingDetailForMealController = async (

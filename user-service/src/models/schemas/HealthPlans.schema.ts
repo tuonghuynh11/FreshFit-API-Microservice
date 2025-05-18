@@ -10,6 +10,7 @@ interface HealthPlanType {
   estimated_calories_intake?: number
   status?: GeneralStatus
   level: WorkoutType
+  number_of_weeks: number
   start_date?: Date
   end_date?: Date
   created_at?: Date
@@ -26,6 +27,7 @@ export default class HealthPlans {
   estimated_calories_intake?: number
   status?: GeneralStatus
   level: WorkoutType
+  number_of_weeks: number
   start_date?: Date
   end_date?: Date
   created_at?: Date
@@ -47,5 +49,6 @@ export default class HealthPlans {
     this.estimated_calories_burned = healthPlan.estimated_calories_burned || 0
     this.estimated_calories_intake = healthPlan.estimated_calories_intake || 0
     this.details = healthPlan.details?.map((item) => new ObjectId(item)) || []
+    this.number_of_weeks = healthPlan.number_of_weeks
   }
 }
