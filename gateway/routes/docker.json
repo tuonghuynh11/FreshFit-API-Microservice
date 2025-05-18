@@ -1786,9 +1786,25 @@
         "security": true
     },
     {
+        "name": "Get user challenge progress by challenge id",
+        "methods": ["GET"],
+        "context": ["/user-challenge-participation/challenges/:id/progress"],
+        "target": "http://users:4001/api/v1",
+        "pathRewrite": {},
+        "security": true
+    },
+    {
         "name": "Get user challenge overview",
         "methods": ["GET"],
         "context": ["/user-challenge-participation/:id/overview"],
+        "target": "http://users:4001/api/v1",
+        "pathRewrite": {},
+        "security": true
+    },
+    {
+        "name": "Get user challenge overview by challenge id",
+        "methods": ["GET"],
+        "context": ["/user-challenge-participation/challenges/:id/overview"],
         "target": "http://users:4001/api/v1",
         "pathRewrite": {},
         "security": true

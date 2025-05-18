@@ -56,6 +56,7 @@ healthPlansRouter.get(
  *  level: WorkoutType
  *  start_date?: Date
  *  end_date?: Date
+ *  number_of_weeks: number
  * }
  * **/
 healthPlansRouter.post(
@@ -80,6 +81,7 @@ healthPlansRouter.post(
  *  level: WorkoutType
  *  start_date?: Date
  *  end_date?: Date
+ * number_of_weeks?: number
  * }
  * **/
 healthPlansRouter.patch(
@@ -96,7 +98,8 @@ healthPlansRouter.patch(
     'status',
     'level',
     'start_date',
-    'end_date'
+    'end_date',
+    'number_of_weeks'
   ]),
   wrapRequestHandler(updateHealthPlanController)
 )

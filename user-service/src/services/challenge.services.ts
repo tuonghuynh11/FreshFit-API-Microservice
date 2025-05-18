@@ -114,8 +114,24 @@ class ChallengesService {
         status: HTTP_STATUS.NOT_FOUND
       })
     }
+    // total workouts
+    const totalWorkouts = health_plan[0].details.reduce((acc: number, plan: any) => {
+      if (plan.workout_details) {
+        return acc + plan.workout_details.length
+      }
+      return acc
+    }, 0)
+    // total meals
+    const totalMeals = health_plan[0].details.reduce((acc: number, plan: any) => {
+      if (plan.nutrition_details) {
+        return acc + plan.nutrition_details.length
+      }
+      return acc
+    }, 0)
     return {
       ...challenge,
+      total_workouts: totalWorkouts,
+      total_meals: totalMeals,
       health_plan: health_plan[0]
     }
   }

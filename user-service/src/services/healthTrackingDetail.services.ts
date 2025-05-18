@@ -23,7 +23,8 @@ class HealthTrackingDetailService {
       formattedDate = healthTrackingDetail.date
     }
     console.log('formattedDate', formattedDate)
-
+    let health_tracking_id = ''
+    let health_tracking_detail_id = ''
     const isExist = await databaseService.healthTrackings.findOne({
       user_id: new ObjectId(user_id),
       date: formattedDate,
@@ -36,8 +37,10 @@ class HealthTrackingDetailService {
       // })
       // Create a new health tracking if it doesn't exist
       const newHealthTrackingId = new ObjectId()
+      const newHealthTrackingDetailId = new ObjectId()
+
       const newHealthTrackingDetail = new HealthTrackingDetail({
-        _id: new ObjectId(),
+        _id: newHealthTrackingDetailId,
         health_tracking_id: newHealthTrackingId,
         ...healthTrackingDetail
       })
@@ -53,6 +56,9 @@ class HealthTrackingDetailService {
         })
       )
 
+      health_tracking_id = newHealthTrackingId.toString()
+      health_tracking_detail_id = newHealthTrackingDetailId.toString()
+
       await Promise.all([
         databaseService.users.updateOne(
           {
@@ -65,7 +71,11 @@ class HealthTrackingDetailService {
           }
         )
       ])
-      return newHealthTrackingDetail
+      return {
+        health_tracking_id,
+        health_tracking_detail_id,
+        healthTrackingDetail: newHealthTrackingDetail
+      }
     } else {
       // const inserted = await databaseService.healthTrackingDetails.insertOne(
       //   new HealthTrackingDetail({
@@ -80,12 +90,16 @@ class HealthTrackingDetailService {
       // if (!newHealthTrackingDetail) {
       //   throw new Error(USERS_MESSAGES.FAILED_TO_CREATE_HEALTH_TRACKING_DETAIL)
       // }
-
+      const newHealthTrackingDetailId = new ObjectId()
       const newHealthTrackingDetail = new HealthTrackingDetail({
-        _id: new ObjectId(),
+        _id: newHealthTrackingDetailId,
         health_tracking_id: isExist._id,
         ...healthTrackingDetail
       })
+
+      health_tracking_id = isExist._id.toString()
+      health_tracking_detail_id = newHealthTrackingDetailId.toString()
+
       await databaseService.healthTrackings.updateOne(
         {
           _id: isExist._id
@@ -99,7 +113,11 @@ class HealthTrackingDetailService {
           }
         }
       )
-      return newHealthTrackingDetail
+      return {
+        health_tracking_id,
+        health_tracking_detail_id,
+        healthTrackingDetail: newHealthTrackingDetail
+      }
     }
   }
   async addHealthTrackingDetailForMeal({
@@ -138,6 +156,8 @@ class HealthTrackingDetailService {
       // })
 
       // Create meal by the request
+      let health_tracking_id = ''
+      let health_tracking_detail_id = ''
 
       const totalCalories = Number(dishes.reduce((acc, dish) => acc + Number(dish.calories), 0).toFixed(2))
       const totalPrepTime = Number(dishes.reduce((acc, dish) => acc + Number(dish.prep_time), 0).toFixed(2))
@@ -154,8 +174,10 @@ class HealthTrackingDetailService {
 
       // Create a new health tracking if it doesn't exist
       const newHealthTrackingId = new ObjectId()
+      const newHealthTrackingDetailId = new ObjectId()
+
       const newHealthTrackingDetail = new HealthTrackingDetail({
-        _id: new ObjectId(),
+        _id: newHealthTrackingDetailId,
         health_tracking_id: newHealthTrackingId,
         mealId: mealInserted.insertedId.toString(),
         value: totalCalories
@@ -172,6 +194,9 @@ class HealthTrackingDetailService {
         })
       )
 
+      health_tracking_id = newHealthTrackingId.toString()
+      health_tracking_detail_id = newHealthTrackingDetailId.toString()
+
       await Promise.all([
         databaseService.users.updateOne(
           {
@@ -184,8 +209,15 @@ class HealthTrackingDetailService {
           }
         )
       ])
-      return newHealthTrackingDetail
+      return {
+        health_tracking_id,
+        health_tracking_detail_id,
+        healthTrackingDetail: newHealthTrackingDetail
+      }
     } else {
+      const health_tracking_id = isExist._id.toString()
+      let health_tracking_detail_id = ''
+
       const mealIds = isExist.healthTrackingDetails.map((detail) => detail.mealId!)
       const meal = await databaseService.meals.findOne({
         _id: { $in: mealIds },
@@ -226,6 +258,15 @@ class HealthTrackingDetailService {
             }
           )
         ])
+        const healthTrackingDetail = isExist.healthTrackingDetails.find(
+          (detail) => detail.mealId?.toString() === meal._id.toString()
+        )
+        health_tracking_detail_id = healthTrackingDetail!._id!.toString()
+        return {
+          health_tracking_id,
+          health_tracking_detail_id,
+          healthTrackingDetail: healthTrackingDetail
+        }
       } else {
         // Create meal by the request
         const totalCalories = Number(dishes.reduce((acc, dish) => acc + Number(dish.calories), 0).toFixed(2))
@@ -241,12 +282,16 @@ class HealthTrackingDetailService {
         })
         const mealInserted = await databaseService.meals.insertOne(meal)
 
+        const newHealthTrackingDetailId = new ObjectId()
         const newHealthTrackingDetail = new HealthTrackingDetail({
-          _id: new ObjectId(),
+          _id: newHealthTrackingDetailId,
           health_tracking_id: isExist._id,
           mealId: mealInserted.insertedId.toString(),
           value: totalCalories
         })
+
+        health_tracking_detail_id = newHealthTrackingDetailId.toString()
+
         await databaseService.healthTrackings.updateOne(
           {
             _id: isExist._id
@@ -260,7 +305,11 @@ class HealthTrackingDetailService {
             }
           }
         )
-        return newHealthTrackingDetail
+        return {
+          health_tracking_id,
+          health_tracking_detail_id,
+          healthTrackingDetail: newHealthTrackingDetail
+        }
       }
     }
   }

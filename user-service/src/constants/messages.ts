@@ -585,7 +585,8 @@ export const USER_CHALLENGE_PARTICIPATION_MESSAGES = {
   COMPLETED_WORKOUT_IDS_NOT_IN_HEALTH_PLAN_DETAIL: 'Completed workout ids not in health plan detail',
   COMPLETED_NUTRITION_IDS_NOT_IN_HEALTH_PLAN_DETAIL: 'Completed nutrition ids not in health plan detail',
   START_CHALLENGE_FAILED: 'Start challenge failed',
-  DELETE_CHALLENGE_FAILED: 'Delete challenge failed'
+  DELETE_CHALLENGE_FAILED: 'Delete challenge failed',
+  USER_HAVE_NOT_JOINED_CHALLENGE: 'User have not joined challenge'
 }
 
 export const COMMON_MESSAGES = {
