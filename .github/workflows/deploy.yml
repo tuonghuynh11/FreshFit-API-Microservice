@@ -1,33 +1,100 @@
+# name: Deploy Node.js App
+
+# on:
+#   push:
+#     branches:
+#       - main # Change this if your deployment branch is different
+
+# jobs:
+#   deploy_VPS:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Executing remote ssh commands using password
+#         uses: appleboy/ssh-action@v1.1.0
+#         with:
+#           host: ${{ secrets.HOST }}
+#           username: ${{ secrets.HOST_USERNAME }}
+#           password: ${{ secrets.HOST_PASSWORD }}
+#           port: ${{ secrets.PORT }}
+#           script: |
+#             set -e  # Exit if any command fails
+#             cd FreshFit-API-Microservice  # Change this to your actual project path
+#             git pull origin main  # Pull latest changes
+
+#              # Kill all containerd-shim processes (requires sudo)
+#             echo "${{ secrets.HOST_PASSWORD }}" | sudo -S killall containerd-shim || echo "No containerd-shim processes found."
+
+#             # Stop and remove containers safely
+#             # timeout 120s docker-compose down || echo "Timeout reached, skipping..."
+#             docker-compose down
+#             # Rebuild and restart services
+#             docker-compose up -d --force-recreate --build
+#             # Clean up unused Docker data
+#             docker system prune -f
+
 name: Deploy Node.js App
 
 on:
   push:
-    branches:
-      - main # Change this if your deployment branch is different
+    branches: [ "main" ]
+
+env:
+  REGISTRY: docker.io
 
 jobs:
-  deploy_VPS:
+  build-and-push-image:
     runs-on: ubuntu-latest
     steps:
-      - name: Executing remote ssh commands using password
-        uses: appleboy/ssh-action@v1.1.0
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
         with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.HOST_USERNAME }}
-          password: ${{ secrets.HOST_PASSWORD }}
-          port: ${{ secrets.PORT }}
-          script: |
-            set -e  # Exit if any command fails
-            cd FreshFit-API-Microservice  # Change this to your actual project path
-            git pull origin main  # Pull latest changes
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD  }}
 
-             # Kill all containerd-shim processes (requires sudo)
-            echo "${{ secrets.HOST_PASSWORD }}" | sudo -S killall containerd-shim || echo "No containerd-shim processes found."
+      - name: Create env file for each service
+        run: |
+          echo "${{ secrets.USER_SERVICE_ENV_PROD }}" >> ./user-service/.env.production
+          echo "${{ secrets.APPOINTMENT_SERVICE_ENV_PROD }}" >> ./appointment-service/.env.production
+          echo "${{ secrets.GATEWAY_ENV_PROD }}" >> ./gateway/.env
+          
+      - name: Build and push Gateway
+        uses: docker/build-push-action@v5
+        with:
+          context: ./gateway
+          file: ./gateway/Dockerfile
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ secrets.IMAGE_PREFIX }}/freshfit-gateway:latest
 
-            # Stop and remove containers safely
-            # timeout 120s docker-compose down || echo "Timeout reached, skipping..."
-            docker-compose down
-            # Rebuild and restart services
-            docker-compose up -d --force-recreate --build
-            # Clean up unused Docker data
-            docker system prune -f
+      - name: Build and push User Service
+        uses: docker/build-push-action@v5
+        with:
+          context: ./user-service
+          file: ./user-service/Dockerfile
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ secrets.IMAGE_PREFIX }}/freshfit-user-service:latest
+
+      - name: Build and push Appointment Service
+        uses: docker/build-push-action@v5
+        with:
+          context: ./appointment-service
+          file: ./appointment-service/Dockerfile
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ secrets.IMAGE_PREFIX }}/freshfit-appointment-service:latest
+          
+  # deploy_VPS:
+  #     runs-on: ubuntu-latest
+  #     needs: build-and-push-image
+  #     steps:
+  #       - name: Executing remote ssh commands using password
+  #         uses: appleboy/ssh-action@v1.0.3
+  #         with:
+  #           host: ${{ secrets.HOST }}
+  #           username: ${{ secrets.HOST_USERNAME }}
+  #           key: ${{ secrets.SSH_KEY }}
+  #           port: ${{ secrets.PORT }}
+  #           script: |
+  #             docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
+
