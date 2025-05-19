@@ -22,7 +22,7 @@ module.exports = (callback = () => {}) => {
         })
     )
     app.use(requestId)
-    app.use(express.raw({ type: '*/*', limit: '2000mb' }))
+    app.use(express.raw({ type: '*/*', limit: '1000mb' }))
 
     // Define health check and metrics routes (without /api/v1 prefix)
     app.get('/health', require('../handlers/health'))
