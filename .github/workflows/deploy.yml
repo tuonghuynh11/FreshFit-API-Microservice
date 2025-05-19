@@ -87,17 +87,21 @@ jobs:
           push: true
           tags: ${{ env.REGISTRY }}/${{ secrets.IMAGE_PREFIX }}/freshfit-appointment-service:latest
           
-  # deploy_VPS:
-  #     runs-on: ubuntu-latest
-  #     needs: build-and-push-image
-  #     steps:
-  #       - name: Executing remote ssh commands using password
-  #         uses: appleboy/ssh-action@v1.0.3
-  #         with:
-  #           host: ${{ secrets.HOST }}
-  #           username: ${{ secrets.HOST_USERNAME }}
-  #           key: ${{ secrets.SSH_KEY }}
-  #           port: ${{ secrets.PORT }}
-  #           script: |
-  #             docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
+  deploy_VPS:
+      runs-on: ubuntu-latest
+      needs: build-and-push-image
+      steps:
+        - name: Executing remote ssh commands using password
+          uses: appleboy/ssh-action@v1.0.3
+          with:
+            host: ${{ secrets.HOST_2 }}
+            username: ${{ secrets.HOST_USERNAME_2  }}
+            password: ${{ secrets.HOST_PASSWORD_2  }}
+            port: ${{ secrets.PORT }}
+            script: |
+              cd fresh-fit-microservice-server
+              docker-compose pull
+              docker-compose down
+              docker-compose up -d --force-recreate --build
+              docker image prune -a
 
