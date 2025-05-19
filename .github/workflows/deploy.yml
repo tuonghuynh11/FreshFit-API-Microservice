@@ -61,6 +61,7 @@ jobs:
           echo "${{ secrets.GATEWAY_ENV_PROD }}" >> ./gateway/.env
       - name: Create credential file for user-service
         run: |
+          mkdir -p ./user-service/src/credentials
           echo "${{ secrets.FIREBASE_CREDENTIAL }}" >> ./user-service/src/credentials/credential.json
       - name: Build and push Gateway
         uses: docker/build-push-action@v5
