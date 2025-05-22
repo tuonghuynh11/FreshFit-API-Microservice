@@ -15,8 +15,8 @@ export const searchChallengesController = async (
     search: search?.toString(),
     status,
     type,
-    page,
-    limit,
+    page: Number(page),
+    limit: Number(limit),
     sort_by,
     order_by
   })
