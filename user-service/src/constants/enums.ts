@@ -118,7 +118,8 @@ export enum NotificationType {
   Workout = 'Workout',
   Water = 'Water',
   Admin = 'Admin',
-  Health = 'Health'
+  Health = 'Health',
+  Other = 'Other'
 }
 export enum ReportStatus {
   Read = 'Read',
@@ -355,5 +356,6 @@ export enum UserChallengeParticipationQueryTypeFilter {
   All = 'All',
   Ongoing = 'Ongoing',
   Completed = 'Completed',
-  Canceled = 'Canceled'
+  Canceled = 'Canceled',
+  Expired = 'Expired'
 }

@@ -23,11 +23,8 @@ export interface ProfitCalculation {
 export interface ICreateNotification {
   socket: Socket;
   dataSource: DataSource;
-  content: string;
-  contentType?: string;
+  message: string;
   actions?: any;
-  assignee: string;
-  createdBy: string;
+  user_id: string;
   title: string;
-  image?: string;
 }

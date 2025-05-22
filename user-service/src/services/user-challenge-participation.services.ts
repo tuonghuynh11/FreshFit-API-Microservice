@@ -366,6 +366,7 @@ class UserChallengeParticipationService {
     }, 0)
     return {
       id: userChallenge._id,
+      status: userChallenge.status,
       total_days: totalDays,
       completed_days: completedDays,
       total_workouts: totalWorkouts,
@@ -448,6 +449,7 @@ class UserChallengeParticipationService {
     }, 0)
     return {
       id: userChallenge._id,
+      status: userChallenge.status,
       total_days: totalDays,
       completed_days: completedDays,
       total_workouts: totalWorkouts,

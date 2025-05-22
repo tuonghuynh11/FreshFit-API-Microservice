@@ -720,22 +720,27 @@ export const updateMeValidator = validate(
         }
       },
       level: {
-        isNumeric: {
-          errorMessage: USERS_MESSAGES.LEVEL_MUST_BE_A_NUMBER
-        },
+        // isNumeric: {
+        //   errorMessage: USERS_MESSAGES.LEVEL_MUST_BE_A_NUMBER
+        // },
+        isString: true,
         optional: true,
-        custom: {
-          options: async (value, { req }) => {
-            const isLevelValid =
-              Object.values(LevelType).filter((item: LevelType, index: number) => index === value).length !== 0
-            if (!isLevelValid) {
-              throw new ErrorWithStatus({
-                message: USERS_MESSAGES.INVALID_LEVEL,
-                status: HTTP_STATUS.CONFLICT
-              })
-            }
-            return true
-          }
+        // custom: {
+        //   options: async (value, { req }) => {
+        //     const isLevelValid =
+        //       Object.values(LevelType).filter((item: LevelType, index: number) => index === value).length !== 0
+        //     if (!isLevelValid) {
+        //       throw new ErrorWithStatus({
+        //         message: USERS_MESSAGES.INVALID_LEVEL,
+        //         status: HTTP_STATUS.CONFLICT
+        //       })
+        //     }
+        //     return true
+        //   }
+        // },
+        isIn: {
+          options: [LevelType],
+          errorMessage: USERS_MESSAGES.INVALID_LEVEL
         }
       },
       activityLevel: {

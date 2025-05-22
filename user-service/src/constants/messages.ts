@@ -422,7 +422,8 @@ export const CHAT_MESSAGES = {
 export const STATISTIC_MESSAGES = {
   GET_STATISTIC_SUCCESS: 'Get statistic successful',
   GET_ALL_STATISTIC_SUCCESS: 'Get all statistic successful',
-  GET_TOP_STATISTIC_SUCCESS: 'Get top statistic successful'
+  GET_TOP_STATISTIC_SUCCESS: 'Get top statistic successful',
+  TOP_VALUE_IS_GREATER_THAN_OR_EQUAL_TO_ONE: 'Top value is greater than or equal to one'
 }
 
 export const FRUIT_MESSAGES = {

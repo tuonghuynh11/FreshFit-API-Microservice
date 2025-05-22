@@ -80,7 +80,8 @@ export const joinChallengeController = async (req: Request<ParamsDictionary, any
   const result = await challengesService.join({ user_id, id })
 
   return res.json({
-    message: CHALLENGE_MESSAGES.JOIN_CHALLENGE_SUCCESS
+    message: CHALLENGE_MESSAGES.JOIN_CHALLENGE_SUCCESS,
+    user_challenge_participation_id: result
   })
 }
 export const activateChallengeController = async (req: Request<ParamsDictionary, any, any>, res: Response) => {

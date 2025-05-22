@@ -2,6 +2,7 @@ import { Router } from 'express'
 import {
   countUnreadNotificationsController,
   createNotificationController,
+  createNotificationForSpecificUserController,
   getNotificationsController,
   markAllReadNotificationsController,
   markReadNotificationsController
@@ -89,4 +90,21 @@ notificationsRouter.post(
   wrapRequestHandler(createNotificationController)
 )
 
+// =================================== Internal API ===================================
+/**
+ * Description: Create a notification
+ * Path: /notifications/users/:user_id
+ * Method: POST
+ *  * Body: {
+    "type": "", // Notification type
+    "title":"",
+    "message":"",
+    "action": "", 
+  }
+ * **/
+notificationsRouter.post(
+  '/users/:user_id',
+  createNotificationValidator,
+  wrapRequestHandler(createNotificationForSpecificUserController)
+)
 export default notificationsRouter
