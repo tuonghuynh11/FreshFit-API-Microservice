@@ -53,7 +53,7 @@ module.exports = class HeadersProcessor {
                     'X-Forwarded-Method': method,
                     'X-Forwarded-Url': originalUrl,
 
-                    'X-Forfarded-By': 'api-gateway',
+                    'X-Forwarded-By': 'api-gateway',
                     'X-Forwarded-Name': name,
                     'X-Request-Id': id,
                 },

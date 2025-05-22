@@ -50,14 +50,54 @@ class ChallengesService {
     }
 
     const [challenges, total] = await Promise.all([
-      databaseService.challenges
-        .find(conditions, {
-          skip: page && limit ? (page - 1) * limit : undefined,
-          limit: limit,
-          sort: {
-            [sort_by]: order_by === 'ASC' ? 1 : -1
+      // databaseService.challenges
+      //   .find(conditions, {
+      //     skip: page && limit ? (page - 1) * limit : undefined,
+      //     limit: limit,
+      //     sort: {
+      //       [sort_by]: order_by === 'ASC' ? 1 : -1
+      //     }
+      //   })
+      //   .toArray(),
+      await databaseService.challenges
+        .aggregate([
+          {
+            $match: conditions
+          },
+          {
+            $sort: {
+              [sort_by]: order_by === 'ASC' ? 1 : -1
+            }
+          },
+          ...(page && limit ? [{ $skip: (page - 1) * limit }, { $limit: limit }] : []),
+          {
+            $lookup: {
+              from: 'user_challenge_participation',
+              localField: '_id',
+              foreignField: 'challenge_id',
+              as: 'participations'
+            }
+          },
+          {
+            $addFields: {
+              total_participation: { $size: '$participations' },
+              total_completed_participation: {
+                $size: {
+                  $filter: {
+                    input: '$participations',
+                    as: 'p',
+                    cond: { $eq: ['$$p.status', UserChallengeParticipationStatus.Completed] } // 👈 thay đúng enum nếu là string/số
+                  }
+                }
+              }
+            }
+          },
+          {
+            $project: {
+              participations: 0 // ẩn mảng gốc nếu không cần
+            }
           }
-        })
+        ])
         .toArray(),
       await databaseService.challenges.countDocuments(conditions)
     ])

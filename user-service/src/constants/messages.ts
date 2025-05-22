@@ -423,7 +423,19 @@ export const STATISTIC_MESSAGES = {
   GET_STATISTIC_SUCCESS: 'Get statistic successful',
   GET_ALL_STATISTIC_SUCCESS: 'Get all statistic successful',
   GET_TOP_STATISTIC_SUCCESS: 'Get top statistic successful',
-  TOP_VALUE_IS_GREATER_THAN_OR_EQUAL_TO_ONE: 'Top value is greater than or equal to one'
+  TOP_VALUE_IS_GREATER_THAN_OR_EQUAL_TO_ONE: 'Top value is greater than or equal to one',
+  GET_ACTIVE_USER_AND_CHALLENGES_STATISTIC_SUCCESS: 'Get active user and challenges statistic successful',
+  GET_OVERVIEW_STATISTIC_SUCCESS: 'Get overview statistic successful',
+  GET_USER_GROWTH_STATISTIC_SUCCESS: 'Get user growth statistic successful',
+  YEAR_VALUE_IS_GREATER_THAN_OR_EQUAL_TO_ONE: 'Year value is greater than or equal to one',
+  GET_AGE_STATISTIC_SUCCESS: 'Get age statistic successful',
+  GET_USER_LEVEL_STATISTIC_SUCCESS: 'Get user level statistic successful',
+  GET_USER_STATISTIC_SUCCESS: 'Get user statistic successful',
+  GET_WORKOUTS_STATISTIC_SUCCESS: 'Get workouts statistic successful',
+  MONTH_VALUE_IS_GREATER_THAN_OR_EQUAL_TO_ONE: 'Month value is greater than or equal to one',
+  WEEK_VALUE_IS_GREATER_THAN_OR_EQUAL_TO_ONE: 'Week value is greater than or equal to one',
+  GET_WORKOUTS_WEEKLY_COMPLETION_RATE_STATISTIC_SUCCESS: 'Get workouts weekly completion rate statistic successful',
+  GET_NUTRITION_STATISTIC_SUCCESS: 'Get nutrition statistic successful'
 }
 
 export const FRUIT_MESSAGES = {

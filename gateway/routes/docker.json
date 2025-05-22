@@ -1841,5 +1841,104 @@
         "internal": true,
         "pathRewrite": {},
         "security": false
+    },
+    {
+        "name": "Get statistic admin dashboard",
+        "methods": ["GET"],
+        "context": ["/statistics/admin/dashboard"],
+        "target": "http://users:4001/api/v1",
+        "pathRewrite": {},
+        "security": true,
+        "cache": {
+            "ttl": 120
+        }
+    },
+    {
+        "name": "Get overview statistic for admin",
+        "methods": ["GET"],
+        "context": ["/statistics/admin/overview"],
+        "target": "http://users:4001/api/v1",
+        "pathRewrite": {},
+        "security": true,
+        "cache": {
+            "ttl": 120
+        }
+    },
+    {
+        "name": "Get User Growth for overview statistic",
+        "methods": ["GET"],
+        "context": ["/statistics/admin/overview/user-growth"],
+        "target": "http://users:4001/api/v1",
+        "pathRewrite": {},
+        "security": true,
+        "cache": {
+            "ttl": 120
+        }
+    },
+    {
+        "name": " Get Top 5 challenges for overview statistic",
+        "methods": ["GET"],
+        "context": ["/statistics/admin/overview/top-challenges"],
+        "target": "http://users:4001/api/v1",
+        "pathRewrite": {},
+        "security": true,
+        "cache": {
+            "ttl": 120
+        }
+    },
+    {
+        "name": "Get age statistic for overview statistic",
+        "methods": ["GET"],
+        "context": ["/statistics/admin/overview/age"],
+        "target": "http://users:4001/api/v1",
+        "pathRewrite": {},
+        "security": true,
+        "cache": {
+            "ttl": 120
+        }
+    },
+    {
+        "name": "Get User Statistic For Admin",
+        "methods": ["GET"],
+        "context": ["/statistics/admin/users"],
+        "target": "http://users:4001/api/v1",
+        "pathRewrite": {},
+        "security": true,
+        "cache": {
+            "ttl": 120
+        }
+    },
+    {
+        "name": "Get Workouts Statistic For Admin",
+        "methods": ["GET"],
+        "context": ["/statistics/admin/workouts"],
+        "target": "http://users:4001/api/v1",
+        "pathRewrite": {},
+        "security": true,
+        "cache": {
+            "ttl": 120
+        }
+    },
+    {
+        "name": "Get weekly workout completion rates For Admin",
+        "methods": ["GET"],
+        "context": ["/statistics/admin/workouts/weekly-completion-rates"],
+        "target": "http://users:4001/api/v1",
+        "pathRewrite": {},
+        "security": true,
+        "cache": {
+            "ttl": 120
+        }
+    },
+    {
+        "name": "Get Nutrition Statistic For Admin",
+        "methods": ["GET"],
+        "context": ["/statistics/admin/admin/nutrition"],
+        "target": "http://users:4001/api/v1",
+        "pathRewrite": {},
+        "security": true,
+        "cache": {
+            "ttl": 120
+        }
     }
 ]
