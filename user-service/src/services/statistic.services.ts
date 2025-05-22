@@ -50,38 +50,47 @@ class StatisticService {
       total: messages.length
     }
   }
-  async getTop() {
-    const [exercise, dish, set] = await Promise.all([
-      databaseService.dishes.findOne(
-        {},
-        {
-          sort: {
-            rating: -1
+  async getTop({ top = 1 }: { top?: number }) {
+    const [exercises, dishes, sets] = await Promise.all([
+      databaseService.exercises
+        .find(
+          {},
+          {
+            sort: {
+              rating: -1
+            },
+            limit: top
           }
-        }
-      ),
-      databaseService.exercises.findOne(
-        {},
-        {
-          sort: {
-            rating: -1
+        )
+        .toArray(),
+      databaseService.dishes
+        .find(
+          {},
+          {
+            sort: {
+              rating: -1
+            },
+            limit: top
           }
-        }
-      ),
-      databaseService.sets.findOne(
-        {},
-        {
-          sort: {
-            rating: -1
+        )
+        .toArray(),
+      databaseService.sets
+        .find(
+          {},
+          {
+            sort: {
+              rating: -1
+            },
+            limit: top
           }
-        }
-      )
+        )
+        .toArray()
     ])
 
     return {
-      exercise,
-      dish,
-      set
+      exercises,
+      dishes,
+      sets
     }
   }
 

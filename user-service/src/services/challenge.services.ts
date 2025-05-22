@@ -232,7 +232,7 @@ class ChallengesService {
     const userChallengeParticipationInserted =
       await databaseService.userChallengeParticipation.insertOne(userChallengeParticipation)
 
-    return userChallengeParticipationInserted
+    return userChallengeParticipationInserted.insertedId.toString()
   }
 
   async activate({ id }: { id: string }) {

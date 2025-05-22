@@ -87,3 +87,17 @@ export const createNotificationController = async (
     result
   })
 }
+export const createNotificationForSpecificUserController = async (
+  req: Request<ParamsDictionary, any, CreateNotificationReqBody, any>,
+  res: Response
+) => {
+  const { user_id } = req.params
+  const result = await notificationService.createNotification({
+    user_id,
+    payload: req.body
+  })
+  return res.json({
+    message: NOTIFICATION_MESSAGES.CREATE_NOTIFICATION_SUCCESS,
+    result
+  })
+}

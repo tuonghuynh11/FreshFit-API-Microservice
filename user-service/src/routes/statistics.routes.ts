@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import { getStatisticAboutTopController } from '~/controllers/statistics.controllers'
+import { topStatisticValidator } from '~/middlewares/statistic.middlewares'
 import { accessTokenValidator, adminRoleValidator, verifiedUSerValidator } from '~/middlewares/users.middlewares'
 import { wrapRequestHandler } from '~/utils/handles'
 // Base route: /statistics
@@ -16,6 +17,7 @@ statisticsRouter.get(
   accessTokenValidator,
   verifiedUSerValidator,
   adminRoleValidator,
+  topStatisticValidator,
   wrapRequestHandler(getStatisticAboutTopController)
 )
 

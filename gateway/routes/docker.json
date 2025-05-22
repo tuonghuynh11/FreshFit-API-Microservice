@@ -1832,5 +1832,14 @@
         "target": "http://users:4001/api/v1",
         "pathRewrite": {},
         "security": true
+    },
+    {
+        "name": "create-notification-internal-api",
+        "methods": ["POST"],
+        "context": ["/notifications/users/:user_id"],
+        "target": "http://users:4001/api/v1",
+        "internal": true,
+        "pathRewrite": {},
+        "security": false
     }
 ]

@@ -6,6 +6,7 @@ import { ErrorWithStatus } from '~/models/Errors'
 import { USERS_MESSAGES } from '~/constants/messages'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { CreateNotificationReqBody } from '~/models/requests/Notification.requests'
+import pushNotificationService from './push-notification.services'
 
 class NotificationService {
   async search({
@@ -146,7 +147,20 @@ class NotificationService {
         action: payload?.action
       })
     )
-    return result
+    if (user?.fcmToken) {
+      await pushNotificationService.sendPushNotificationCustom({
+        userId: user._id.toString(),
+        type: NotificationType.Other,
+        alert: {
+          title: payload.title as string,
+          body: payload.message as string
+        }
+      })
+    }
+    const response = await databaseService.notifications.findOne({
+      _id: result.insertedId
+    })
+    return response
   }
 }
 

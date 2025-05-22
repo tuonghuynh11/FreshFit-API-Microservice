@@ -116,13 +116,13 @@ class DishService {
         status: HTTP_STATUS.NOT_FOUND
       })
     }
-    if (
-      (role === UserRole.Admin && dish?.user_id) ||
-      (role === UserRole.User && !dish?.user_id) ||
-      (role === UserRole.User && dish?.user_id && dish?.user_id?.toString() !== user_id)
-    ) {
-      throw new ErrorWithStatus({ status: HTTP_STATUS.FORBIDDEN, message: DISH_MESSAGES.NO_GET_PERMISSION })
-    }
+    // if (
+    //   (role === UserRole.Admin && dish?.user_id) ||
+    //   (role === UserRole.User && !dish?.user_id) ||
+    //   (role === UserRole.User && dish?.user_id && dish?.user_id?.toString() !== user_id)
+    // ) {
+    //   throw new ErrorWithStatus({ status: HTTP_STATUS.FORBIDDEN, message: DISH_MESSAGES.NO_GET_PERMISSION })
+    // }
 
     const ingredientIds = dish.ingredients.map((item: DishesIngredients) => new ObjectId(item.ingredientId))
 
