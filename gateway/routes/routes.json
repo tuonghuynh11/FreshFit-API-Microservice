@@ -1934,7 +1934,7 @@
     {
         "name": "Get Nutrition Statistic For Admin",
         "methods": ["GET"],
-        "context": ["/statistics/admin/admin/nutrition"],
+        "context": ["/statistics/admin/nutrition"],
         "target": "http://localhost:4001/api/v1",
         "pathRewrite": {},
         "security": true,
