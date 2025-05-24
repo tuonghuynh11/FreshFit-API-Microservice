@@ -711,6 +711,7 @@ export default class ExpertRepository {
     return result;
   };
   static getExpertScheduleForUser = async (req: Request) => {
+    console.log("getExpertScheduleForUser called");
     const { expertId } = req.params;
     const { month, year } = req.query;
     const { dataSource } = req.app.locals;
@@ -806,6 +807,82 @@ export default class ExpertRepository {
       date,
       slots,
     }));
+    return result;
+  };
+  static getAllExpertScheduleInSpecificDayForUser = async (req: Request) => {
+    console.log("getAllExpertScheduleInSpecificDayForUser called");
+    const { month, year, day, mainSkills } = req.query;
+    const { dataSource } = req.app.locals;
+    const expertAvailabilityRepository =
+      dataSource.getRepository(ExpertAvailability);
+
+    const criteria: FindManyOptions<ExpertAvailability> = {
+      relations: {
+        expert: {
+          expertSkills: {
+            skill: true,
+          },
+        },
+      },
+      order: {
+        date: "ASC",
+        startTime: "ASC",
+      },
+      // select: {
+      //   id: true,
+      //   date: true,
+      //   startTime: true,
+      //   endTime: true,
+      //   isAvailable: true,
+      //   expert:true
+      // },
+    };
+
+    if (mainSkills) {
+      criteria.where = {
+        ...criteria.where,
+        expert: {
+          expertSkills: {
+            skillId: In(mainSkills.toString().split("|")),
+          },
+        },
+      };
+    }
+
+    if (month && year && day) {
+      // const startDate = new Date(Number(year), Number(month) - 1, 1);
+      // const endDate = new Date(Number(year), Number(month), 0);
+      const startDate = new Date(Number(year), Number(month) - 1, Number(day));
+      const endDate = new Date(
+        Number(year),
+        Number(month) - 1,
+        Number(day) + 1
+      );
+      criteria.where = {
+        ...criteria.where,
+        date: Between(startDate, endDate),
+      };
+    }
+
+    const availabilities = await expertAvailabilityRepository.find(criteria);
+    // Nhóm theo expert
+    const expertMap = new Map();
+
+    for (const availability of availabilities) {
+      const { expert, ...schedule } = availability;
+
+      if (!expertMap.has(expert!.id)) {
+        expertMap.set(expert!.id, {
+          ...expert,
+          schedules: [],
+        });
+      }
+
+      expertMap.get(expert!.id).schedules.push(schedule);
+    }
+
+    const result = Array.from(expertMap.values());
+
     return result;
   };
 

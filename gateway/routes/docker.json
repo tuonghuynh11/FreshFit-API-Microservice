@@ -1225,6 +1225,14 @@
         "security": true
     },
     {
+        "name": "Get all expert schedule in specific day (User)",
+        "methods": ["GET"],
+        "context": ["/experts/all/schedules"],
+        "target": "http://appointments:4002/api/v1",
+        "pathRewrite": {},
+        "security": true
+    },
+    {
         "name": "Update availability (Expert)",
         "methods": ["PUT"],
         "context": ["/experts/availability/:id"],

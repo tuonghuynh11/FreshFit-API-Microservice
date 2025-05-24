@@ -12,6 +12,7 @@ import { SystemRole } from "../utils/enums";
 import { UseMiddlewares } from "../decorators/middleware";
 import { validatePagination } from "../middlewares/pagination.middlewares";
 import { validateMonth } from "../middlewares/month.middlewares";
+import { validateDate } from "../middlewares/date.middlewares";
 
 @Controller("/experts")
 export default class ExpertController {
@@ -244,6 +245,28 @@ export default class ExpertController {
     }
     next();
   }
+  @Get("/all/schedules")
+  @Authorize([SystemRole.User])
+  @UseMiddlewares(validateDate)
+  public async getAllExpertScheduleInSpecificDayForUser(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const experts =
+        await ExpertRepository.getAllExpertScheduleInSpecificDayForUser(req);
+      res.locals.message = EXPERT_SCHEDULE_MESSAGES.GET_EXPERT_SCHEDULE_SUCCESS;
+      res.locals.data = {
+        experts,
+      };
+
+      next();
+    } catch (error) {
+      next(error);
+    }
+    next();
+  }
 
   @Get("/schedule/:expertId")
   @Authorize([SystemRole.User])
@@ -266,6 +289,7 @@ export default class ExpertController {
     }
     next();
   }
+
   @Get("/statistic/general")
   @Authorize([SystemRole.Expert])
   public async getExpertStatistic(
