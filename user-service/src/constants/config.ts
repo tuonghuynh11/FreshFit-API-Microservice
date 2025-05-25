@@ -14,6 +14,7 @@ config({
 export const envConfig = {
   port: (process.env.PORT as string) || 4000,
   host: process.env.HOST as string,
+  gateway_host: process.env.GATEWAY_HOST as string,
   appointmentServiceHost: process.env.APPOINTMENT_SERVICE_HOST as string,
   recommendationServiceHost: process.env.RECOMMENDATION_SERVICE_HOST as string,
   dbName: process.env.DB_NAME as string,

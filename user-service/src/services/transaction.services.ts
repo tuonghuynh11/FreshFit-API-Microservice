@@ -99,12 +99,11 @@ class TransactionService {
       amount: newTransaction.amount,
       //khi thanh toán xong, zalopay server sẽ POST đến url này để thông báo cho server của mình
       //Chú ý: cần dùng ngrok để public url thì Zalopay Server mới call đến được
-      callback_url: `${envConfig.host}/transactions/deposit/zalo-pay/callback`,
+      callback_url: `${envConfig.gateway_host}/transactions/deposit/zalo-pay/callback`,
       description: `Payment for the order #${transID}`,
       bank_code: '',
       mac: ''
     }
-
     // appid|app_trans_id|appuser|amount|apptime|embeddata|item
     const data: any =
       config.app_id +
