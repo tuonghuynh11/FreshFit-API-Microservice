@@ -103,7 +103,7 @@ export default class ExpertController {
   }
 
   @Get("/:userId")
-  @Authorize([SystemRole.Admin])
+  @Authorize([SystemRole.Admin, SystemRole.User])
   public async getExpertInfoByUserId(
     req: Request,
     res: Response,
