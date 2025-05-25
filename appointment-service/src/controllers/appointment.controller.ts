@@ -162,7 +162,7 @@ export default class AppointmentController {
   }
 
   @Patch("/:id")
-  @Authorize([SystemRole.Admin])
+  @Authorize([SystemRole.Admin, SystemRole.Expert, SystemRole.User])
   public async updateAppointmentStatus(
     req: Request,
     res: Response,

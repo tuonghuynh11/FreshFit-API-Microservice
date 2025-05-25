@@ -852,12 +852,13 @@ export default class ExpertRepository {
     if (month && year && day) {
       // const startDate = new Date(Number(year), Number(month) - 1, 1);
       // const endDate = new Date(Number(year), Number(month), 0);
-      const startDate = new Date(Number(year), Number(month) - 1, Number(day));
-      const endDate = new Date(
-        Number(year),
-        Number(month) - 1,
-        Number(day) + 1
-      );
+      const dayNum = Number(day);
+      const monthNum = Number(month) - 1;
+      const yearNum = Number(year);
+
+      const startDate = new Date(yearNum, monthNum, dayNum, 0, 0, 0, 0);
+      const endDate = new Date(yearNum, monthNum, dayNum, 23, 59, 59, 999);
+
       criteria.where = {
         ...criteria.where,
         date: Between(startDate, endDate),

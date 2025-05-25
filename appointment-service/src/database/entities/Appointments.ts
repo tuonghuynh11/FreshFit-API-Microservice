@@ -47,7 +47,7 @@ export class Appointment extends AppBaseEntity {
   @Column({
     type: "enum",
     enum: AppointmentStatus,
-    default: AppointmentStatus.PENDING,
+    default: AppointmentStatus.CONFIRMED,
   })
   status: AppointmentStatus;
 

@@ -284,6 +284,8 @@ export default class AppointmentRepository {
       relations: {
         expert: true,
         available: true,
+        expertReview: true,
+        appointmentReview: true,
       },
       where: {
         id,
@@ -355,6 +357,8 @@ export default class AppointmentRepository {
       fees: appointment.fees,
       cancellationReason: appointment.cancellationReason,
       canceler: appointment.canceler,
+      expertReview: appointment.expertReview,
+      appointmentReview: appointment.appointmentReview,
     };
 
     return {
@@ -532,6 +536,7 @@ export default class AppointmentRepository {
           issues,
           notes,
           paymentStatus: PaymentStatus.PAID,
+          status: AppointmentStatus.CONFIRMED,
         });
 
         await manager.getRepository(Appointment).save(newAppointment);

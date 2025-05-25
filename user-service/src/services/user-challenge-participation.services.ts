@@ -366,6 +366,11 @@ class UserChallengeParticipationService {
     }, 0)
     return {
       id: userChallenge._id,
+      user_id: userChallenge.user_id,
+      challenge_id: userChallenge.challenge_id,
+      health_plan_id: userChallenge.health_plan_id,
+      start_date: userChallenge.start_date,
+      end_date: userChallenge.end_date,
       status: userChallenge.status,
       total_days: totalDays,
       completed_days: completedDays,
@@ -449,6 +454,11 @@ class UserChallengeParticipationService {
     }, 0)
     return {
       id: userChallenge._id,
+      user_id: userChallenge.user_id,
+      challenge_id: userChallenge.challenge_id,
+      health_plan_id: userChallenge.health_plan_id,
+      start_date: userChallenge.start_date,
+      end_date: userChallenge.end_date,
       status: userChallenge.status,
       total_days: totalDays,
       completed_days: completedDays,

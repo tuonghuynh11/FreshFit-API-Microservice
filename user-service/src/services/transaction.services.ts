@@ -38,7 +38,15 @@ class TransactionService {
         .toArray(),
       await databaseService.transactions.countDocuments(conditions),
       databaseService.transactions
-        .aggregate([{ $match: conditions }, { $group: { _id: null, totalAmount: { $sum: '$amount' } } }])
+        .aggregate([
+          {
+            $match: {
+              ...conditions,
+              status: TransactionStatus.Completed
+            }
+          },
+          { $group: { _id: null, totalAmount: { $sum: '$amount' } } }
+        ])
         .toArray()
     ])
     const totalAmount = totalAmountResult.length > 0 ? totalAmountResult[0].totalAmount : 0
@@ -91,7 +99,7 @@ class TransactionService {
       amount: newTransaction.amount,
       //khi thanh toán xong, zalopay server sẽ POST đến url này để thông báo cho server của mình
       //Chú ý: cần dùng ngrok để public url thì Zalopay Server mới call đến được
-      callback_url: `${envConfig.host}/api/v1/transaction/deposit/zalo-pay/callback`,
+      callback_url: `${envConfig.host}/transactions/deposit/zalo-pay/callback`,
       description: `Payment for the order #${transID}`,
       bank_code: '',
       mac: ''
