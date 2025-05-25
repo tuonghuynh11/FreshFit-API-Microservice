@@ -55,7 +55,7 @@ export default class Sets {
     this.time = set.time || ''
     this.image = set.image || 'https://res.cloudinary.com/dfo5tfret/image/upload/v1746290093/default-set-image.jpg'
     this.total_calories = set.total_calories || 0
-    this.is_youtube_workout = false // mặc định là false, nếu là youtube workout thì sẽ được cập nhật sau
+    this.is_youtube_workout = set.is_youtube_workout || false // mặc định là false, nếu là youtube workout thì sẽ được cập nhật sau
     this.youtube_id = set.youtube_id || ''
   }
 }
