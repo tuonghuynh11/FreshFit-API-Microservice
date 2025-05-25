@@ -32,7 +32,7 @@ export default class Transaction {
     this._id = transaction._id
     this.userId = transaction.userId
     this.amount = transaction.amount
-    this.currency = transaction.currency || Currency.USD
+    this.currency = transaction.currency || Currency.VND
     this.paymentMethod = transaction.paymentMethod
     this.status = transaction.status || TransactionStatus.Pending
     this.type = transaction.type || TransactionType.Deposit
