@@ -36,8 +36,8 @@ export const searchIngredientController = async (
   const { search, page, limit, sort_by, order_by } = req.query
   const { ingredients, total } = await ingredientService.search({
     search: search?.toString(),
-    page,
-    limit,
+    page: Number(page),
+    limit: Number(limit),
     sort_by,
     order_by
   })

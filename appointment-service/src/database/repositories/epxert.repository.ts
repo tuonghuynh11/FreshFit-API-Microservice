@@ -34,7 +34,7 @@ import {
   LessThanOrEqual,
   MoreThanOrEqual,
 } from "typeorm";
-import { getDaysInMonth } from "../../utils";
+import { getDaysInMonth, pick } from "../../utils";
 import { Appointment, AppointmentStatus } from "../entities/Appointments";
 import { SystemRole } from "../../utils/enums";
 import { Skill } from "../entities/Skill";
@@ -672,25 +672,42 @@ export default class ExpertRepository {
     // Find Appointment Id for unavailable slots
     const temp = await Promise.all(
       availabilities.map(async (availability: ExpertAvailability) => {
-        let appointmentId = null;
+        let appointment = null;
+        let user = null;
         if (!availability.isAvailable) {
-          const appointment = await dataSource
+          const appointmentTmp = await dataSource
             .getRepository(Appointment)
             .findOne({
+              relations: {},
               where: {
                 available: {
                   id: availability.id,
                 },
               },
-              select: {
-                id: true,
-              },
             });
-          appointmentId = appointment?.id;
+          appointment = appointmentTmp;
+          if (appointmentTmp?.userId) {
+            const userTmp = await UserService.checkUserExisted({
+              userId: appointmentTmp?.userId,
+            });
+            user = pick(userTmp, [
+              "_id",
+              "fullName",
+              "email",
+              "gender",
+              "username",
+              "avatar",
+            ]);
+          }
         }
         return {
           ...availability,
-          appointmentId,
+          appointment: !appointment
+            ? null
+            : {
+                ...appointment,
+                user: user,
+              },
         };
       })
     );
