@@ -1128,6 +1128,14 @@
         "security": true
     },
     {
+        "name": "Get appointment statistic by year",
+        "methods": ["GET"],
+        "context": ["/appointments/statistic/year-summary"],
+        "target": "http://localhost:4002/api/v1",
+        "pathRewrite": {},
+        "security": true
+    },
+    {
         "name": "soft-delete-appointment",
         "methods": ["DELETE"],
         "context": ["/appointments/:id"],
@@ -1533,6 +1541,22 @@
         "name": "Delete Expert Educations",
         "methods": ["DELETE"],
         "context": ["/experts/:id/educations"],
+        "target": "http://localhost:4002/api/v1",
+        "pathRewrite": {},
+        "security": true
+    },
+    {
+        "name": "Get Top 5 Most booked experts",
+        "methods": ["GET"],
+        "context": ["/experts/statistic/top-5-most-booked-experts"],
+        "target": "http://localhost:4002/api/v1",
+        "pathRewrite": {},
+        "security": true
+    },
+    {
+        "name": "Get Top 5 Highest Rating experts",
+        "methods": ["GET"],
+        "context": ["/experts/statistic/top-5-highest-rating-experts"],
         "target": "http://localhost:4002/api/v1",
         "pathRewrite": {},
         "security": true

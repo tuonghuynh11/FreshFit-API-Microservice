@@ -24,6 +24,8 @@ export const APPOINTMENT_MESSAGES = {
   FAILED_TO_RATING_APPOINTMENT: "Failed to rating appointment",
   RATING_EXPERT_SUCCESS: "Rating expert success",
   FAILED_TO_RATING_EXPERT: "Failed to rating appointment",
+  GET_APPOINTMENT_STATISTIC_SUCCESS: "Get appointment statistic success",
+  YEAR_INVALID: "Year invalid",
 };
 
 export const EXPERT_MESSAGES = {
@@ -76,6 +78,10 @@ export const EXPERT_MESSAGES = {
   EDUCATION_NOT_FOUND: "Education not found",
   NOT_PERMISSION_TO_DELETE_EDUCATION: "Not permission to delete this education",
   EDUCATION_IDS_REQUIRED: "Education ids required",
+  GET_TOP_5_MOST_BOOKED_EXPERTS_SUCCESS:
+    "Get top 5 most booked experts success",
+  GET_TOP_5_HIGHEST_RATING_EXPERTS_SUCCESS:
+    "Get top 5 highest rating experts success",
 };
 
 export const EXPERT_AVAILABILITY_MESSAGES = {

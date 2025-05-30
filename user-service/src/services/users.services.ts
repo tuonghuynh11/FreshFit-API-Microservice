@@ -28,7 +28,6 @@ import { ErrorWithStatus } from '~/models/Errors'
 import axios from 'axios'
 import { USERS_MESSAGES } from '~/constants/messages'
 import HTTP_STATUS from '~/constants/httpStatus'
-import { sendForgotPasswordEmail, sendVerifyEmail } from '~/utils/mails'
 import OTP from '~/models/schemas/Otp.schema'
 import {
   calculateAge,
@@ -45,6 +44,7 @@ import { GenerateHealthPlanBody } from '~/models/requests/HealthPlan.requests'
 import { calculateBMI, calculateBMR, calculateTDEE, calculateWaterNeed, getBMIStatus } from '~/utils/health-formulas'
 import { HealthPlanOutput } from '~/constants/classes'
 import { generateToken04 } from '~/utils/zego'
+import mailService from './mail.services'
 
 class UserService {
   private signAccessToken({
@@ -187,7 +187,9 @@ class UserService {
 
     // console.log('email_verify_token', email_verify_token)
     console.log('OTP code: ', otp_code)
-    sendVerifyEmail({ email: payload.email, otp_code: otp_code })
+    // sendVerifyEmail({ email: payload.email, otp_code: otp_code })
+    mailService.sendVerifyEmail({ email: payload.email, otp_code: otp_code })
+
     return { access_token, refresh_token }
   }
   async checkEmailExists(email: string) {
@@ -489,7 +491,8 @@ class UserService {
     //     }
     //   }
     // )
-    sendVerifyEmail({ email: email, otp_code: otpCode })
+    // sendVerifyEmail({ email: email, otp_code: otpCode })
+    mailService.sendVerifyEmail({ email: email, otp_code: otpCode })
     return {
       message: USERS_MESSAGES.RESEND_VERIFY_EMAIL_SUCCESS
     }
@@ -514,7 +517,8 @@ class UserService {
       }
     )
 
-    sendForgotPasswordEmail({ email: email, otp_code: otpCode })
+    // sendForgotPasswordEmail({ email: email, otp_code: otpCode })
+    mailService.sendForgotPasswordEmail({ email: email, otp_code: otpCode })
     console.log('forgot password token:', otpCode)
     return {
       message: USERS_MESSAGES.CHECK_EMAIL_TO_RESET_PASSWORD
@@ -1114,6 +1118,11 @@ class UserService {
         ...expert
       })
 
+      mailService.sendExpertAccountCreatedMail({
+        email: expert.email,
+        name: expert.fullName,
+        password: envConfig.defaultExpertPassword
+      })
       return {
         id: userId,
         ...expert
