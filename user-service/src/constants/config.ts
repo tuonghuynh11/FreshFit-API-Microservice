@@ -17,6 +17,7 @@ export const envConfig = {
   gateway_host: process.env.GATEWAY_HOST as string,
   appointmentServiceHost: process.env.APPOINTMENT_SERVICE_HOST as string,
   recommendationServiceHost: process.env.RECOMMENDATION_SERVICE_HOST as string,
+  mailServiceHost: process.env.MAIL_SERVICE_HOST as string,
   dbName: process.env.DB_NAME as string,
   dbUsername: process.env.DB_USERNAME as string,
   dbPassword: process.env.DB_PASSWORD as string,
