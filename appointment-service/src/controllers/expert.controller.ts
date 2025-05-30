@@ -559,4 +559,53 @@ export default class ExpertController {
     }
     next();
   }
+
+  @Get("/statistic/top-5-most-booked-experts")
+  @Authorize([SystemRole.Admin])
+  public async getTop5MostBookedExperts(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const experts = await ExpertRepository.getTop5MostBookedExperts({
+        req,
+        res,
+      });
+      res.locals.message =
+        EXPERT_MESSAGES.GET_TOP_5_MOST_BOOKED_EXPERTS_SUCCESS;
+      res.locals.data = {
+        experts,
+      };
+
+      next();
+    } catch (error) {
+      next(error);
+    }
+    next();
+  }
+  @Get("/statistic/top-5-highest-rating-experts")
+  @Authorize([SystemRole.Admin])
+  public async getTop5HighestRatingExperts(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const experts = await ExpertRepository.getTop5HighestRatingExperts({
+        req,
+        res,
+      });
+      res.locals.message =
+        EXPERT_MESSAGES.GET_TOP_5_HIGHEST_RATING_EXPERTS_SUCCESS;
+      res.locals.data = {
+        experts,
+      };
+
+      next();
+    } catch (error) {
+      next(error);
+    }
+    next();
+  }
 }

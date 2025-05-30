@@ -255,6 +255,32 @@ export default class AppointmentController {
     next();
   }
 
+  @Get("/statistic/year-summary")
+  @Authorize([SystemRole.Admin])
+  public async getAppointmentStatisticByYear(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const statistic: any =
+        await AppointmentRepository.getAppointmentStatisticByYear({
+          req,
+          res,
+        });
+      res.locals.message =
+        APPOINTMENT_MESSAGES.GET_APPOINTMENT_STATISTIC_SUCCESS;
+      res.locals.data = {
+        statistic,
+      };
+
+      next();
+    } catch (error) {
+      next(error);
+    }
+    next();
+  }
+
   /////Delete this can affect the products and many other things, consider some checks before deleting !important
   @Delete("/:id")
   @Authorize([SystemRole.Admin])

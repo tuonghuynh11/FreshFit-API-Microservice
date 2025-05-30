@@ -83,5 +83,12 @@ export const envConfig = {
   // ZEGO SERVICE
   zegoAppId: process.env.ZEGO_APP_ID || 0,
   zegoServerSecret: process.env.ZEGO_SERVER_SECRET || '',
-  zegoEffectiveTimeInSeconds: process.env.ZEGO_EFFECTIVE_TIME_IN_SECONDS || 3600 * 24 * 365 // 1 year
+  zegoEffectiveTimeInSeconds: process.env.ZEGO_EFFECTIVE_TIME_IN_SECONDS || 3600 * 24 * 365, // 1 year
+
+  // NodeMailer Config
+  smtpHost: process.env.SMTP_HOST || 'mail9066@yopmail.com',
+  smtpPort: parseInt(process.env.SMTP_PORT || '25', 10),
+  smtpSecure: process.env.SMTP_SECURE === 'true',
+  smtpUser: process.env.SMTP_USER || '',
+  smtpPassword: process.env.SMTP_PASSWORD || ''
 }

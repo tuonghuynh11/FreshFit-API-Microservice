@@ -881,7 +881,62 @@ export default class AppointmentRepository {
       }
     });
   };
+  static getAppointmentStatisticByYear = async ({
+    req,
+    res,
+  }: {
+    req: Request;
+    res: Response;
+  }) => {
+    const { year } = req.query;
+    const { dataSource } = req.app.locals;
+    const appointmentRepository = dataSource.getRepository(Appointment);
 
+    if (isNaN(Number(year))) {
+      throw new BadRequestError(APPOINTMENT_MESSAGES.YEAR_INVALID);
+    }
+
+    let yearParam = year ? Number(year) : new Date().getFullYear();
+    const appointment = await appointmentRepository.find({
+      relations: {
+        available: true,
+      },
+      where: {
+        status: AppointmentStatus.COMPLETED,
+        available: {
+          date: Between(
+            new Date(yearParam, 0, 1),
+            new Date(yearParam, 11, 31, 23, 59, 59)
+          ),
+        },
+      },
+      select: {
+        id: true,
+        available: {
+          id: true,
+          date: true,
+        },
+      },
+    });
+
+    console.log(
+      "Appointment count by month:",
+      JSON.stringify(appointment, null, 2)
+    );
+
+    // 12 months in a year
+    const months = Array.from({ length: 12 }, (_, i) => ({
+      month: i + 1,
+      count: 0,
+    }));
+    // Count appointments for each month
+    appointment.forEach((apt: Appointment) => {
+      const month = new Date(apt.available!.date).getMonth(); // 0-indexed
+      months[month].count += 1;
+    });
+
+    return months;
+  };
   static softDelete = async (req: Request, res: Response) => {};
   static hardDelete = async (req: Request, res: Response) => {};
 }

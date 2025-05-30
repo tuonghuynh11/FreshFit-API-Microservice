@@ -1779,4 +1779,84 @@ export default class ExpertRepository {
     await expertEducationRepository.remove(educations);
     return null;
   };
+  static getTop5MostBookedExperts = async ({
+    req,
+    res,
+  }: {
+    req: Request;
+    res: Response;
+  }) => {
+    const { dataSource } = req.app.locals;
+    const expertRepository = dataSource.getRepository(Expert);
+
+    const topExperts = await expertRepository
+      .createQueryBuilder("expert")
+      .leftJoin(
+        "expert.appointments",
+        "appointment",
+        "appointment.status = :status",
+        { status: "COMPLETED" }
+      )
+      .select("expert.id", "id")
+      .addSelect("expert.userId", "userId")
+      .addSelect("expert.fullName", "fullName")
+      .addSelect("COUNT(appointment.id)", "bookingCount")
+      .groupBy("expert.id")
+      .orderBy('"bookingCount"', "DESC")
+      .limit(5)
+      .getRawMany();
+    if (!topExperts || topExperts.length === 0) {
+      return [];
+    }
+    const result = await Promise.all(
+      topExperts.map(async (expert: any) => {
+        const user = await UserService.checkUserExisted({
+          userId: expert.userId,
+        });
+
+        return {
+          id: expert.id,
+          userId: expert.userId,
+          avatar: user.avatar,
+          fullName: user.fullName,
+          bookingCount: Number(expert.bookingCount),
+        };
+      })
+    );
+    return result;
+  };
+  static getTop5HighestRatingExperts = async ({
+    req,
+    res,
+  }: {
+    req: Request;
+    res: Response;
+  }) => {
+    const { dataSource } = req.app.locals;
+    const expertRepository = dataSource.getRepository(Expert);
+
+    const top5HighestRatingExperts = await expertRepository.find({
+      order: {
+        rating: "DESC",
+      },
+      take: 5,
+    });
+
+    const result = await Promise.all(
+      top5HighestRatingExperts.map(async (expert: any) => {
+        const user = await UserService.checkUserExisted({
+          userId: expert.userId,
+        });
+
+        return {
+          id: expert.id,
+          userId: expert.userId,
+          avatar: user.avatar,
+          fullName: user.fullName,
+          rating: expert.rating,
+        };
+      })
+    );
+    return result;
+  };
 }

@@ -9,12 +9,14 @@ import { versionOneRouter } from './routes/index.routes'
 import morganMiddleware from './middlewares/morgan'
 import { initCronModule } from './corn'
 import './traces'
+import mailService from './services/mail.services'
 const app = express()
 const PORT = envConfig.port
 
 databaseService.connect().then(() => {
   databaseService.createIndexes()
 })
+mailService.connect()
 initFolder()
 initCronModule()
 //Use Helmet
