@@ -69,11 +69,7 @@ class IngredientService {
 
   async getById({ id }: { id: string }) {
     const ingredient = await databaseService.ingredients.findOne({
-      _id: new ObjectId(id),
-      projection: {
-        created_at: 0,
-        updated_at: 0
-      }
+      _id: new ObjectId(id)
     })
     if (!ingredient) {
       throw new ErrorWithStatus({
