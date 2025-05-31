@@ -1,0 +1,597 @@
+{
+  "persimmon": {
+    "name": "Persimmon",
+    "id": 52,
+    "family": "Ebenaceae",
+    "order": "Rosales",
+    "genus": "Diospyros",
+    "nutritions": {
+      "calories": 81,
+      "fat": 0,
+      "sugar": 18,
+      "carbohydrates": 18,
+      "protein": 0
+    },
+    "url": "https://en.wikipedia.org/wiki/Persimmon",
+    "description": "A sweet, flavorful fruit that is typically orange or yellow.",
+    "image_url": "https://hips.hearstapps.com/hmg-prod/images/persimmon-fruit-on-old-wooden-background-top-view-royalty-free-image-1651607677.jpg?crop=0.662xw:1.00xh;0.284xw,0&resize=640:*"
+  },
+  "strawberry": {
+    "name": "Strawberry",
+    "id": 3,
+    "family": "Rosaceae",
+    "order": "Rosales",
+    "genus": "Fragaria",
+    "nutritions": {
+      "calories": 29,
+      "fat": 0.4,
+      "sugar": 5.4,
+      "carbohydrates": 5.5,
+      "protein": 0.8
+    },
+    "url": "https://en.wikipedia.org/wiki/Strawberry",
+    "description": "A bright red, juicy fruit known for its sweetness and versatility.",
+    "image_url": "https://www.allrecipes.com/thmb/1c99SWam7_FM6vUzpDDzIKffMR4=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/ALR-strawberry-fruit-or-vegetable-f6dd901427714e46af2d706a57b9016f.jpg"
+  },
+  "banana": {
+    "name": "Banana",
+    "id": 1,
+    "family": "Musaceae",
+    "order": "Zingiberales",
+    "genus": "Musa",
+    "nutritions": {
+      "calories": 96,
+      "fat": 0.2,
+      "sugar": 17.2,
+      "carbohydrates": 22,
+      "protein": 1
+    },
+    "url": "https://en.wikipedia.org/wiki/Banana",
+    "description": "A long, yellow fruit that is a popular snack and breakfast item.",
+    "image_url": "https://nutritionsource.hsph.harvard.edu/wp-content/uploads/2018/08/bananas-1354785_1920.jpg"
+  },
+  "tomato": {
+    "name": "Tomato",
+    "id": 5,
+    "family": "Solanaceae",
+    "order": "Solanales",
+    "genus": "Solanum",
+    "nutritions": {
+      "calories": 74,
+      "fat": 0.2,
+      "sugar": 2.6,
+      "carbohydrates": 3.9,
+      "protein": 0.9
+    },
+    "url": "https://en.wikipedia.org/wiki/Tomato",
+    "description": "A red or yellowish fruit used in salads, sauces, and various dishes.",
+    "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Tomato_je.jpg/1200px-Tomato_je.jpg"
+  },
+  "pear": {
+    "name": "Pear",
+    "id": 4,
+    "family": "Rosaceae",
+    "order": "Rosales",
+    "genus": "Pyrus",
+    "nutritions": {
+      "calories": 57,
+      "fat": 0.1,
+      "sugar": 10,
+      "carbohydrates": 15,
+      "protein": 0.4
+    },
+    "url": "https://en.wikipedia.org/wiki/Pear",
+    "description": "A sweet, bell-shaped fruit that comes in various colors and textures.",
+    "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTp_YRyCWbgZ4g-9Ntug2ZK2_2DGiDZUDmRYA&s"
+  },
+  "durian": {
+    "name": "Durian",
+    "id": 60,
+    "family": "Malvaceae",
+    "order": "Malvales",
+    "genus": "Durio",
+    "nutritions": {
+      "calories": 147,
+      "fat": 5.3,
+      "sugar": 6.75,
+      "carbohydrates": 27.1,
+      "protein": 1.5
+    },
+    "url": "https://en.wikipedia.org/wiki/Durian",
+    "description": "Known as the 'king of fruits,' durian has a strong odor and unique taste.",
+    "image_url": "https://product.hstatic.net/200000325223/product/sau_rieng_new-01_63392fbb5c3d449e913faebc332ae80f_7914731456f84bd195eeb1ea2e08886f_grande.png"
+  },
+  "blackberry": {
+    "name": "Blackberry",
+    "id": 64,
+    "family": "Rosaceae",
+    "order": "Rosales",
+    "genus": "Rubus",
+    "nutritions": {
+      "calories": 40,
+      "fat": 0.4,
+      "sugar": 4.5,
+      "carbohydrates": 9,
+      "protein": 1.3
+    },
+    "url": "https://en.wikipedia.org/wiki/Blackberry",
+    "description": "A sweet, dark-colored fruit often used in desserts and jams.",
+    "image_url": "https://cdn.shopify.com/s/files/1/0620/1812/6021/files/blackberry-bush.jpg?v=1727827691"
+  },
+  "lingonberry": {
+    "name": "Lingonberry",
+    "id": 65,
+    "family": "Ericaceae",
+    "order": "Ericales",
+    "genus": "Vaccinium",
+    "nutritions": {
+      "calories": 50,
+      "fat": 0.34,
+      "sugar": 5.74,
+      "carbohydrates": 11.3,
+      "protein": 0.75
+    },
+    "url": "https://en.wikipedia.org/wiki/Lingonberry",
+    "description": "A small, red berry popular in Scandinavian cuisine.",
+    "image_url": "https://cdn.shopify.com/s/files/1/0062/8532/8445/products/Lingonberry_4_BB.jpg?v=1644255118"
+  },
+  "kiwi": {
+    "name": "Kiwi",
+    "id": 66,
+    "family": "Actinidiaceae",
+    "order": "Struthioniformes",
+    "genus": "Apteryx",
+    "nutritions": {
+      "calories": 61,
+      "fat": 0.5,
+      "sugar": 9,
+      "carbohydrates": 15,
+      "protein": 1.1
+    },
+    "url": "https://en.wikipedia.org/wiki/Kiwifruit",
+    "description": "A small, brown, fuzzy fruit with bright green flesh and a sweet-tart flavor.",
+    "image_url": "https://cdn.britannica.com/45/126445-050-4C0FA9F6/Kiwi-fruit.jpg"
+  },
+  "lychee": {
+    "name": "Lychee",
+    "id": 67,
+    "family": "Sapindaceae",
+    "order": "Sapindales",
+    "genus": "Litchi",
+    "nutritions": {
+      "calories": 66,
+      "fat": 0.44,
+      "sugar": 15,
+      "carbohydrates": 17,
+      "protein": 0.8
+    },
+    "url": "https://en.wikipedia.org/wiki/Litchi",
+    "description": "A tropical fruit with a sweet, floral flavor and a bumpy red skin.",
+    "image_url": "https://images-prod.healthline.com/hlcmsresource/images/AN_images/lychees-1296x728-feature.jpg"
+  },
+  "pineapple": {
+    "name": "Pineapple",
+    "id": 10,
+    "family": "Bromeliaceae",
+    "order": "Poales",
+    "genus": "Ananas",
+    "nutritions": {
+      "calories": 50,
+      "fat": 0.12,
+      "sugar": 9.85,
+      "carbohydrates": 13.12,
+      "protein": 0.54
+    },
+    "url": "https://en.wikipedia.org/wiki/Pineapple",
+    "description": "A tropical fruit with a sweet, tangy flavor and spiky exterior.",
+    "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR3EZenExcPl5a_leFkFbwu5jGw2Dv3dmI2fw&s"
+  },
+  "fig": {
+    "name": "Fig",
+    "id": 68,
+    "family": "Moraceae",
+    "order": "Rosales",
+    "genus": "Ficus",
+    "nutritions": {
+      "calories": 74,
+      "fat": 0.3,
+      "sugar": 16,
+      "carbohydrates": 19,
+      "protein": 0.8
+    },
+    "url": "https://en.wikipedia.org/wiki/Fig",
+    "description": "A soft, sweet fruit with a unique texture and flavor.",
+    "image_url": "https://images.immediate.co.uk/production/volatile/sites/30/2020/02/figs-2056729.jpg?quality=90&resize=556,505"
+  },
+  "gooseberry": {
+    "name": "Gooseberry",
+    "id": 69,
+    "family": "Grossulariaceae",
+    "order": "Saxifragales",
+    "genus": "Ribes",
+    "nutritions": {
+      "calories": 44,
+      "fat": 0.6,
+      "sugar": 0,
+      "carbohydrates": 10,
+      "protein": 0.9
+    },
+    "url": "https://en.wikipedia.org/wiki/Gooseberry",
+    "description": "A tart, small green or red fruit often used in jams and desserts.",
+    "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRVoXuQOKgeOlfE3FW6kzIm6sKpFdfVc6dxTg&s"
+  },
+  "passionfruit": {
+    "name": "Passionfruit",
+    "id": 70,
+    "family": "Passifloraceae",
+    "order": "Malpighiales",
+    "genus": "Passiflora",
+    "nutritions": {
+      "calories": 97,
+      "fat": 0.7,
+      "sugar": 11.2,
+      "carbohydrates": 22.4,
+      "protein": 2.2
+    },
+    "url": "https://en.wikipedia.org/wiki/Passion_fruit",
+    "description": "A tropical fruit with a tough outer rind and sweet, aromatic pulp.",
+    "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTIGEp-Syfuk2YsFnqw1rHx-0A_LmcQ-vQCLg&s"
+  },
+  "plum": {
+    "name": "Plum",
+    "id": 71,
+    "family": "Rosaceae",
+    "order": "Rosales",
+    "genus": "Prunus",
+    "nutritions": {
+      "calories": 46,
+      "fat": 0.28,
+      "sugar": 9.92,
+      "carbohydrates": 11.4,
+      "protein": 0.7
+    },
+    "url": "https://en.wikipedia.org/wiki/Plum",
+    "description": "A sweet, juicy fruit that can be purple, red, or yellow.",
+    "image_url": "https://dictionary.cambridge.org/vi/images/thumb/plum_noun_002_28096.jpg?version=6.0.43"
+  },
+  "orange": {
+    "name": "Orange",
+    "id": 2,
+    "family": "Rutaceae",
+    "order": "Sapindales",
+    "genus": "Citrus",
+    "nutritions": {
+      "calories": 43,
+      "fat": 0.2,
+      "sugar": 8.2,
+      "carbohydrates": 8.3,
+      "protein": 1
+    },
+    "url": "https://en.wikipedia.org/wiki/Orange_(fruit)",
+    "description": "A citrus fruit known for its sweet and tangy flavor.",
+    "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Ambersweet_oranges.jpg/640px-Ambersweet_oranges.jpg"
+  },
+  "greenApple": {
+    "name": "Green Apple",
+    "id": 72,
+    "family": "Rosaceae",
+    "order": "Rosales",
+    "genus": "Malus",
+    "nutritions": {
+      "calories": 21,
+      "fat": 0.1,
+      "sugar": 6.4,
+      "carbohydrates": 3.1,
+      "protein": 0.4
+    },
+    "url": "https://en.wikipedia.org/wiki/Apple#Green_apples",
+    "description": "A crisp, tart fruit often used in baking and salads.",
+    "image_url": "https://images.squarespace-cdn.com/content/v1/5a8d04ec4c0dbfcf5f37aa83/1530549561267-EB9AZHTWDYOYMGUGKXI5/greenapple.886511184.1200x1200.jpg"
+  },
+  "raspberry": {
+    "name": "Raspberry",
+    "id": 23,
+    "family": "Rosaceae",
+    "order": "Rosales",
+    "genus": "Rubus",
+    "nutritions": {
+      "calories": 53,
+      "fat": 0.7,
+      "sugar": 4.4,
+      "carbohydrates": 12,
+      "protein": 1.2
+    },
+    "url": "https://en.wikipedia.org/wiki/Raspberry",
+    "description": "A sweet, red or black fruit that is great in desserts and jams.",
+    "image_url": "https://cdn.britannica.com/83/156583-050-4A1FABB5/Red-raspberries.jpg"
+  },
+  "watermelon": {
+    "name": "Watermelon",
+    "id": 25,
+    "family": "Cucurbitaceae",
+    "order": "Cucurbitales",
+    "genus": "Citrullus",
+    "nutritions": {
+      "calories": 30,
+      "fat": 0.2,
+      "sugar": 6,
+      "carbohydrates": 8,
+      "protein": 0.6
+    },
+    "url": "https://en.wikipedia.org/wiki/Watermelon",
+    "description": "A large, sweet fruit with a green rind and red or pink flesh.",
+    "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT7KDumi-cWzQhj_NOTFTlWHWpGgVk9kF1oIg&s"
+  },
+  "lemon": {
+    "name": "Lemon",
+    "id": 26,
+    "family": "Rutaceae",
+    "order": "Sapindales",
+    "genus": "Citrus",
+    "nutritions": {
+      "calories": 29,
+      "fat": 0.3,
+      "sugar": 2.5,
+      "carbohydrates": 9,
+      "protein": 0.8
+    },
+    "url": "https://en.wikipedia.org/wiki/Lemon",
+    "description": "A sour citrus fruit used for flavoring and drinks.",
+    "image_url": "https://upload.wikimedia.org/wikipedia/commons/e/e4/Lemon.jpg"
+  },
+  "cherry": {
+    "name": "Cherry",
+    "id": 28,
+    "family": "Rosaceae",
+    "order": "Rosales",
+    "genus": "Prunus",
+    "nutritions": {
+      "calories": 63,
+      "fat": 0.3,
+      "sugar": 12.8,
+      "carbohydrates": 16,
+      "protein": 1
+    },
+    "url": "https://en.wikipedia.org/wiki/Cherry",
+    "description": "A small, round fruit that is sweet or tart, often red or black.",
+    "image_url": "https://blog.onelife.vn/wp-content/uploads/2024/01/c952be0a-cherry-uc-kingfoodmart-4.png"
+  },
+  "grape": {
+    "name": "Grape",
+    "id": 30,
+    "family": "Vitaceae",
+    "order": "Vitales",
+    "genus": "Vitis",
+    "nutritions": {
+      "calories": 69,
+      "fat": 0.2,
+      "sugar": 16.25,
+      "carbohydrates": 17.15,
+      "protein": 0.72
+    },
+    "url": "https://en.wikipedia.org/wiki/Grape",
+    "description": "A small, round fruit that can be sweet or tart, often used in wines.",
+    "image_url": "https://img.imageboss.me/fourwinds/width/425/dpr:2/shop/products/blackmonukka.jpg?v=1729795625"
+  },
+  "mango": {
+    "name": "Mango",
+    "id": 34,
+    "family": "Anacardiaceae",
+    "order": "Sapindales",
+    "genus": "Mangifera",
+    "nutritions": {
+      "calories": 60,
+      "fat": 0.4,
+      "sugar": 14.8,
+      "carbohydrates": 15,
+      "protein": 0.8
+    },
+    "url": "https://en.wikipedia.org/wiki/Mango",
+    "description": "A tropical stone fruit known for its sweet and juicy flesh.",
+    "image_url": "https://shop.annam-gourmet.com/pub/media/catalog/product/cache/ee0af4cad0f3673c5271df64bd520339/F/1/F164705_1_cc91.png"
+  },
+  "apricot": {
+    "name": "Apricot",
+    "id": 35,
+    "family": "Rosaceae",
+    "order": "Rosales",
+    "genus": "Prunus",
+    "nutritions": {
+      "calories": 48,
+      "fat": 0.5,
+      "sugar": 3.9,
+      "carbohydrates": 12,
+      "protein": 1
+    },
+    "url": "https://en.wikipedia.org/wiki/Apricot",
+    "description": "A small, orange fruit with a sweet flavor and smooth skin.",
+    "image_url": "https://cdn.britannica.com/36/160636-050-B1DC5C0A/Laetrile-apricot-pits.jpg"
+  },
+  "cantaloupe": {
+    "name": "Cantaloupe",
+    "id": 36,
+    "family": "Cucurbitaceae",
+    "order": "Cucurbitales",
+    "genus": "Cucumis",
+    "nutritions": {
+      "calories": 34,
+      "fat": 0.2,
+      "sugar": 8.2,
+      "carbohydrates": 8.2,
+      "protein": 0.8
+    },
+    "url": "https://en.wikipedia.org/wiki/Cantaloupe",
+    "description": "A sweet, orange-fleshed melon with a netted rind.",
+    "image_url": "https://i5.walmartimages.com/seo/Cantaloupe-each_fb4c18a5-9367-4770-b99f-7518c72db482.5609c32e87a3110b734aad048bf9fe35.jpeg"
+  },
+  "pomegranate": {
+    "name": "Pomegranate",
+    "id": 37,
+    "family": "Lythraceae",
+    "order": "Myrtales",
+    "genus": "Punica",
+    "nutritions": {
+      "calories": 83,
+      "fat": 1.2,
+      "sugar": 18.5,
+      "carbohydrates": 19.6,
+      "protein": 1.7
+    },
+    "url": "https://en.wikipedia.org/wiki/Pomegranate",
+    "description": "A round fruit filled with juicy seeds, known for its tart flavor.",
+    "image_url": "https://img.imageboss.me/fourwinds/width/425/dpr:2/shop/files/wonderful-pomegranate-tree.jpg?v=1729715185"
+  },
+  "blueberry": {
+    "name": "Blueberry",
+    "id": 38,
+    "family": "Ericaceae",
+    "order": "Ericales",
+    "genus": "Vaccinium",
+    "nutritions": {
+      "calories": 57,
+      "fat": 0.3,
+      "sugar": 9.7,
+      "carbohydrates": 14.5,
+      "protein": 0.7
+    },
+    "url": "https://en.wikipedia.org/wiki/Blueberry",
+    "description": "A small, sweet, blue-purple fruit often used in desserts.",
+    "image_url": "https://cdn.nhathuoclongchau.com.vn/unsafe/https://cms-prod.s3-sgn09.fptcloud.com/blueberry_la_trai_gi_loi_ich_cua_blueberry_doi_voi_suc_khoe_1_5aab2b02d0.jpg"
+  },
+  "apples": {
+    "name": "Apples",
+    "id": 39,
+    "family": "Rosaceae",
+    "order": "Rosales",
+    "genus": "Malus",
+    "nutritions": {
+      "calories": 52,
+      "fat": 0.2,
+      "sugar": 10.4,
+      "carbohydrates": 13.8,
+      "protein": 0.3
+    },
+    "url": "https://en.wikipedia.org/wiki/Apple",
+    "description": "A popular fruit that is sweet and crisp, great for snacking.",
+    "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSr4Fo2rTO4AovAp8Qpz4bg9p_UkHTmEkNXIQ&s"
+  },
+  "papaya": {
+    "name": "Papaya",
+    "id": 40,
+    "family": "Caricaceae",
+    "order": "Caricales",
+    "genus": "Carica",
+    "nutritions": {
+      "calories": 43,
+      "fat": 0.3,
+      "sugar": 5.9,
+      "carbohydrates": 10.8,
+      "protein": 0.5
+    },
+    "url": "https://en.wikipedia.org/wiki/Papaya",
+    "description": "A tropical fruit with sweet, orange flesh and black seeds.",
+    "image_url": "https://media.post.rvohealth.io/wp-content/uploads/2020/09/papaya-benefits-732x549-thumbnail.jpg"
+  },
+  "coconut": {
+    "name": "Coconut",
+    "id": 41,
+    "family": "Arecaceae",
+    "order": "Arecales",
+    "genus": "Cocos",
+    "nutritions": {
+      "calories": 354,
+      "fat": 33.5,
+      "sugar": 6.2,
+      "carbohydrates": 15.2,
+      "protein": 3.3
+    },
+    "url": "https://en.wikipedia.org/wiki/Coconut",
+    "description": "A large fruit with a hard shell and sweet, milky flesh.",
+    "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR-bqrl1U3YhTW4AwZNYDCgTTnJ3iOcvuiULg&s"
+  },
+  "tangerine": {
+    "name": "Tangerine",
+    "id": 42,
+    "family": "Rutaceae",
+    "order": "Sapindales",
+    "genus": "Citrus",
+    "nutritions": {
+      "calories": 53,
+      "fat": 0.3,
+      "sugar": 9.5,
+      "carbohydrates": 13,
+      "protein": 0.8
+    },
+    "url": "https://en.wikipedia.org/wiki/Tangerine",
+    "description": "A small citrus fruit with a sweet flavor and easy-to-peel skin.",
+    "image_url": "https://scent.vn/cdn/shop/files/Tangerine.webp?v=1722969958"
+  },
+  "nectarine": {
+    "name": "Nectarine",
+    "id": 43,
+    "family": "Rosaceae",
+    "order": "Rosales",
+    "genus": "Prunus",
+    "nutritions": {
+      "calories": 44,
+      "fat": 0.3,
+      "sugar": 8.4,
+      "carbohydrates": 10.5,
+      "protein": 1
+    },
+    "url": "https://en.wikipedia.org/wiki/Nectarine",
+    "description": "A smooth-skinned fruit similar to a peach, sweet and juicy.",
+    "image_url": "https://www.yates.com.au/media/xpwjyhao/peach-nectarine.jpg"
+  },
+  "jackfruit": {
+    "name": "Jackfruit",
+    "id": 44,
+    "family": "Moraceae",
+    "order": "Rosales",
+    "genus": "Artocarpus",
+    "nutritions": {
+      "calories": 95,
+      "fat": 0.6,
+      "sugar": 19.08,
+      "carbohydrates": 23.25,
+      "protein": 2.4
+    },
+    "url": "https://en.wikipedia.org/wiki/Jackfruit",
+    "description": "A large, tropical fruit with a sweet flavor and spiky exterior.",
+    "image_url": "https://image.tuasaude.com/media/article/la/fp/jaca_32147_l.jpg"
+  },
+  "avocado": {
+    "name": "Avocado",
+    "id": 45,
+    "family": "Lauraceae",
+    "order": "Laurales",
+    "genus": "Persea",
+    "nutritions": {
+      "calories": 160,
+      "fat": 14.66,
+      "sugar": 0.2,
+      "carbohydrates": 8.53,
+      "protein": 2
+    },
+    "url": "https://en.wikipedia.org/wiki/Avocado",
+    "description": "A creamy, green fruit often used in salads and spreads.",
+    "image_url": "https://img.imageboss.me/fourwinds/width/425/dpr:2/shop/products/shutterstock_116205556bacon_b59ae0a5-6673-4d99-a9ba-ec6ded5ba99c.jpg?v=1729716360"
+  },
+  "cucumber": {
+    "name": "Cucumber",
+    "id": 46,
+    "family": "Cucurbitaceae",
+    "order": "Cucurbitales",
+    "genus": "Cucumis",
+    "nutritions": {
+      "calories": 16,
+      "fat": 0.1,
+      "sugar": 1.67,
+      "carbohydrates": 3.63,
+      "protein": 0.7
+    },
+    "url": "https://en.wikipedia.org/wiki/Cucumber",
+    "description": "A refreshing, crunchy vegetable often used in salads.",
+    "image_url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRiZEk16LGB_gKTEHNjbWWOT608eIwKwhIlug&s"
+  }
+}

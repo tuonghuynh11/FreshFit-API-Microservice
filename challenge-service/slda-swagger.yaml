@@ -1,0 +1,1723 @@
+openapi: 3.0.3
+info:
+  title: Sign Language Dictionary API
+  contact:
+    email: huynhmanhtuong1180@gmail.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.11
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+servers:
+  - url: https://signlanguagedictionaryapi.onrender.com/api
+tags:
+  - name: user
+    description: Operations about user
+  - name: word
+    description: Operations about word
+  - name: topic
+    description: Operations about topic
+  - name: media
+    description: Operations about media
+  - name: learned_word
+    description: Operations about learned word
+  - name: feedback
+    description: Operations about feedback
+  - name: favorite_word
+    description: Operations about favorite word
+paths:
+  /users:
+    get:
+      tags:
+        - user
+      summary: A list of users
+      description: Get all users in the system
+      operationId: getAllUsers
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          description: Page number
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 1
+        - name: limit
+          in: query
+          description: Number of items per page
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 10
+        - name: isBan
+          in: query
+          description: Filter banned users
+          required: false
+          schema:
+            type: number
+            enum: [false, true]
+            example: 1
+      responses:
+        default:
+          description: Get all users successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Get All Users Success
+                  result:
+                    type: object
+                    properties:
+                      users:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/User'
+                      page:
+                        type: integer
+                        example: 1
+                      limit:
+                        type: integer
+                        example: 10
+                      total_pages:
+                        type: integer
+                        example: 1
+                      total_items:
+                        type: integer
+                        example: 1
+  /users/login:
+    post:
+      tags:
+        - user
+      summary: User logged in successfully
+      description: Log in to the system
+      operationId: login
+      requestBody:
+        description: Log in to the system
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginBody'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessAuthentication'
+  /users/register:
+    post:
+      tags:
+        - user
+      summary: A new user has been registered
+      description: Create a new user.
+      operationId: register
+      requestBody:
+        description: Create a new user
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterReqBody'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessAuthentication'
+  /users/refresh-token:
+    post:
+      tags:
+        - user
+      summary: A new access token has been created
+      description: Renew a access token.
+      operationId: refresh_token
+      requestBody:
+        description: Renew access token
+        content:
+          application/json:
+            schema:
+              properties:
+                refresh_token:
+                  type: string
+                  example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjRiZTBhZDJlNDNkMjQ2NDM5NGZlZWRiIiwidG9rZW5fdHlwZSI6MSwidmVyaWZ5IjoxLCJpYXQiOjE2OTEzODMyMjYsImV4cCI6MTcwMDAyMzIyNn0.bFnaBfxWl-Q48HCwAeMpNzZwTO9LEjcBd7Zyipjqr64'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessAuthentication'
+  /users/logout:
+    post:
+      tags:
+        - user
+      summary: User has been logged out
+      description: Logout.
+      operationId: logout
+      security:
+        - BearerAuth: []
+      requestBody:
+        description: logout
+        content:
+          application/json:
+            schema:
+              properties:
+                refresh_token:
+                  type: string
+                  example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjRiZTBhZDJlNDNkMjQ2NDM5NGZlZWRiIiwidG9rZW5fdHlwZSI6MSwidmVyaWZ5IjoxLCJpYXQiOjE2OTEzODMyMjYsImV4cCI6MTcwMDAyMzIyNn0.bFnaBfxWl-Q48HCwAeMpNzZwTO9LEjcBd7Zyipjqr64'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: Logout successfully
+  /users/verify-email:
+    post:
+      tags:
+        - user
+      summary: Email has been verified
+      description: Verify email.
+      operationId: verify_email
+      requestBody:
+        description: Verify email
+        content:
+          application/json:
+            schema:
+              properties:
+                email_verify_token:
+                  type: string
+                  example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjRiZTBhZDJlNDNkMjQ2NDM5NGZlZWRiIiwidG9rZW5fdHlwZSI6MSwidmVyaWZ5IjoxLCJpYXQiOjE2OTEzODMyMjYsImV4cCI6MTcwMDAyMzIyNn0.bFnaBfxWl-Q48HCwAeMpNzZwTO9LEjcBd7Zyipjqr64'
+        required: true
+      responses:
+        '200':
+          description: Email verify successfully
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: Email verify successfully
+                  result:
+                    $ref: '#/components/schemas/SuccessAuthentication'
+        '404':
+          description: User Not Found
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: User Not Found
+  /users/resend-verify-email:
+    post:
+      tags:
+        - user
+      summary: Verify email has been resent
+      description: Resend verify email.
+      operationId: resend_verify_email
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Email verify successfully
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: Resend verify email successfully
+        '404':
+          description: User Not Found
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: User Not Found
+  /users/forgot-password:
+    post:
+      tags:
+        - user
+      summary: Submit email to reset password, send email to user
+      description: Submit email to reset password, send email to user.
+      operationId: forgot_password
+      requestBody:
+        description: Send forgot email to user
+        content:
+          application/json:
+            schema:
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: aron@gmail.com
+        required: true
+      responses:
+        '200':
+          description: Send email successfully
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: Check email to reset password.
+  /users/verify-forgot-password-token:
+    post:
+      tags:
+        - user
+      summary: Forgot password token has been verified
+      description: Verify forgot password token.
+      operationId: verify_forgot_password_token
+      requestBody:
+        description: Verify forgot password token
+        content:
+          application/json:
+            schema:
+              properties:
+                forgot_password_token:
+                  type: string
+                  example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjRiZTBhZDJlNDNkMjQ2NDM5NGZlZWRiIiwidG9rZW5fdHlwZSI6MSwidmVyaWZ5IjoxLCJpYXQiOjE2OTEzODMyMjYsImV4cCI6MTcwMDAyMzIyNn0.bFnaBfxWl-Q48HCwAeMpNzZwTO9LEjcBd7Zyipjqr64'
+        required: true
+      responses:
+        '200':
+          description: Send email successfully
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: Verify forgot password token successfully.
+  /users/reset-password:
+    post:
+      tags:
+        - user
+      summary: Password has been reset
+      description: Reset password.
+      operationId: reset_password
+      requestBody:
+        description: Reset password
+        content:
+          application/json:
+            schema:
+              properties:
+                forgot_password_token:
+                  type: string
+                  example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjRiZTBhZDJlNDNkMjQ2NDM5NGZlZWRiIiwidG9rZW5fdHlwZSI6MSwidmVyaWZ5IjoxLCJpYXQiOjE2OTEzODMyMjYsImV4cCI6MTcwMDAyMzIyNn0.bFnaBfxWl-Q48HCwAeMpNzZwTO9LEjcBd7Zyipjqr64'
+                password:
+                  type: string
+                  example: '1212112'
+                confirm_password:
+                  type: string
+                  example: '1212112'
+        required: true
+      responses:
+        '200':
+          description: Reset password successfully
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: Reset password successfully.
+  /users/me:
+    get:
+      tags:
+        - user
+      summary: Get my information successfully
+      description: Get my information.
+      operationId: get_my_information
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Get my information successfully
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: Get my information successfully.
+                  result:
+                    $ref: '#/components/schemas/User'
+    patch:
+      tags:
+        - user
+      summary: Update user information successfully
+      description: Update user information.
+      operationId: update_user_information
+      security:
+        - BearerAuth: []
+      requestBody:
+        description: Update user information
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateMeReqBody'
+      responses:
+        '200':
+          description: Update user information
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                    example: Update profile successfully.
+                  result:
+                    $ref: '#/components/schemas/User'
+
+  /words/detail/{word_id}:
+    get:
+      tags:
+        - word
+      summary: Get word detail information successfully.
+      description: Get word detail information
+      operationId: get_word_detail_by_Id
+      parameters:
+        - name: word_id
+          in: path
+          description: ID of word
+          required: true
+          schema:
+            type: string
+            format: MongoId
+            example: 64be0ad2e43d2464394feedb
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Get word detail successfully
+                  result:
+                    type: object
+                    properties:
+                      word:
+                        $ref: '#/components/schemas/Word'
+  /words/search:
+    get:
+      tags:
+        - word
+      summary: A list of words that matched with the keywords
+      description: Search word
+      operationId: search_word
+      parameters:
+        - name: page
+          in: query
+          description: Page number
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 1
+        - name: limit
+          in: query
+          description: Number of items per page
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 10
+        - name: keywords
+          in: query
+          description: keyword
+          required: true
+          schema:
+            type: string
+            example: 'Car'
+      responses:
+        default:
+          description: Search word successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Search word successfully
+                  result:
+                    type: object
+                    properties:
+                      words:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Word'
+                      page:
+                        type: integer
+                        example: 1
+                      limit:
+                        type: integer
+                        example: 10
+                      total_pages:
+                        type: integer
+                        example: 1
+                      total_items:
+                        type: integer
+                        example: 1
+
+  /words:
+    post:
+      tags:
+        - word
+      summary: A new word has been created
+      description: Create new word
+      operationId: create_new_word
+      security:
+        - BearerAuth: []
+      requestBody:
+        description: Create new word
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WordRequestBody'
+        required: true
+      responses:
+        default:
+          description: Create word successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Create word successfully
+                  result:
+                    type: object
+                    $ref: '#/components/schemas/Word'
+
+  /words/update/{word_id}:
+    patch:
+      tags:
+        - word
+      summary: Word information has been updated
+      description: Update a word
+      operationId: update_a_word
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: word_id
+          in: path
+          description: ID of word
+          required: true
+          schema:
+            type: string
+            format: MongoId
+            example: 64be0ad2e43d2464394feedb
+      requestBody:
+        description: Update a word
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateWordRequestBody'
+        required: true
+      responses:
+        default:
+          description: Update word successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Update word successfully
+                  result:
+                    type: object
+                    $ref: '#/components/schemas/Word'
+  /words/{word_id}:
+    delete:
+      tags:
+        - word
+      summary: A word has been deleted
+      description: Delete a word
+      operationId: delete_a_word
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: word_id
+          in: path
+          description: ID of word
+          required: true
+          schema:
+            type: string
+            format: MongoId
+            example: 64be0ad2e43d2464394feedb
+      responses:
+        default:
+          description: Delete word successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Delete word successfully
+  /topics:
+    get:
+      tags:
+        - topic
+      summary: Get all topics successfully
+      description: Get all topics
+      operationId: get_all_topics
+      parameters:
+        - name: page
+          in: query
+          description: Page number
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 1
+        - name: limit
+          in: query
+          description: Number of items per page
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 10
+      responses:
+        default:
+          description: Get all topics successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Get topics successfully
+                  result:
+                    type: object
+                    properties:
+                      topics:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Topic'
+                      page:
+                        type: integer
+                        example: 1
+                      limit:
+                        type: integer
+                        example: 10
+                      total_pages:
+                        type: integer
+                        example: 1
+                      total_items:
+                        type: integer
+                        example: 1
+    post:
+      tags:
+        - topic
+      summary: A new topic has been created
+      description: Create new topic
+      operationId: create_new_topic
+      security:
+        - BearerAuth: []
+      requestBody:
+        description: Create new topic
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TopicRequestBody'
+        required: true
+      responses:
+        default:
+          description: Create topic successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Create topic successfully
+                  result:
+                    type: object
+                    $ref: '#/components/schemas/Topic'
+
+  /topics/words/{topic_id}:
+    get:
+      tags:
+        - topic
+      summary: Get all words of a topic successfully.
+      description: Get all words of a topic
+      operationId: get_all_word_of_topic
+      parameters:
+        - name: topic_id
+          in: path
+          description: ID of topic
+          required: true
+          schema:
+            type: string
+            format: MongoId
+            example: 64be0ad2e43d2464394feedb
+        - name: page
+          in: query
+          description: Page number
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 1
+        - name: limit
+          in: query
+          description: Number of items per page
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 10
+      responses:
+        '200':
+          description: Get all words of a topic successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Get all words of a topic successfully
+                  result:
+                    type: object
+                    properties:
+                      words:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Word'
+                      page:
+                        type: integer
+                        example: 1
+                      limit:
+                        type: integer
+                        example: 10
+                      total_pages:
+                        type: integer
+                        example: 1
+                      total_items:
+                        type: integer
+                        example: 1
+  /topics/update/{topic_id}:
+    patch:
+      tags:
+        - topic
+      summary: Topic information has been updated
+      description: Update a topic
+      operationId: update_a_topic
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: topic_id
+          in: path
+          description: ID of topic
+          required: true
+          schema:
+            type: string
+            format: MongoId
+            example: 64be0ad2e43d2464394feedb
+      requestBody:
+        description: Update a topic
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TopicRequestBody'
+        required: true
+      responses:
+        default:
+          description: Update topic successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Update topic successfully
+                  result:
+                    type: object
+                    $ref: '#/components/schemas/Topic'
+  /topics/{topic_id}:
+    delete:
+      tags:
+        - topic
+      summary: A topic has been deleted
+      description: Delete a topic
+      operationId: delete_a_topic
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: topic_id
+          in: path
+          description: ID of topic
+          required: true
+          schema:
+            type: string
+            format: MongoId
+            example: 64be0ad2e43d2464394feedb
+      responses:
+        default:
+          description: Delete topic successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Delete topic successfully
+  /favorite-words:
+    get:
+      tags:
+        - favorite_word
+      summary: A favorite words of user
+      description: Get favorite words of user
+      operationId: get_user_favorite_word
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          description: Page number
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 1
+        - name: limit
+          in: query
+          description: Number of items per page
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 10
+      responses:
+        default:
+          description: Get favorite words successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Get All Users Success
+                  result:
+                    type: object
+                    properties:
+                      words:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Word'
+                      page:
+                        type: integer
+                        example: 1
+                      limit:
+                        type: integer
+                        example: 10
+                      total_pages:
+                        type: integer
+                        example: 1
+                      total_items:
+                        type: integer
+                        example: 1
+
+  /favorite-words/search:
+    get:
+      tags:
+        - favorite_word
+      summary: A list of favorite words that matched with the keywords
+      description: Search favorite word
+      operationId: search_favorite_word
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          description: Page number
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 1
+        - name: limit
+          in: query
+          description: Number of items per page
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 10
+        - name: keywords
+          in: query
+          description: keyword
+          required: true
+          schema:
+            type: string
+            example: 'Car'
+      responses:
+        default:
+          description: Search favorite word successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Search favorite word successfully
+                  result:
+                    type: object
+                    properties:
+                      words:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Word'
+                      page:
+                        type: integer
+                        example: 1
+                      limit:
+                        type: integer
+                        example: 10
+                      total_pages:
+                        type: integer
+                        example: 1
+                      total_items:
+                        type: integer
+                        example: 1
+  /favorite-words/add/{word_id}:
+    post:
+      tags:
+        - favorite_word
+      summary: A word has been added to user favorite words
+      description: Add a word to user favorite words
+      operationId: add_word_to_favorite_words
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: word_id
+          in: path
+          description: ID of word
+          required: true
+          schema:
+            type: string
+            format: MongoId
+            example: 64be0ad2e43d2464394feedb
+      responses:
+        default:
+          description: Add favorite word successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Add favorite word successfully
+  /favorite-words/delete/{word_id}:
+    post:
+      tags:
+        - favorite_word
+      summary: A word has been deleted in user favorite words
+      description: Delete a word in user favorite words
+      operationId: Delete_word_in_favorite_words
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: word_id
+          in: path
+          description: ID of word
+          required: true
+          schema:
+            type: string
+            format: MongoId
+            example: 64be0ad2e43d2464394feedb
+      responses:
+        default:
+          description: Delete favorite word successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Delete favorite word successfully
+
+  /medias//word/upload-video:
+    post:
+      tags:
+        - media
+      summary: A video has been uploaded
+      description: Upload a video
+      operationId: upload_video
+      security:
+        - BearerAuth: []
+      requestBody:
+        description: Upload a video
+        content:
+          application/octet-stream:
+            schema:
+              type: string
+              format: binary
+      responses:
+        default:
+          description: Upload successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Upload successfully
+                  result:
+                    type: string
+                    example: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/LEGO_logo.svg/2048px-LEGO_logo.svg.png'
+
+  /learned-words/update-process/{learned_word_id}:
+    patch:
+      tags:
+        - learned_word
+      summary: Process of learned word has been updated
+      description: Update a learned word process
+      operationId: update_learned_word_process
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: learned_word_id
+          in: path
+          description: ID of learned word
+          required: true
+          schema:
+            type: string
+            format: MongoId
+            example: 64be0ad2e43d2464394feedb
+      requestBody:
+        description: Update a learned word process
+        content:
+          application/json:
+            schema:
+              properties:
+                process:
+                  type: number
+                  format: int32
+                  example: 1
+        required: true
+      responses:
+        default:
+          description: Update the process successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Update the process  successfully
+                  result:
+                    type: object
+                    $ref: '#/components/schemas/LearnedWord'
+
+  /learned-words:
+    get:
+      tags:
+        - learned_word
+      summary: A list of learned words
+      description: Get list of learned word
+      operationId: get_list_learned_word
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          description: Page number
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 1
+        - name: limit
+          in: query
+          description: Number of items per page
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 10
+      responses:
+        default:
+          description: Get list of learned word successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Get learned words of user successfully
+                  result:
+                    type: object
+                    properties:
+                      learned_words:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/LearnedWord'
+                      page:
+                        type: integer
+                        example: 1
+                      limit:
+                        type: integer
+                        example: 10
+                      total_pages:
+                        type: integer
+                        example: 1
+                      total_items:
+                        type: integer
+                        example: 1
+    post:
+      tags:
+        - learned_word
+      summary: A learn word has been added
+      description: Add a learn word
+      operationId: add_learn_words
+      security:
+        - BearerAuth: []
+      requestBody:
+        description: Add a learn word
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: '#/components/schemas/LearnedWordRequestBody'
+        required: true
+      responses:
+        default:
+          description: Create learn word successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Create learn word successfully
+                  result:
+                    type: object
+                    $ref: '#/components/schemas/LearnedWord'
+  /learned-words/search:
+    get:
+      tags:
+        - learned_word
+      summary: A list of learned words that matched with the keywords
+      description: Search learned word
+      operationId: search_learned_word
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          description: Page number
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 1
+        - name: limit
+          in: query
+          description: Number of items per page
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 10
+        - name: keywords
+          in: query
+          description: keyword
+          required: true
+          schema:
+            type: string
+            example: 'Car'
+      responses:
+        default:
+          description: Search learned word successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Search learned word successfully
+                  result:
+                    type: object
+                    properties:
+                      learned_words:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/LearnedWord'
+                      page:
+                        type: integer
+                        example: 1
+                      limit:
+                        type: integer
+                        example: 10
+                      total_pages:
+                        type: integer
+                        example: 1
+                      total_items:
+                        type: integer
+                        example: 1
+  /learned-words/{learned_word_id}:
+    delete:
+      tags:
+        - learned_word
+      summary: A learned word has been deleted
+      description: Delete a learned word
+      operationId: delete_a_learned_word
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: learned_word_id
+          in: path
+          description: ID of learned word
+          required: true
+          schema:
+            type: string
+            format: MongoId
+            example: 64be0ad2e43d2464394feedb
+      responses:
+        default:
+          description: Delete learned word successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Delete learned word successfully
+                  result:
+                    type: boolean
+                    example: true
+  /feedbacks/all:
+    get:
+      tags:
+        - feedback
+      summary: A list of feedback
+      description: Get all feedback
+      operationId: get_all_feedback
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          description: Page number
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 1
+        - name: limit
+          in: query
+          description: Number of items per page
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 10
+        - name: status
+          in: query
+          description: status
+          required: false
+          schema:
+            type: number
+            enum: [Pending, Answered]
+      responses:
+        default:
+          description: Get feedbacks successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Get feedbacks successfully
+                  result:
+                    type: object
+                    properties:
+                      feedBacks:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Feedback'
+                      page:
+                        type: integer
+                        example: 1
+                      limit:
+                        type: integer
+                        example: 10
+                      total_pages:
+                        type: integer
+                        example: 1
+                      total_items:
+                        type: integer
+                        example: 1
+  /feedbacks:
+    post:
+      tags:
+        - feedback
+      summary: A feedback has been created
+      description: Create a feedback
+      operationId: create_feedback
+      security:
+        - BearerAuth: []
+      requestBody:
+        description: Create a feedback
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: '#/components/schemas/FeedbackRequestBody'
+        required: true
+      responses:
+        default:
+          description: Create a feedback successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Create a feedback successfully
+                  result:
+                    type: object
+                    $ref: '#/components/schemas/Feedback'
+  /feedbacks/{feedback_id}:
+    patch:
+      tags:
+        - feedback
+      summary: Feedback status has been updated
+      description: Update feedback status
+      operationId: update_feedback_status
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: feedback_id
+          in: path
+          description: ID of feedback
+          required: true
+          schema:
+            type: string
+            format: MongoId
+            example: 64be0ad2e43d2464394feedb
+      responses:
+        default:
+          description: Update feedback status successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Update feedback status successfully
+                  result:
+                    type: object
+                    $ref: '#/components/schemas/Feedback'
+components:
+  schemas:
+    FeedbackRequestBody:
+      type: object
+      properties:
+        firstName:
+          type: string
+          example: David
+        lastName:
+          type: string
+          example: Tran
+        email:
+          type: string
+          example: tran@gmail.com
+        message:
+          type: string
+          example: 'Hello'
+    Feedback:
+      type: object
+      properties:
+        _id:
+          type: string
+          format: MongoId
+          example: 64be0ad2e43d2464394feedb
+        idUser:
+          type: string
+          format: MongoId
+          example: 64be0ad2e43d2464394feedb
+        firstName:
+          type: string
+          example: David
+        lastName:
+          type: string
+          example: Tran
+        email:
+          type: string
+          example: tran@gmail.com
+        message:
+          type: string
+          example: 'Hello'
+        created_at:
+          type: string
+          format: ISO8601
+          example: 2023-06-08T10:17:31.096Z
+        updated_at:
+          type: string
+          format: ISO8601
+          example: 2023-06-08T10:17:31.096Z
+        status:
+          $ref: '#/components/schemas/FeedbackStatus'
+    FeedbackStatus:
+      type: number
+      enum: [Pending, Answered]
+    LearnedWordRequestBody:
+      type: object
+      properties:
+        idWord:
+          type: string
+          format: MongoId
+          example: 64be0ad2e43d2464394feedb
+        idUser:
+          type: string
+          format: MongoId
+          example: 64be0ad2e43d2464394feedb
+    LearnedWord:
+      type: object
+      properties:
+        _id:
+          type: string
+          format: MongoId
+          example: 64be0ad2e43d2464394feedb
+        idWord:
+          type: string
+          format: MongoId
+          example: 64be0ad2e43d2464394feedb
+        idUser:
+          type: string
+          format: MongoId
+          example: 64be0ad2e43d2464394feedb
+        process:
+          type: number
+          format: int32
+          example: 1
+
+    TopicRequestBody:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Life
+        words:
+          type: array
+          items:
+            type: string
+            example: 64be0ad2e43d2464394feedb
+    Topic:
+      type: object
+      properties:
+        _id:
+          type: string
+          format: MongoId
+          example: 64be0ad2e43d2464394feedb
+        name:
+          type: string
+          example: Life
+        numberOfWords:
+          type: number
+          format: int32
+          example: 0
+        words:
+          type: array
+          items:
+            type: string
+            format: MongoId
+            example: 64be0ad2e43d2464394feedb
+    UpdateWordRequestBody:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Car
+        description:
+          type: string
+          example: It is a vehicle
+        example:
+          type: array
+          items:
+            type: string
+        videos:
+          type: array
+          items:
+            type: string
+        relativeWords:
+          type: array
+          items:
+            type: object
+            $ref: '#/components/schemas/Word'
+        contributor:
+          type: string
+          format: MongoId
+          example: 64be0ad2e43d2464394feedb
+        topic:
+          type: string
+          format: MongoId
+          example: 64be0ad2e43d2464394feedb
+        rating:
+          type: number
+          format: int32
+          example: 0
+    WordRequestBody:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Car
+        description:
+          type: string
+          example: It is a vehicle
+        example:
+          type: array
+          items:
+            type: string
+        videos:
+          type: array
+          items:
+            type: string
+        relativeWords:
+          type: array
+          items:
+            type: object
+            $ref: '#/components/schemas/Word'
+        contributor:
+          type: string
+          format: MongoId
+          example: 64be0ad2e43d2464394feedb
+        topic:
+          type: string
+          format: MongoId
+          example: 64be0ad2e43d2464394feedb
+    Word:
+      type: object
+      properties:
+        _id:
+          type: string
+          format: MongoId
+          example: 64be0ad2e43d2464394feedb
+        name:
+          type: string
+          example: Car
+        description:
+          type: string
+          example: It is a vehicle
+        example:
+          type: array
+          items:
+            type: string
+        videos:
+          type: array
+          items:
+            type: string
+        relativeWords:
+          type: array
+          items:
+            type: object
+            $ref: '#/components/schemas/Word'
+        viewers:
+          type: number
+          format: int32
+          example: 0
+        numberOfLiked:
+          type: number
+          format: int32
+          example: 0
+        contributor:
+          type: string
+          format: MongoId
+          example: 64be0ad2e43d2464394feedb
+        topic:
+          type: string
+          format: MongoId
+          example: 64be0ad2e43d2464394feedb
+        created_at:
+          type: string
+          format: ISO8601
+          example: 2023-06-08T10:17:31.096Z
+        updated_at:
+          type: string
+          format: ISO8601
+          example: 2023-06-08T10:17:31.096Z
+        rating:
+          type: number
+          format: int32
+          example: 0
+    User:
+      type: object
+      properties:
+        _id:
+          type: string
+          format: MongoId
+          example: 64be0ad2e43d2464394feedb
+        fullName:
+          type: string
+          example: theUser
+        email:
+          type: string
+          example: John
+        date_of_birth:
+          type: string
+          format: ISO8601
+          example: 2023-06-08T10:17:31.096Z
+        created_at:
+          type: string
+          format: ISO8601
+          example: 2023-06-08T10:17:31.096Z
+        updated_at:
+          type: string
+          format: ISO8601
+          example: 2023-06-08T10:17:31.096Z
+        verify:
+          type: number
+          description: Verify User Status
+          enum: [Unverified, Verified, Banned]
+          example: 1
+        gender:
+          type: number
+          description: Gender
+          enum: [Male, Female]
+          example: 1
+        role:
+          type: number
+          description: User Role
+          enum: [User, Admin]
+          example: 1
+        username:
+          type: string
+          description: Username
+          example: david
+        avatar:
+          type: string
+          description: User avatar
+          example: ''
+        status:
+          type: number
+          description: User Status
+          enum: [Normal, Ban]
+          example: 1
+        isOnline:
+          type: boolean
+          description: Online Status
+          example: false
+    LoginBody:
+      type: object
+      properties:
+        username:
+          type: string
+          example: John
+          nullable: true
+        email:
+          type: string
+          example: John
+          nullable: true
+        password:
+          type: string
+          example: 123456
+    RegisterReqBody:
+      type: object
+      properties:
+        username:
+          type: string
+          example: John
+        email:
+          type: string
+          example: John@gmail.com
+        password:
+          type: string
+          example: John
+        confirm_password:
+          type: string
+          example: John
+    UpdateMeReqBody:
+      type: object
+      properties:
+        fullName:
+          type: string
+          example: theUser
+        date_of_birth:
+          type: string
+          format: ISO8601
+          example: 2023-06-08T10:17:31.096Z
+        gender:
+          type: number
+          description: Gender
+          enum: [Male, Female]
+          example: 1
+        avatar:
+          type: string
+          description: User avatar
+          example: ''
+    SuccessAuthentication:
+      type: object
+      properties:
+        access_token:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjRiZTBhZDJlNDNkMjQ2NDM5NGZlZWRiIiwidG9rZW5fdHlwZSI6MCwidmVyaWZ5IjoxLCJpYXQiOjE2OTEzODMyMjYsImV4cCI6MTY5MTQ2OTYyNn0.HTLX20cB7_z0c9c8FDg3MIx6RJEELHHlmJNZa94ku-o
+        refresh_token:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjRiZTBhZDJlNDNkMjQ2NDM5NGZlZWRiIiwidG9rZW5fdHlwZSI6MSwidmVyaWZ5IjoxLCJpYXQiOjE2OTEzODMyMjYsImV4cCI6MTcwMDAyMzIyNn0.bFnaBfxWl-Q48HCwAeMpNzZwTO9LEjcBd7Zyipjqr64
+    ApiResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        type:
+          type: string
+        message:
+          type: string
+      xml:
+        name: '##default'
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

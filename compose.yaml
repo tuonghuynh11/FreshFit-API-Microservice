@@ -44,6 +44,88 @@ services:
     environment:
       - JAEGER_URL=http://jaeger:4317
     restart: unless-stopped
+
+  health-service:
+    build:
+      context: ./health-service
+      dockerfile: Dockerfile
+    ports:
+      - 8084:4003
+    environment:
+      - JAEGER_URL=http://jaeger:4317
+    restart: unless-stopped
+  nutrition-service:
+    build:
+      context: ./nutrition-service
+      dockerfile: Dockerfile
+    ports:
+      - 8085:4004
+    environment:
+      - JAEGER_URL=http://jaeger:4317
+    restart: unless-stopped
+  fitness-service:
+    build:
+      context: ./fitness-service
+      dockerfile: Dockerfile
+    ports:
+      - 8086:4005
+    environment:
+      - JAEGER_URL=http://jaeger:4317
+    restart: unless-stopped
+  plan-service:
+    build:
+      context: ./plan-service
+      dockerfile: Dockerfile
+    ports:
+      - 8087:4006
+    environment:
+      - JAEGER_URL=http://jaeger:4317
+    restart: unless-stopped
+  challenge-service:
+    build:
+      context: ./challenge-service
+      dockerfile: Dockerfile
+    ports:
+      - 8088:4007
+    environment:
+      - JAEGER_URL=http://jaeger:4317
+    restart: unless-stopped
+  social-service:
+    build:
+      context: ./social-service
+      dockerfile: Dockerfile
+    ports:
+      - 8089:4008
+    environment:
+      - JAEGER_URL=http://jaeger:4317
+    restart: unless-stopped
+  notification-service:
+    build:
+      context: ./notification-service
+      dockerfile: Dockerfile
+    ports:
+      - 8090:4009
+    environment:
+      - JAEGER_URL=http://jaeger:4317
+    restart: unless-stopped
+  reporting-service:
+    build:
+      context: ./reporting-service
+      dockerfile: Dockerfile
+    ports:
+      - 8091:4010
+    environment:
+      - JAEGER_URL=http://jaeger:4317
+    restart: unless-stopped
+  transaction-service:
+    build:
+      context: ./transaction-service
+      dockerfile: Dockerfile
+    ports:
+      - 8092:4011
+    environment:
+      - JAEGER_URL=http://jaeger:4317
+    restart: unless-stopped
   redis:
     image: redis:alpine
     ports:
