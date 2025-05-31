@@ -446,6 +446,67 @@ export default class ExpertRepository {
     const year = selectedDate.getFullYear();
     const month = selectedDate.getMonth();
 
+    // ✅ ONE_DAY: Add availability for a specific day
+    if (type === ExpertAvailabilityTypeRequest.ONE_DAY) {
+      const startTimeTemp = new Date(
+        year,
+        month,
+        dateTemp,
+        startTime.split(":")[0],
+        startTime.split(":")[1],
+        0,
+        0
+      );
+      const endTimeTemp = new Date(
+        year,
+        month,
+        dateTemp,
+        endTime.split(":")[0],
+        endTime.split(":")[1],
+        0,
+        0
+      );
+      // ✅ Check for overlapping schedules
+      const overlappingAvailability =
+        await expertAvailabilityRepository.findOne({
+          where: {
+            expert: { id: expert.id },
+            date: new Date(selectedDate),
+            startTime: LessThanOrEqual(endTimeTemp),
+            endTime: MoreThanOrEqual(startTimeTemp),
+          },
+        });
+
+      if (overlappingAvailability) {
+        throw new BadRequestError(
+          EXPERT_AVAILABILITY_MESSAGES.AVAILABILITY_EXISTED +
+            `: ${overlappingAvailability.startTime
+              .getHours()
+              .toString()
+              .padStart(2, "0")}:${overlappingAvailability.startTime
+              .getMinutes()
+              .toString()
+              .padStart(2, "0")} - ${overlappingAvailability.endTime
+              .getHours()
+              .toString()
+              .padStart(2, "0")}:${overlappingAvailability.endTime
+              .getMinutes()
+              .toString()
+              .padStart(2, "0")} ${overlappingAvailability.date} is overlapping`
+        );
+      }
+      newAvailabilities.push(
+        expertAvailabilityRepository.create({
+          date: new Date(selectedDate),
+          startTime: startTimeTemp,
+          endTime: endTimeTemp,
+          expert,
+          isAvailable: true,
+          createdBy: userId,
+        })
+      );
+    }
+
     // ✅ ONE_MONTH: Add availability for every Monday (or given day) in the selected month
     if (type === ExpertAvailabilityTypeRequest.ONE_MONTH) {
       let currentDate = new Date(year, month, dateTemp); // Start from the 1st of the month
