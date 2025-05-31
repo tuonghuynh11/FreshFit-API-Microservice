@@ -1,3 +1,4 @@
+import './traces'
 import express from 'express'
 import databaseService from './services/database.services'
 import { envConfig } from './constants/config'
@@ -8,7 +9,6 @@ import { initFolder } from './utils/file'
 import { versionOneRouter } from './routes/index.routes'
 import morganMiddleware from './middlewares/morgan'
 import { initCronModule } from './corn'
-import './traces'
 const app = express()
 const PORT = envConfig.port
 

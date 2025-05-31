@@ -716,10 +716,8 @@ export default class ExpertRepository {
       const formattedDate = new Date(availability.date)
         .toISOString()
         .split("T")[0];
-      availabilitiesMap.set(formattedDate, [
-        ...availabilitiesMap.get(formattedDate),
-        availability,
-      ]);
+      const current = availabilitiesMap.get(formattedDate) || [];
+      availabilitiesMap.set(formattedDate, [...current, availability]);
     });
     const result = Array.from(availabilitiesMap, ([date, slots]) => ({
       date,
