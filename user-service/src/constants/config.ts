@@ -91,5 +91,8 @@ export const envConfig = {
   smtpPort: parseInt(process.env.SMTP_PORT || '25', 10),
   smtpSecure: process.env.SMTP_SECURE === 'true',
   smtpUser: process.env.SMTP_USER || '',
-  smtpPassword: process.env.SMTP_PASSWORD || ''
+  smtpPassword: process.env.SMTP_PASSWORD || '',
+
+  // RabbitMQ Config
+  rabbitMQUrl: process.env.RABBITMQ_HOST || 'amqp://localhost:5672'
 }

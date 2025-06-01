@@ -103,7 +103,8 @@ export const USERS_MESSAGES = {
   STORE_FCM_TOKEN_SUCCESS: 'Store FCM token successful',
   CREATE_ZEGO_TOKEN_SUCCESS: 'Create Zego token successful',
   ADD_HEALTH_ACTIVITY_SUCCESS: 'Add health activity successful',
-  ADD_HEALTH_ACTIVITY_DETAIL_SUCCESS: 'Add health activity detail successful'
+  ADD_HEALTH_ACTIVITY_DETAIL_SUCCESS: 'Add health activity detail successful',
+  UPDATE_USER_PROFILE_INTERNAL_SUCCESS: 'Update user profile internal successful'
 } as const
 
 export const PAGINATION_MESSAGES = {
@@ -267,7 +268,8 @@ export const CHALLENGE_MESSAGES = {
   DEACTIVATE_CHALLENGE_SUCCESS: 'Deactivate challenge successful',
   CHALLENGE_MUST_HAVE_HEALTH_PLAN: 'Challenge must have health plan',
   CHALLENGE_EXPIRED: 'Challenge expired',
-  CHALLENGE_NOT_ACTIVE: 'Challenge not active'
+  CHALLENGE_NOT_ACTIVE: 'Challenge not active',
+  CHALLENGE_NAME_EXISTS: 'Challenge name already exists'
 }
 export const DISH_MESSAGES = {
   ADD_DISH_SUCCESS: 'Add dish successful',
