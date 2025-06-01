@@ -78,6 +78,31 @@ export default class ExpertController {
     next();
   }
 
+  @Patch("/update-info-internal/:userId")
+  public async updateExpertGeneralInfoInternal(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const expertInfo = await ExpertRepository.updateExpertGeneralInfoInternal(
+        {
+          req,
+          res,
+        }
+      );
+      res.locals.message =
+        EXPERT_MESSAGES.UPDATE_EXPERT_GENERAL_INFO_INTERNAL_SUCCESS;
+      res.locals.data = {
+        expertInfo,
+      };
+
+      next();
+    } catch (error) {
+      next(error);
+    }
+    next();
+  }
   @Patch("/:id")
   @Authorize([SystemRole.Expert, SystemRole.Admin])
   public async updateExpertGeneralInfo(

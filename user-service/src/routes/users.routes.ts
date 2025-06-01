@@ -36,6 +36,7 @@ import {
   updateHealthTrackingDetailController,
   updateMeController,
   updateUserNotifyController,
+  updateUserProfileInternalController,
   verifyEmailController,
   verifyForgotPasswordTokenController
 } from '~/controllers/users.controllers'
@@ -614,4 +615,14 @@ usersRouter.post('/send-notification', wrapRequestHandler(sendNotificationContro
  * Method: GET
  * **/
 usersRouter.get('/exist/:user_id', wrapRequestHandler(checkUserExistedController))
+
+/**
+ * Description: Update User Profile Internal
+ * Path: /update-info-internal/:id
+ * Method: PATCH
+ * Body:{
+ *  fullName: string,
+ * }
+ * **/
+usersRouter.patch('/update-info-internal/:id', wrapRequestHandler(updateUserProfileInternalController))
 export default usersRouter

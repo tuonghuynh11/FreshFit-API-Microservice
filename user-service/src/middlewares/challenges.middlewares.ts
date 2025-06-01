@@ -143,13 +143,14 @@ export const updateChallengesValidator = validate(
         trim: true,
         custom: {
           options: async (value, { req }) => {
+            const id = req.params!.id
             const isExist = await databaseService.challenges.findOne({
               name: value
             })
-            if (isExist) {
+            if (isExist && isExist._id.toString() !== id) {
               throw new ErrorWithStatus({
-                message: CHALLENGE_MESSAGES.CHALLENGE_EXISTS,
-                status: HTTP_STATUS.FORBIDDEN
+                message: CHALLENGE_MESSAGES.CHALLENGE_NAME_EXISTS,
+                status: HTTP_STATUS.BAD_REQUEST
               })
             }
             return true

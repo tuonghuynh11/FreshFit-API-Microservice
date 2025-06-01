@@ -49,4 +49,20 @@ export default class UserService {
     );
     return res.data.result;
   };
+
+  static updateUserProfileInternal = async ({
+    userId,
+    fullName,
+  }: {
+    userId: string;
+    fullName: string;
+  }) => {
+    const res = await axios.patch(
+      `${configuration.userServiceHost}/${USER_ENDPOINT}/update-info-internal/${userId}`,
+      {
+        fullName,
+      }
+    );
+    return res.data.result;
+  };
 }

@@ -129,6 +129,15 @@
         "security": true
     },
     {
+        "name": "Update User Profile Internal",
+        "methods": ["PATCH"],
+        "context": ["/users/update-info-internal/:id"],
+        "target": "http://users:4001/api/v1",
+        "internal": true,
+        "pathRewrite": {},
+        "security": false
+    },
+    {
         "name": "change-password",
         "methods": ["PUT"],
         "context": ["/users/change-password"],
@@ -1457,6 +1466,15 @@
         "target": "http://appointments:4002/api/v1",
         "pathRewrite": {},
         "security": true
+    },
+    {
+        "name": "Update Expert General Info Internal",
+        "methods": ["PATCH"],
+        "context": ["/experts/update-info-internal/:userId"],
+        "target": "http://appointments:4002/api/v1",
+        "internal": true,
+        "pathRewrite": {},
+        "security": false
     },
     {
         "name": "Add New Certification",

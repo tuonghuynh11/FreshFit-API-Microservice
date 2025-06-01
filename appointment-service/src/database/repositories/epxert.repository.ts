@@ -214,6 +214,40 @@ export default class ExpertRepository {
     });
     await expertRepository.save(expertInfo);
 
+    if (fullName) {
+      // Update user profile if fullName is provided
+      await UserService.updateUserProfileInternal({
+        userId: expertInfo.userId,
+        fullName,
+      });
+    }
+    return expertInfo;
+  };
+  static updateExpertGeneralInfoInternal = async ({
+    req,
+    res,
+  }: {
+    req: Request;
+    res: Response;
+  }) => {
+    const { userId } = req.params;
+    const { dataSource } = req.app.locals;
+    const expertRepository = dataSource.getRepository(Expert);
+    const expertInfo = await expertRepository.findOne({
+      where: {
+        userId: userId.toString(),
+      },
+    });
+    if (!expertInfo) {
+      throw new NotFoundError(EXPERT_MESSAGES.EXPERT_NOT_FOUND);
+    }
+
+    const { fullName } = req.body;
+    expertRepository.merge(expertInfo, {
+      fullName,
+    });
+    await expertRepository.save(expertInfo);
+
     return expertInfo;
   };
 
@@ -1876,8 +1910,8 @@ export default class ExpertRepository {
         return {
           id: expert.id,
           userId: expert.userId,
-          avatar: user.avatar,
-          fullName: user.fullName,
+          avatar: user?.avatar || "",
+          fullName: user?.fullName || "",
           bookingCount: Number(expert.bookingCount),
         };
       })
@@ -1910,8 +1944,8 @@ export default class ExpertRepository {
         return {
           id: expert.id,
           userId: expert.userId,
-          avatar: user.avatar,
-          fullName: user.fullName,
+          avatar: user?.avatar || "",
+          fullName: user?.fullName || "",
           rating: expert.rating,
         };
       })

@@ -515,6 +515,7 @@ export const generateHealthPlanController = async (
     result
   })
 }
+
 export const sendNotificationController = async (req: Request<ParamsDictionary, any, any>, res: Response) => {
   const { userId, type, title, body, channelId, data, imageUrl } = req.body
   await pushNotificationService.sendPushNotificationCustom({
@@ -530,5 +531,14 @@ export const sendNotificationController = async (req: Request<ParamsDictionary, 
   })
   return res.json({
     message: 'Test send notification success'
+  })
+}
+
+export const updateUserProfileInternalController = async (req: Request<ParamsDictionary, any, any>, res: Response) => {
+  const id = req.params.id as string
+  const result = await userService.updateUserProfileInternal({ user_id: id, payload: req.body })
+  return res.json({
+    message: USERS_MESSAGES.UPDATE_USER_PROFILE_INTERNAL_SUCCESS,
+    result
   })
 }

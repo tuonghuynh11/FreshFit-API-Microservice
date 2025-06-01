@@ -15,6 +15,16 @@ class AppointmentService {
       return null
     }
   } // Return expert information if exists
+
+  async updateExpertInfo({ userId, fullName }: { userId: string; fullName: string }) {
+    const res = await axios.patch(
+      envConfig.appointmentServiceHost + '/' + EXPERT_END_POINT + '/update-info-internal/' + userId,
+      {
+        fullName
+      }
+    )
+    return res.data
+  }
 }
 
 const appointmentService = new AppointmentService()

@@ -9,11 +9,17 @@ import { initFolder } from './utils/file'
 import { versionOneRouter } from './routes/index.routes'
 import morganMiddleware from './middlewares/morgan'
 import { initCronModule } from './corn'
+import { initRabbitMQ } from './messaging'
+import { setupMessageHandlers } from './messaging/messageHandlers'
 const app = express()
 const PORT = envConfig.port
 
 databaseService.connect().then(() => {
   databaseService.createIndexes()
+})
+
+initRabbitMQ().then(() => {
+  setupMessageHandlers()
 })
 initFolder()
 initCronModule()

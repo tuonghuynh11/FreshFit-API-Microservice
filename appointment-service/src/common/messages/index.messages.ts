@@ -82,6 +82,8 @@ export const EXPERT_MESSAGES = {
     "Get top 5 most booked experts success",
   GET_TOP_5_HIGHEST_RATING_EXPERTS_SUCCESS:
     "Get top 5 highest rating experts success",
+  UPDATE_EXPERT_GENERAL_INFO_INTERNAL_SUCCESS:
+    "Update expert general info internal success",
 };
 
 export const EXPERT_AVAILABILITY_MESSAGES = {
