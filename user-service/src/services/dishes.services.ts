@@ -133,10 +133,14 @@ class DishService {
         }
       })
       .toArray()
+
     const dishIngredients = dish.ingredients.map((item: DishesIngredients, index: number) => {
+      const ingredientDetail = ingredientDetails.find(
+        (ingredient) => ingredient._id.toString() === item.ingredientId.toString()
+      )
       return {
         ...omit(item, ['ingredientId']),
-        ingredient: ingredientDetails[index]
+        ingredient: ingredientDetail ? ingredientDetail : null
       }
     })
     return {

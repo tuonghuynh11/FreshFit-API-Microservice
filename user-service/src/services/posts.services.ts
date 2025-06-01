@@ -70,17 +70,67 @@ class PostService {
       }
     }
 
+    const skip = page && limit ? (Number(page) - 1) * Number(limit) : 0
+    const limitNumber = Number(limit)
+
+    const aggregationPipeline = [
+      { $match: conditions },
+      { $sort: { [sort_by]: order_by === 'ASC' ? 1 : -1 } },
+      { $skip: skip },
+      { $limit: limitNumber },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'user_id',
+          foreignField: '_id',
+          as: 'user'
+        }
+      },
+      {
+        $unwind: {
+          path: '$user',
+          preserveNullAndEmptyArrays: true
+        }
+      },
+      {
+        $project: {
+          'user.password': 0,
+          'user.created_at': 0,
+          'user.updated_at': 0,
+          'user.email_verify_token': 0,
+          'user.forgot_password_token': 0,
+          'user.height': 0,
+          'user.weight': 0,
+          'user.goal_weight': 0,
+          'user.activityLevel': 0,
+          'user.level': 0,
+          'user.myNotifySettings': 0,
+          'user.workout_plans': 0,
+          'user.meals': 0,
+          'user.waters': 0,
+          'user.caloriesTakeInTargets': 0,
+          'user.caloriesBurnTargets': 0,
+          'user.challenges': 0,
+          'user.isOnline': 0,
+          'user.otp': 0,
+          'user.healthTrackings': 0,
+          'user.goalDetail': 0
+        }
+      }
+    ]
+
     const [posts, total] = await Promise.all([
-      databaseService.posts
-        .find(conditions, {
-          skip: page && limit ? (Number(page) - 1) * Number(limit) : undefined,
-          limit: Number(limit),
-          sort: {
-            [sort_by]: order_by === 'ASC' ? 1 : -1
-          }
-        })
-        .toArray(),
-      await databaseService.posts.countDocuments(conditions)
+      // databaseService.posts
+      //   .find(conditions, {
+      //     skip: page && limit ? (Number(page) - 1) * Number(limit) : undefined,
+      //     limit: Number(limit),
+      //     sort: {
+      //       [sort_by]: order_by === 'ASC' ? 1 : -1
+      //     }
+      //   })
+      //   .toArray(),
+      databaseService.posts.aggregate(aggregationPipeline).toArray(),
+      databaseService.posts.countDocuments(conditions)
     ])
 
     const reactionTypeArray = Object.values(ReactionType)
@@ -101,14 +151,14 @@ class PostService {
       })
     )
     const bookmarks = await Promise.all(
-      posts.map((post: Post) => {
+      posts.map((post: any) => {
         return databaseService.postBookmarks.findOne({
           postId: post._id,
           user_id: new ObjectId(user_id)
         })
       })
     )
-    const result = posts.map((post: Post, index: number) => {
+    const result = posts.map((post: any, index: number) => {
       const total_comments = post.comments?.length
       const reactionResponseObject: any = {}
       reactionResponseObject.current_user_react = reactions[index][0]
@@ -141,7 +191,7 @@ class PostService {
     }
     const total_comments = post.comments?.length
     const reactionTypeArray = Object.values(ReactionType)
-    const [currentUserReactThisPost, isBookmark, ...reactions] = await Promise.all([
+    const [currentUserReactThisPost, isBookmark, user, ...reactions] = await Promise.all([
       databaseService.postReactions.findOne({
         postId: post._id,
         user_id: new ObjectId(user_id)
@@ -150,6 +200,34 @@ class PostService {
         postId: post._id,
         user_id: new ObjectId(user_id)
       }),
+      databaseService.users.findOne(
+        { _id: post.user_id },
+        {
+          projection: {
+            password: 0,
+            created_at: 0,
+            updated_at: 0,
+            email_verify_token: 0,
+            forgot_password_token: 0,
+            height: 0,
+            weight: 0,
+            goal_weight: 0,
+            activityLevel: 0,
+            level: 0,
+            myNotifySettings: 0,
+            workout_plans: 0,
+            meals: 0,
+            waters: 0,
+            caloriesTakeInTargets: 0,
+            caloriesBurnTargets: 0,
+            challenges: 0,
+            isOnline: 0,
+            otp: 0,
+            healthTrackings: 0,
+            goalDetail: 0
+          }
+        }
+      ),
       ...reactionTypeArray.map((reaction) =>
         databaseService.postReactions.countDocuments({
           postId: post._id,
@@ -164,6 +242,7 @@ class PostService {
     })
     return {
       ...omit(post, ['comments', 'reactions']),
+      user,
       reactions: reactionResponseObject,
       isBookmark: !!isBookmark,
       total_comments
