@@ -239,7 +239,7 @@ export default class ExpertRepository {
       },
     });
     if (!expertInfo) {
-      throw new NotFoundError(EXPERT_MESSAGES.EXPERT_NOT_FOUND);
+      return null; // If expert not found, return null
     }
 
     const { fullName } = req.body;

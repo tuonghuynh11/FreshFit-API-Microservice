@@ -598,7 +598,7 @@ class UserService {
         }
       }
     )
-    if (payload.fullName) {
+    if (user?.role === UserRole.Expert && payload.fullName) {
       await appointmentService.updateExpertInfo({
         userId: user_id,
         fullName: payload.fullName
@@ -1370,6 +1370,13 @@ class UserService {
   }
 
   async updateUserProfileInternal({ user_id, payload }: { user_id: string; payload: { fullName?: string } }) {
+    const isExisted = await databaseService.users.findOne({
+      _id: new ObjectId(user_id)
+    })
+    if (!isExisted) {
+      return null
+    }
+
     const user = await databaseService.users.findOneAndUpdate(
       { _id: new ObjectId(user_id) },
       {
