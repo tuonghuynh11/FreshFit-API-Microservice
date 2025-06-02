@@ -235,7 +235,7 @@ class UserService {
     await databaseService.refreshTokens.insertOne(
       new RefreshToken({ token: refresh_token, user_id: new ObjectId(user_id), iat, exp })
     )
-    return { access_token, refresh_token }
+    return { access_token, refresh_token, role: user_role, verify }
   }
   async loginByGoogle({ email, name, picture }: { email: string; name?: string; picture?: string }) {
     const user = await databaseService.users.findOne({ email: email })
