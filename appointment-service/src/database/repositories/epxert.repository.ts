@@ -109,6 +109,18 @@ export default class ExpertRepository {
     if (!expertInfo) {
       throw new NotFoundError(EXPERT_MESSAGES.EXPERT_NOT_FOUND);
     }
+
+    const userTemp = await UserService.checkUserExisted({
+      userId: expertInfo.userId,
+    })
+      .then((user) => {
+        return user;
+      })
+      .catch((err) => {
+        console.log("Error fetching user:", err);
+        return null;
+      });
+
     expertInfo.certifications.sort(
       (a: ExpertCertification, b: ExpertCertification) =>
         new Date(a.issueDate).getTime() - new Date(b.issueDate).getTime()
@@ -120,7 +132,21 @@ export default class ExpertRepository {
     expertInfo.educations.sort(
       (a: ExpertEducation, b: ExpertEducation) => a.startYear - b.startYear
     );
-    return expertInfo;
+    return {
+      ...expertInfo,
+      user: userTemp
+        ? pick(userTemp, [
+            "_id",
+            "fullName",
+            "email",
+            "phoneNumber",
+            "date_of_birth",
+            "gender",
+            "username",
+            "avatar",
+          ])
+        : null,
+    };
   };
   static checkExpertExistByUserId = async ({
     req,
@@ -281,6 +307,17 @@ export default class ExpertRepository {
     if (!expertInfo) {
       throw new NotFoundError(EXPERT_MESSAGES.EXPERT_NOT_FOUND);
     }
+
+    const userTemp = await UserService.checkUserExisted({
+      userId: expertInfo.userId,
+    })
+      .then((user) => {
+        return user;
+      })
+      .catch((err) => {
+        console.log("Error fetching user:", err);
+        return null;
+      });
     expertInfo.certifications.sort(
       (a: ExpertCertification, b: ExpertCertification) =>
         new Date(a.issueDate).getTime() - new Date(b.issueDate).getTime()
@@ -292,7 +329,22 @@ export default class ExpertRepository {
     expertInfo.educations.sort(
       (a: ExpertEducation, b: ExpertEducation) => a.startYear - b.startYear
     );
-    return expertInfo;
+
+    return {
+      ...expertInfo,
+      user: userTemp
+        ? pick(userTemp, [
+            "_id",
+            "fullName",
+            "email",
+            "phoneNumber",
+            "date_of_birth",
+            "gender",
+            "username",
+            "avatar",
+          ])
+        : null,
+    };
   };
   // static filterExpert = async (req: Request) => {
   //   const {
