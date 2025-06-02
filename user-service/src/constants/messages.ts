@@ -632,6 +632,5 @@ export const COMMON_MESSAGES = {
   'MSG 24': 'Password is invalid',
   'MSG 25': 'Confirm Password is invalid',
   'MSG 26': 'Contact message is invalid',
-  'MSG 27': 'Username is invalid',
   INVALID_STATUS: 'Invalid status'
 }
