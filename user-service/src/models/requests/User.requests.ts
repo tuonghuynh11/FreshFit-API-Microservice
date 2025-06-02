@@ -69,6 +69,7 @@ export interface UpdateMeReqBody {
   goal_weight?: number
   level?: LevelType
   activityLevel?: ActivityLevel
+  phoneNumber?: string
 }
 export interface ChangePasswordReqBody {
   old_password: string

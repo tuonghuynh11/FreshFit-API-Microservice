@@ -198,7 +198,8 @@ usersRouter.patch(
     'weight',
     'goal_weight',
     'level',
-    'activityLevel'
+    'activityLevel',
+    'phoneNumber'
   ]),
   wrapRequestHandler(updateMeController)
 )
