@@ -4,7 +4,7 @@ import { JsonWebTokenError } from 'jsonwebtoken'
 import { capitalize } from 'lodash'
 import { ObjectId } from 'mongodb'
 import { envConfig } from '~/constants/config'
-import { Gender, LevelType, UserRole, UserStatus, UserVerifyStatus } from '~/constants/enums'
+import { LevelType, UserRole, UserStatus, UserVerifyStatus } from '~/constants/enums'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { HEALTH_MESSAGES, USERS_MESSAGES } from '~/constants/messages'
 import { ErrorWithStatus } from '~/models/Errors'
@@ -682,23 +682,24 @@ export const updateMeValidator = validate(
         optional: true
       },
       gender: {
-        isNumeric: {
-          errorMessage: USERS_MESSAGES.GENDER_MUST_BE_A_NUMBER
-        },
-        optional: true,
-        custom: {
-          options: async (value, { req }) => {
-            const isGenderValid =
-              Object.values(Gender).filter((item: Gender, index: number) => index === value).length !== 0
-            if (!isGenderValid) {
-              throw new ErrorWithStatus({
-                message: USERS_MESSAGES.INVALID_GENDER,
-                status: HTTP_STATUS.CONFLICT
-              })
-            }
-            return true
-          }
-        }
+        // isNumeric: {
+        //   errorMessage: USERS_MESSAGES.GENDER_MUST_BE_A_NUMBER
+        // },
+        isString: true,
+        optional: true
+        // custom: {
+        //   options: async (value, { req }) => {
+        //     const isGenderValid =
+        //       Object.values(Gender).filter((item: Gender, index: number) => index === value).length !== 0
+        //     if (!isGenderValid) {
+        //       throw new ErrorWithStatus({
+        //         message: USERS_MESSAGES.INVALID_GENDER,
+        //         status: HTTP_STATUS.CONFLICT
+        //       })
+        //     }
+        //     return true
+        //   }
+        // }
       },
       avatar: imageSchema,
       height: {
