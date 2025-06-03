@@ -323,25 +323,25 @@ export const loginValidator = validate(
         },
         isString: {
           errorMessage: USERS_MESSAGES.PASSWORD_MUST_BE_A_STRING
-        },
-        isStrongPassword: {
-          options: {
-            minLength: 6,
-            minLowercase: 1,
-            minUppercase: 1,
-            minNumbers: 1,
-            minSymbols: 1
-          },
-          errorMessage:
-            USERS_MESSAGES.PASSWORD_MUST_BE_AT_LEAST_6_CHARACTERS_LONG_AND_CONTAIN_AT_LEAST_1_LOWERCASE_1_UPPERCASE_1_NUMBER_AND_1_SYMBOL
-        },
-        isLength: {
-          options: {
-            min: 6,
-            max: 50
-          },
-          errorMessage: USERS_MESSAGES.PASSWORD_LENGTH_MUST_BE_FROM_6_TO_50
         }
+        // isStrongPassword: {
+        //   options: {
+        //     minLength: 6,
+        //     minLowercase: 1,
+        //     minUppercase: 1,
+        //     minNumbers: 1,
+        //     minSymbols: 1
+        //   },
+        //   errorMessage:
+        //     USERS_MESSAGES.PASSWORD_MUST_BE_AT_LEAST_6_CHARACTERS_LONG_AND_CONTAIN_AT_LEAST_1_LOWERCASE_1_UPPERCASE_1_NUMBER_AND_1_SYMBOL
+        // },
+        // isLength: {
+        //   options: {
+        //     min: 6,
+        //     max: 50
+        //   },
+        //   errorMessage: USERS_MESSAGES.PASSWORD_LENGTH_MUST_BE_FROM_6_TO_50
+        // }
       }
     },
     ['body']
