@@ -6,10 +6,7 @@
         "target": "http://localhost:4001/api/v1",
         "pathRewrite": {},
         "internal": true,
-        "security": false,
-        "cache": {
-            "ttl": 60
-        }
+        "security": false
     },
     {
         "name": "get-all-users",
