@@ -677,7 +677,8 @@
         "context": ["/medias/videos"],
         "target": "http://users:4001/api/v1",
         "pathRewrite": {},
-        "security": true
+        "security": true,
+        "timeout": 30000
     },
     {
         "name": "upload-image",
@@ -685,7 +686,8 @@
         "context": ["/medias/images"],
         "target": "http://users:4001/api/v1",
         "pathRewrite": {},
-        "security": true
+        "security": true,
+        "timeout": 30000
     },
     {
         "name": "get-dish-recommendations",
