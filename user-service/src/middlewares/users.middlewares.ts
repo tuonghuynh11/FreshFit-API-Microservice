@@ -355,8 +355,12 @@ export const registerValidator = validate(
         notEmpty: false,
         trim: true,
         custom: {
-          options: (value, { req }) => {
-            return true
+          options: async (value, { req }) => {
+            const isExist = await userService.checkUsernameExists(value)
+            if (isExist) {
+              throw new Error(USERS_MESSAGES.USERNAME_ALREADY_EXISTS)
+            }
+            return Boolean(isExist)
           }
         }
       },

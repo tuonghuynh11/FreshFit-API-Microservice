@@ -196,6 +196,10 @@ class UserService {
     const isExist = await databaseService.users.findOne({ email: email })
     return Boolean(isExist)
   }
+  async checkUsernameExists(username: string) {
+    const isExist = await databaseService.users.findOne({ username: username })
+    return Boolean(isExist)
+  }
 
   async checkEmailExist(email: string) {
     const user = await databaseService.users.findOne({ email: email })
