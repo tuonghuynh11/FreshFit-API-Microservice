@@ -14,6 +14,14 @@ exports.launch = async () => {
 }
 
 /**
+ * Manually refresh clients on-demand
+ * Can be called from any service/controller
+ */
+exports.refreshNow = async () => {
+    await refreshClients()
+}
+
+/**
  * Returns the clients
  * @typedef {import('../clients/auth').Client} Client
  * @returns {Client[]}

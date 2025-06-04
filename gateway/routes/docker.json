@@ -51,7 +51,8 @@
         "context": ["/users/register"],
         "target": "http://users:4001/api/v1",
         "pathRewrite": {},
-        "security": false
+        "security": false,
+        "onAccessRefreshClients": true
     },
     {
         "name": "refresh-token",
