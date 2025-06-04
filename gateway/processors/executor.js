@@ -1,4 +1,5 @@
 const fetch = require('node-fetch')
+const { refreshNow } = require('../cache/clients')
 
 const defaultTimeout = parseInt(process.env.HTTP_DEFAULT_TIMEOUT) || 5000
 
@@ -25,6 +26,10 @@ module.exports = class ExecutorProcessor {
             follow: 0,
             timeout: this.__route?.timeout || defaultTimeout,
         })
+
+        if (this.__route?.onAccessRefreshClients === true) {
+            await refreshNow()
+        } // Refresh clients if the route requires it
 
         const content = await response.buffer()
         const headers = {}

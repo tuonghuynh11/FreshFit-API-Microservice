@@ -11,8 +11,6 @@ const LoggerProcessor = require('../processors/logger')
 const MetricsProcessor = require('../processors/metrics')
 
 const routes = require('../routes/routes.json')
-const { refreshNow } = require('../cache/clients')
-
 /**
  * @typedef {import('node-fetch').Response} Response
  * @typedef Result
@@ -57,10 +55,6 @@ module.exports = async function handler(req) {
     chain.add(new HeadersProcessor(route, req))
     chain.add(new BodyProcessor(req))
     chain.add(new UrlProcessor(route, req))
-
-    if (route?.onAccessRefreshClients === true) {
-        await refreshNow()
-    }
 
     if (route.security) {
         chain.add(new SecurityProcessor(route, req))
