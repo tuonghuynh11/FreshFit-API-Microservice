@@ -77,6 +77,7 @@ export default class ExpertRepository {
       return expertSkillsRepository.create({
         expertId: newExert.id,
         skillId: id,
+        isMainSkill: true,
       });
     });
     await expertSkillsRepository.save(expertSkills);
