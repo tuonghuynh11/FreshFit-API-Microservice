@@ -459,7 +459,7 @@ usersRouter.put('/goal', accessTokenValidator, verifiedUSerValidator, wrapReques
     "password":"", // default: 12345678exper@Ex // skip
     "fullName":"",
     "dateOfBirth":"2025-03-10T18:27:36.437Z",
-    "gender":"", ["male, female"]
+    "gender":"", ["Male","Female","Other"]
     "height":"", // skip
     "weight":"", // skip
     "avatar":"",

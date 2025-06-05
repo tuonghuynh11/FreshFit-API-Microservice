@@ -112,5 +112,6 @@ export default class User {
     this.activityLevel = user.activityLevel || ActivityLevel.Sedentary
     this.fcmToken = user.fcmToken || ''
     this.zegoToken = user.zegoToken || ''
+    this.gender = user.gender || Gender.Male
   }
 }
