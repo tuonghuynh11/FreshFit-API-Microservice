@@ -351,6 +351,11 @@ class HealthTrackingDetailService {
       })
     }
 
+    //Check if total value of health tracking detail is greater than target
+    const healthTrackingDetailValue =
+      updateHealthTrackingDetail.status === GeneralStatus.Done ? healthTrackingDetail!.value! : 0
+    const totalCalories = Number(healthTracking.value) + healthTrackingDetailValue
+
     // Update the document in the database
     const result = await databaseService.healthTrackings.findOneAndUpdate(
       {
@@ -364,7 +369,8 @@ class HealthTrackingDetailService {
             ...healthTrackingDetail,
             ...updateHealthTrackingDetail,
             updated_at: new Date()
-          }
+          },
+          status: totalCalories >= Number(healthTracking.target) ? GeneralStatus.Done : GeneralStatus.Undone
         },
         $inc: {
           value:
