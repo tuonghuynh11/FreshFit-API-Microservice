@@ -25,10 +25,15 @@ module.exports = class ExecutorProcessor {
             headers: context.headers,
             body: context.body,
             follow: 0,
-            timeout: this.__route?.timeout
-                ? Number(this.__route?.timeout)
-                : defaultTimeout,
+            timeout: parseInt(this.__route?.timeout) || defaultTimeout,
         })
+        console.log('Executing route:', this.__route?.name)
+        console.log(
+            'Route timeout:',
+            this.__route?.timeout,
+            '-> parsed:',
+            parseInt(this.__route?.timeout)
+        )
 
         if (this.__route?.onAccessRefreshClients === true) {
             await refreshNow()
