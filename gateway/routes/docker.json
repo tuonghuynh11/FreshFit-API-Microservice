@@ -723,10 +723,7 @@
         "context": ["/reports"],
         "target": "http://users:4001/api/v1",
         "pathRewrite": {},
-        "security": true,
-        "cache": {
-            "ttl": 60
-        }
+        "security": true
     },
     {
         "name": "get-report-detail",
