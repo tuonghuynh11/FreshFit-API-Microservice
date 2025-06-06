@@ -1,7 +1,8 @@
 const fetch = require('node-fetch')
 const { refreshNow } = require('../cache/clients')
 
-const defaultTimeout = parseInt(process.env.HTTP_DEFAULT_TIMEOUT) || 5000
+// const defaultTimeout = parseInt(process.env.HTTP_DEFAULT_TIMEOUT) || 5000
+const defaultTimeout = parseInt(process.env.HTTP_DEFAULT_TIMEOUT) || 120000
 
 module.exports = class ExecutorProcessor {
     /**
