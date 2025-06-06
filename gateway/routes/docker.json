@@ -411,6 +411,18 @@
         }
     },
     {
+        "name": "Search dish by ingredient name",
+        "methods": ["GET"],
+        "context": ["/dishes/search-by-ingredient"],
+        "target": "http://users:4001/api/v1",
+        "pathRewrite": {},
+        "security": true,
+        "cache": {
+            "ttl": 180
+        },
+        "timeout": 120000
+    },
+    {
         "name": "rate-dish",
         "methods": ["POST"],
         "context": ["/dishes/:id/rating"],
@@ -1443,18 +1455,7 @@
         "pathRewrite": {},
         "security": true
     },
-    {
-        "name": "Search dish by ingredient name",
-        "methods": ["GET"],
-        "context": ["/dishes/search-by-ingredient"],
-        "target": "http://users:4001/api/v1",
-        "pathRewrite": {},
-        "security": true,
-        "cache": {
-            "ttl": 180
-        },
-        "timeout": 120000
-    },
+
     {
         "name": "Get Expert Statistic",
         "methods": ["GET"],
