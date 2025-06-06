@@ -1448,7 +1448,11 @@
         "context": ["/dishes/search-by-ingredient"],
         "target": "http://localhost:4001/api/v1",
         "pathRewrite": {},
-        "security": true
+        "security": true,
+        "cache": {
+            "ttl": 180
+        },
+        "timeout": 120000
     },
     {
         "name": "Get Expert Statistic",
