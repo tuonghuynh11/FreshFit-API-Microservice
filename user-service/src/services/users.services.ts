@@ -1160,39 +1160,102 @@ class UserService {
         status: HTTP_STATUS.NOT_FOUND
       })
     }
-    const newHealthSummary = new HealthData({
-      userId: user_id,
-      date: payload.date,
-      caloriesConsumed: payload.caloriesConsumed,
-      caloriesBurned: payload.caloriesBurned,
-      waterIntake: payload.waterIntake,
-      sleep: payload.sleep,
-      heartRate: payload.heartRate,
-      bloodPressure: payload.bloodPressure,
-      height: payload.height,
-      weight: payload.weight
-    })
-    const result = await databaseService.healthData.insertOne(newHealthSummary)
-    await databaseService.users.updateOne(
-      {
-        _id: new ObjectId(user_id)
-      },
-      { $set: { height: payload.height, weight: payload.weight } }
-    )
+    // Kiểm tra xem đã có bản ghi sức khỏe cho ngày này chưa
+    const extractDateOnly = (dateStr: string): string => {
+      return new Date(dateStr).toISOString().slice(0, 10) // "YYYY-MM-DD"
+    }
 
-    return {
-      id: result.insertedId,
+    const targetDate = extractDateOnly(payload.date!)
+
+    const existingHealthSummary = await databaseService.healthData.findOne({
       userId: user_id,
-      date: payload.date,
-      caloriesConsumed: payload.caloriesConsumed,
-      caloriesBurned: payload.caloriesBurned,
-      waterIntake: payload.waterIntake,
-      sleep: payload.sleep,
-      heartRate: payload.heartRate,
-      bloodPressure: payload.bloodPressure,
-      height: payload.height,
-      weight: payload.weight,
-      bmi: newHealthSummary.bmi
+      $expr: {
+        $eq: [
+          { $substr: ['$date', 0, 10] }, // lấy "YYYY-MM-DD" từ date trong MongoDB
+          targetDate
+        ]
+      }
+    })
+
+    if (existingHealthSummary) {
+      const newBMI = calculateBMI(payload.weight, payload.height)
+      await databaseService.healthData.updateOne(
+        {
+          _id: existingHealthSummary._id
+        },
+        {
+          $set: {
+            caloriesConsumed: payload.caloriesConsumed,
+            caloriesBurned: payload.caloriesBurned,
+            waterIntake: payload.waterIntake,
+            sleep: payload.sleep,
+            heartRate: payload.heartRate,
+            bloodPressure: payload.bloodPressure,
+            height: payload.height,
+            weight: payload.weight,
+            bmi: newBMI
+          },
+          $currentDate: {
+            updated_at: true
+          }
+        }
+      )
+      await databaseService.users.updateOne(
+        {
+          _id: new ObjectId(user_id)
+        },
+        { $set: { height: payload.height, weight: payload.weight } }
+      )
+
+      return {
+        id: existingHealthSummary._id.toString(),
+        userId: user_id,
+        date: payload.date,
+        caloriesConsumed: payload.caloriesConsumed,
+        caloriesBurned: payload.caloriesBurned,
+        waterIntake: payload.waterIntake,
+        sleep: payload.sleep,
+        heartRate: payload.heartRate,
+        bloodPressure: payload.bloodPressure,
+        height: payload.height,
+        weight: payload.weight,
+        bmi: newBMI
+      }
+    } else {
+      const newHealthSummary = new HealthData({
+        userId: user_id,
+        date: payload.date,
+        caloriesConsumed: payload.caloriesConsumed,
+        caloriesBurned: payload.caloriesBurned,
+        waterIntake: payload.waterIntake,
+        sleep: payload.sleep,
+        heartRate: payload.heartRate,
+        bloodPressure: payload.bloodPressure,
+        height: payload.height,
+        weight: payload.weight
+      })
+      const result = await databaseService.healthData.insertOne(newHealthSummary)
+      await databaseService.users.updateOne(
+        {
+          _id: new ObjectId(user_id)
+        },
+        { $set: { height: payload.height, weight: payload.weight } }
+      )
+
+      return {
+        id: result.insertedId,
+        userId: user_id,
+        date: payload.date,
+        caloriesConsumed: payload.caloriesConsumed,
+        caloriesBurned: payload.caloriesBurned,
+        waterIntake: payload.waterIntake,
+        sleep: payload.sleep,
+        heartRate: payload.heartRate,
+        bloodPressure: payload.bloodPressure,
+        height: payload.height,
+        weight: payload.weight,
+        bmi: newHealthSummary.bmi
+      }
     }
   }
 
