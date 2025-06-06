@@ -1,8 +1,8 @@
 const fetch = require('node-fetch')
 const { refreshNow } = require('../cache/clients')
 
-// const defaultTimeout = parseInt(process.env.HTTP_DEFAULT_TIMEOUT) || 5000
-const defaultTimeout = parseInt(process.env.HTTP_DEFAULT_TIMEOUT) || 120000
+const defaultTimeout = parseInt(process.env.HTTP_DEFAULT_TIMEOUT) || 5000
+// const defaultTimeout = parseInt(process.env.HTTP_DEFAULT_TIMEOUT) || 120000
 
 module.exports = class ExecutorProcessor {
     /**
@@ -25,7 +25,9 @@ module.exports = class ExecutorProcessor {
             headers: context.headers,
             body: context.body,
             follow: 0,
-            timeout: this.__route?.timeout || defaultTimeout,
+            timeout: this.__route?.timeout
+                ? Number(this.__route?.timeout)
+                : defaultTimeout,
         })
 
         if (this.__route?.onAccessRefreshClients === true) {
