@@ -310,17 +310,37 @@ class PostService {
           status: HTTP_STATUS.UNAUTHORIZED
         })
       }
-      const updatePostTemp = new Post({
-        ...omit(post, ['_id']),
-        ...updatePost,
-        status: PostStatus.Pending,
-        parentId: new ObjectId(id),
-        postFeedBacks: []
-      })
-      const postTemp = await databaseService.posts.insertOne(updatePostTemp)
-      result = {
-        ...omit(updatePostTemp, ['comments', 'reactions']),
-        _id: postTemp.insertedId
+
+      if (post.status !== PostStatus.Published) {
+        result = await databaseService.posts.findOneAndUpdate(
+          {
+            _id: new ObjectId(id)
+          },
+          {
+            $set: {
+              ...updatePost
+            },
+            $currentDate: {
+              updated_at: true
+            }
+          },
+          {
+            returnDocument: 'after' // Trả về giá trị mới
+          }
+        )
+      } else {
+        const updatePostTemp = new Post({
+          ...omit(post, ['_id']),
+          ...updatePost,
+          status: PostStatus.Pending,
+          parentId: new ObjectId(id),
+          postFeedBacks: []
+        })
+        const postTemp = await databaseService.posts.insertOne(updatePostTemp)
+        result = {
+          ...omit(updatePostTemp, ['comments', 'reactions']),
+          _id: postTemp.insertedId
+        }
       }
     }
 
