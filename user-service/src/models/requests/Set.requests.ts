@@ -15,11 +15,14 @@ export interface UpdateSetReqBody {
   type?: SetType
   description?: string
   number_of_exercises?: number
-  status?: SetStatus
-  rating?: number
   set_exercises?: UpdateSetExerciseReqBody[]
+  status?: SetStatus
+  time?: string // 2 hour, 30 minutes
+  image?: string
+  total_calories?: number
   is_youtube_workout?: boolean // true nếu là youtube workout, false nếu là set bài tập bình thường
   youtube_id?: string
+  rating?: number
 }
 
 export interface SetReqQuery extends PaginationReqQuery, Filter {
