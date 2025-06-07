@@ -4,7 +4,7 @@ import { RoleTypeQueryFilter, UserRole } from '~/constants/enums'
 import { SETS_MESSAGES } from '~/constants/messages'
 import { SetReqBody, UpdateSetReqBody } from '~/models/requests/Set.requests'
 import Sets from '~/models/schemas/Sets.schema'
-import { SetExerciseReqBody } from '~/models/requests/SetExercise.requests'
+import { SetExerciseReqBody, UpdateSetExerciseReqBody } from '~/models/requests/SetExercise.requests'
 import SetExercises from '~/models/schemas/SetExercises.schema'
 import { omit } from 'lodash'
 import { ErrorWithStatus } from '~/models/Errors'
@@ -150,64 +150,14 @@ class SetService {
     const updateData: any = {
       ...omit(updateSet, ['set_exercises'])
     }
-    // if (updateSet?.set_exercises) {
-    //   updateData.set_exercises = updateSet.set_exercises.map((set_exercise: SetExerciseUpdateReqBody) => {
-    //     return new SetExercises({
-    //       ...set_exercise,
-    //       _id: new ObjectId(set_exercise._id)
-    //     })
-    //   })
-    //   const deleteSetExercises = set.set_exercises.filter(
-    //     (item: SetExercises) =>
-    //       !updateSet.set_exercises?.find(
-    //         (set_exercise: SetExerciseUpdateReqBody) => set_exercise._id === item._id?.toString()
-    //       )
-    //   )
-    //   const deleteSetExerciseIds = deleteSetExercises.map(
-    //     (set_exercise: SetExercises) => new ObjectId(set_exercise._id)
-    //   )
-    //   await databaseService.set_exercises.deleteMany({
-    //     _id: {
-    //       $in: deleteSetExerciseIds
-    //     }
-    //   })
-
-    //   await Promise.all(
-    //     updateData.set_exercises.map(async (set_exercise: SetExercises) => {
-    //       if (set_exercise._id) {
-    //         await databaseService.set_exercises.findOneAndUpdate(
-    //           {
-    //             _id: new ObjectId(set_exercise._id)
-    //           },
-    //           {
-    //             $set: {
-    //               ...set_exercise
-    //             }
-    //           }
-    //         )
-    //       } else {
-    //         const set_exercise_inserted = await databaseService.set_exercises.insertOne(set_exercise)
-    //         set_exercise._id = set_exercise_inserted.insertedId
-    //       }
-    //     })
-    //   )
-    // }
-    // const result = await databaseService.sets.findOneAndUpdate(
-    //   {
-    //     _id: new ObjectId(id)
-    //   },
-    //   {
-    //     $set: {
-    //       ...updateData
-    //     },
-    //     $currentDate: {
-    //       updated_at: true
-    //     }
-    //   },
-    //   {
-    //     returnDocument: 'after' // Trả về giá trị mới
-    //   }
-    // )
+    if (updateSet?.set_exercises) {
+      updateData.set_exercises = updateSet.set_exercises.map((set_exercise: UpdateSetExerciseReqBody) => {
+        return new SetExercises({
+          ...set_exercise,
+          _id: set_exercise._id !== '' ? new ObjectId(set_exercise._id) : new ObjectId()
+        })
+      })
+    }
 
     const result = await databaseService.sets.findOneAndUpdate(
       {
