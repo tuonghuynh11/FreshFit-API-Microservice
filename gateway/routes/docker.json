@@ -500,10 +500,7 @@
         "context": ["/exercises"],
         "target": "http://users:4001/api/v1",
         "pathRewrite": {},
-        "security": true,
-        "cache": {
-            "ttl": 60
-        }
+        "security": true
     },
     {
         "name": "get-all-exercises",
@@ -1077,10 +1074,7 @@
         "context": ["/appointments/user/:userId"],
         "target": "http://appointments:4002/api/v1",
         "pathRewrite": {},
-        "security": true,
-        "cache": {
-            "ttl": 60
-        }
+        "security": true
     },
     {
         "name": "get-appointments-by-access-token",

@@ -374,7 +374,7 @@ export default class AppointmentRepository {
   }) => {
     const { page, limit, date, month, year } = req.query;
     const { user } = res.locals.session;
-    const userId = user.user_id;
+    const userId = user?.user_id;
     const { dataSource } = req.app.locals;
     const appointmentRepository = dataSource.getRepository(Appointment);
     let criteria: FindManyOptions<Appointment> = {
