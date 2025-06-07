@@ -1088,10 +1088,7 @@
         "context": ["/appointments/user"],
         "target": "http://appointments:4002/api/v1",
         "pathRewrite": {},
-        "security": true,
-        "cache": {
-            "ttl": 60
-        }
+        "security": true
     },
     {
         "name": "get-appointments-by-expert-id",
@@ -1099,10 +1096,7 @@
         "context": ["/appointments/expert/:expertId"],
         "target": "http://appointments:4002/api/v1",
         "pathRewrite": {},
-        "security": true,
-        "cache": {
-            "ttl": 60
-        }
+        "security": true
     },
     {
         "name": "get-appointment-detail",
