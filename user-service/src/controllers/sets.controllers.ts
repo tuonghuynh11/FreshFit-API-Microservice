@@ -11,8 +11,8 @@ export const searchSetsController = async (req: Request<ParamsDictionary, any, a
   const { search, type, page, limit, sort_by, order_by, max_calories, min_calories, isRecommended } = req.query
   const { sets, total } = await setService.search({
     search: search?.toString(),
-    page,
-    limit,
+    page: page ? Number(page) : 1,
+    limit: limit ? Number(limit) : 10,
     sort_by,
     order_by,
     type,
