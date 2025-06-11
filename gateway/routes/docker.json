@@ -292,10 +292,7 @@
         "context": ["/challenges"],
         "target": "http://users:4001/api/v1",
         "pathRewrite": {},
-        "security": true,
-        "cache": {
-            "ttl": 60
-        }
+        "security": true
     },
     {
         "name": "get-challenge-detail",
@@ -581,10 +578,7 @@
         "context": ["/ingredients"],
         "target": "http://users:4001/api/v1",
         "pathRewrite": {},
-        "security": true,
-        "cache": {
-            "ttl": 60
-        }
+        "security": true
     },
     {
         "name": "get-ingredient-detail",
@@ -624,10 +618,7 @@
         "context": ["/meals"],
         "target": "http://users:4001/api/v1",
         "pathRewrite": {},
-        "security": true,
-        "cache": {
-            "ttl": 60
-        }
+        "security": true
     },
     {
         "name": "get-meals-by-date",
@@ -752,10 +743,7 @@
         "context": ["/sets-exercise"],
         "target": "http://users:4001/api/v1",
         "pathRewrite": {},
-        "security": true,
-        "cache": {
-            "ttl": 60
-        }
+        "security": true
     },
     {
         "name": "get-set-exercise-detail",
@@ -795,10 +783,7 @@
         "context": ["/sets"],
         "target": "http://users:4001/api/v1",
         "pathRewrite": {},
-        "security": true,
-        "cache": {
-            "ttl": 60
-        }
+        "security": true
     },
     {
         "name": "get-set-detail",
@@ -1656,10 +1641,7 @@
         "context": ["/health-plans"],
         "target": "http://users:4001/api/v1",
         "pathRewrite": {},
-        "security": true,
-        "cache": {
-            "ttl": 60
-        }
+        "security": true
     },
     {
         "name": "Get health plan detail",
