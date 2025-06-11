@@ -117,6 +117,16 @@ class ChallengesService {
         status: HTTP_STATUS.NOT_FOUND
       })
     }
+
+    if (!challenge?.health_plan_id) {
+      return {
+        ...challenge,
+        total_workouts: 0,
+        total_meals: 0,
+        health_plan: null
+      }
+    }
+
     const health_plan = await databaseService.healthPlans
       .aggregate([
         {
