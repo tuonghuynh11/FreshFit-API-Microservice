@@ -55,18 +55,83 @@ class HealthPlanService {
       }
     }
 
-    const [healthPlans, total] = await Promise.all([
-      databaseService.healthPlans
-        .find(conditions, {
-          skip: page && limit ? (page - 1) * limit : undefined,
-          limit: limit,
-          sort: {
-            [sort_by]: order_by === 'ASC' ? 1 : -1
-          }
-        })
-        .toArray(),
-      await databaseService.healthPlans.countDocuments(conditions)
-    ])
+    // const [healthPlans, total] = await Promise.all([
+    //   databaseService.healthPlans
+    //     .find(conditions, {
+    //       skip: page && limit ? (page - 1) * limit : undefined,
+    //       limit: limit,
+    //       sort: {
+    //         [sort_by]: order_by === 'ASC' ? 1 : -1
+    //       }
+    //     })
+    //     .toArray(),
+    //   await databaseService.healthPlans.countDocuments(conditions)
+    // ])
+    // return {
+    //   healthPlans,
+    //   total
+    // }
+
+    /// New
+    const pipeline: any[] = [
+      { $match: conditions },
+      {
+        $lookup: {
+          from: 'challenges',
+          localField: '_id',
+          foreignField: 'health_plan_id',
+          as: 'challenge'
+        }
+      },
+      {
+        $unwind: {
+          path: '$challenge',
+          preserveNullAndEmptyArrays: true
+        }
+      },
+      {
+        $addFields: {
+          challenge: { $ifNull: ['$challenge', null] }
+        }
+      },
+      {
+        $sort: {
+          [sort_by]: order_by === 'ASC' ? 1 : -1
+        }
+      },
+      {
+        $skip: page && limit ? (page - 1) * limit : 0
+      },
+      {
+        $limit: limit ?? 10
+      }
+    ]
+
+    const healthPlans = await databaseService.healthPlans.aggregate(pipeline).toArray()
+
+    // Count total separately (excluding skip/limit)
+    const totalPipeline = [
+      { $match: conditions },
+      {
+        $lookup: {
+          from: 'challenges',
+          localField: '_id',
+          foreignField: 'health_plan_id',
+          as: 'challenge'
+        }
+      },
+      {
+        $unwind: {
+          path: '$challenge',
+          preserveNullAndEmptyArrays: true
+        }
+      },
+      { $count: 'total' }
+    ]
+
+    const totalResult = await databaseService.healthPlans.aggregate(totalPipeline).toArray()
+    const total = totalResult[0]?.total || 0
+
     return {
       healthPlans,
       total
@@ -189,6 +254,18 @@ class HealthPlanService {
       (role === UserRole.User && healthPlan?.user_id && healthPlan?.user_id?.toString() !== user_id)
     ) {
       throw new ErrorWithStatus({ status: HTTP_STATUS.FORBIDDEN, message: HEALTH_PLAN_MESSAGES.NO_DELETE_PERMISSION })
+    }
+
+    // Check if the challenge used this health plan
+    const challenge = await databaseService.challenges.findOne({
+      health_plan_id: new ObjectId(id)
+    })
+
+    if (challenge) {
+      throw new ErrorWithStatus({
+        status: HTTP_STATUS.BAD_REQUEST,
+        message: HEALTH_PLAN_MESSAGES.HEALTH_PLAN_USED_IN_CHALLENGE
+      })
     }
 
     // Xóa các chi tiết liên quan đến health plan

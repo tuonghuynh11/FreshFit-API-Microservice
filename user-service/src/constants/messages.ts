@@ -544,7 +544,8 @@ export const HEALTH_PLAN_MESSAGES = {
   HEALTH_PLAN_IS_USED: 'Health plan is used',
   HEALTH_PLAN_NAME_EXISTS: 'Health plan name already exists',
   INVALID_HEALTH_PLAN_LEVEL: ' Invalid health plan level',
-  INVALID_HEALTH_PLAN_STATUS: ' Invalid health plan status'
+  INVALID_HEALTH_PLAN_STATUS: ' Invalid health plan status',
+  HEALTH_PLAN_USED_IN_CHALLENGE: 'Health plan is used in challenge'
 }
 
 export const HEALTH_PLAN_DETAILS_MESSAGES = {
