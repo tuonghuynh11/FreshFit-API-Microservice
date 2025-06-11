@@ -26,7 +26,7 @@ class ReportService {
     const conditions: any = {}
     if (search) {
       conditions.title = {
-        $regex: search,
+        $regex: search.trim(),
         $options: 'i'
       }
     }

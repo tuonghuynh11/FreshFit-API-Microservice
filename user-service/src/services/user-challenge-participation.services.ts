@@ -67,7 +67,7 @@ class UserChallengeParticipationService {
       pipeline.push({
         $match: {
           'challenge.name': {
-            $regex: search,
+            $regex: search.trim(),
             $options: 'i'
           }
         }

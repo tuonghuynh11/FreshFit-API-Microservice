@@ -25,7 +25,7 @@ class IngredientService {
     const conditions: any = {}
     if (search) {
       conditions.name = {
-        $regex: search,
+        $regex: search.trim(),
         $options: 'i'
       }
     }

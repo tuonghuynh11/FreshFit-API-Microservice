@@ -43,7 +43,7 @@ class PostService {
     const conditions: Filter<Post> = {}
     if (search) {
       conditions.title = {
-        $regex: search,
+        $regex: search.trim(),
         $options: 'i'
       }
     }
