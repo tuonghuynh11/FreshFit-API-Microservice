@@ -167,16 +167,21 @@ class ExerciseService {
       throw new Error(EXERCISE_MESSAGES.EXERCISE_NOT_FOUND)
     }
 
-    const isUsedBySetExercise = await databaseService.set_exercises
+    const isUsedBySetExercise = await databaseService.sets
       .find({
-        exercises: {
-          _id: new ObjectId(id)
+        set_exercises: {
+          $elemMatch: {
+            exercise_id: new ObjectId(id)
+          }
         }
       })
       .toArray()
 
     if (isUsedBySetExercise.length > 0) {
-      throw new Error(EXERCISE_MESSAGES.EXERCISE_IS_USED)
+      throw new ErrorWithStatus({
+        message: EXERCISE_MESSAGES.EXERCISE_IS_USED,
+        status: HTTP_STATUS.BAD_REQUEST
+      })
     }
 
     const result = await databaseService.exercises.deleteOne({ _id: new ObjectId(id) })
