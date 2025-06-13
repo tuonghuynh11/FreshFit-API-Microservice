@@ -102,6 +102,8 @@ export const EXPERT_AVAILABILITY_MESSAGES = {
   NOT_PERMISSION_TO_DELETE_THIS_AVAILABILITY:
     "No permission to delete this availability",
   DELETE_FAILED: "Delete failed",
+  AVAILABILITY_SHOULD_BE_30_MINUTES_THAN_PREVIOUS:
+    "Availability should be 30 minutes ahead of the previous schedule",
 };
 
 export const EXPERT_SCHEDULE_MESSAGES = {

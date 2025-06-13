@@ -94,7 +94,6 @@ class DishService {
       pipeline.push({ $skip: (page - 1) * limit })
       pipeline.push({ $limit: limit })
     }
-
     // Chạy aggregate với allowDiskUse
     const [dishes, total] = await Promise.all([
       databaseService.dishes.aggregate(pipeline, { allowDiskUse: true }).toArray(),
