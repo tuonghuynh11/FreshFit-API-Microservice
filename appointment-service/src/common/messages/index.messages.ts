@@ -104,6 +104,8 @@ export const EXPERT_AVAILABILITY_MESSAGES = {
   DELETE_FAILED: "Delete failed",
   AVAILABILITY_SHOULD_BE_30_MINUTES_THAN_PREVIOUS:
     "Availability should be 30 minutes ahead of the previous schedule",
+  AVAILABILITY_SHOULD_BE_30_MINUTES_THAN_NEXT:
+    "Availability should be 30 minutes before the next schedule",
 };
 
 export const EXPERT_SCHEDULE_MESSAGES = {

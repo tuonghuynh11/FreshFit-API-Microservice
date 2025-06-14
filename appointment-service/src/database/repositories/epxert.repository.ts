@@ -555,8 +555,8 @@ export default class ExpertRepository {
         0
       );
       // ✅ Check for overlapping schedules
-      const [overlappingAvailability, previousAvailability] = await Promise.all(
-        [
+      const [overlappingAvailability, previousAvailability, nextAvailability] =
+        await Promise.all([
           expertAvailabilityRepository.findOne({
             where: {
               expert: { id: expert.id },
@@ -575,8 +575,17 @@ export default class ExpertRepository {
               endTime: "DESC",
             },
           }),
-        ]
-      );
+          expertAvailabilityRepository.findOne({
+            where: {
+              expert: { id: expert.id },
+              date: new Date(selectedDate),
+              startTime: MoreThanOrEqual(endTimeTemp),
+            },
+            order: {
+              startTime: "ASC",
+            },
+          }),
+        ]);
 
       if (overlappingAvailability) {
         throw new BadRequestError(
@@ -622,6 +631,30 @@ export default class ExpertRepository {
         }
       }
 
+      // Check next availability distance 30 minutes
+      if (nextAvailability) {
+        const nextStartTime = new Date(nextAvailability.startTime);
+        const timeDifference = nextStartTime.getTime() - endTimeTemp.getTime();
+        if (timeDifference < 30 * 60 * 1000) {
+          throw new BadRequestError(
+            EXPERT_AVAILABILITY_MESSAGES.AVAILABILITY_SHOULD_BE_30_MINUTES_THAN_NEXT +
+              `: ${nextAvailability.startTime
+                .getHours()
+                .toString()
+                .padStart(2, "0")}:${nextAvailability.startTime
+                .getMinutes()
+                .toString()
+                .padStart(2, "0")} - ${nextAvailability.endTime
+                .getHours()
+                .toString()
+                .padStart(2, "0")}:${nextAvailability.endTime
+                .getMinutes()
+                .toString()
+                .padStart(2, "0")} ${nextAvailability.date}`
+          );
+        }
+      }
+
       newAvailabilities.push(
         expertAvailabilityRepository.create({
           date: new Date(selectedDate),
@@ -659,27 +692,40 @@ export default class ExpertRepository {
             0
           );
           // ✅ Check for overlapping schedules
-          const [overlappingAvailability, previousAvailability] =
-            await Promise.all([
-              expertAvailabilityRepository.findOne({
-                where: {
-                  expert: { id: expert.id },
-                  date: new Date(currentDate),
-                  startTime: LessThanOrEqual(endTimeTemp),
-                  endTime: MoreThanOrEqual(startTimeTemp),
-                },
-              }),
-              expertAvailabilityRepository.findOne({
-                where: {
-                  expert: { id: expert.id },
-                  date: new Date(currentDate),
-                  endTime: LessThanOrEqual(startTimeTemp),
-                },
-                order: {
-                  endTime: "DESC",
-                },
-              }),
-            ]);
+          const [
+            overlappingAvailability,
+            previousAvailability,
+            nextAvailability,
+          ] = await Promise.all([
+            expertAvailabilityRepository.findOne({
+              where: {
+                expert: { id: expert.id },
+                date: new Date(currentDate),
+                startTime: LessThanOrEqual(endTimeTemp),
+                endTime: MoreThanOrEqual(startTimeTemp),
+              },
+            }),
+            expertAvailabilityRepository.findOne({
+              where: {
+                expert: { id: expert.id },
+                date: new Date(currentDate),
+                endTime: LessThanOrEqual(startTimeTemp),
+              },
+              order: {
+                endTime: "DESC",
+              },
+            }),
+            expertAvailabilityRepository.findOne({
+              where: {
+                expert: { id: expert.id },
+                date: new Date(currentDate),
+                startTime: MoreThanOrEqual(endTimeTemp),
+              },
+              order: {
+                startTime: "ASC",
+              },
+            }),
+          ]);
 
           if (overlappingAvailability) {
             throw new BadRequestError(
@@ -727,7 +773,30 @@ export default class ExpertRepository {
               );
             }
           }
-
+          // Check next availability distance 30 minutes
+          if (nextAvailability) {
+            const nextStartTime = new Date(nextAvailability.startTime);
+            const timeDifference =
+              nextStartTime.getTime() - endTimeTemp.getTime();
+            if (timeDifference < 30 * 60 * 1000) {
+              throw new BadRequestError(
+                EXPERT_AVAILABILITY_MESSAGES.AVAILABILITY_SHOULD_BE_30_MINUTES_THAN_NEXT +
+                  `: ${nextAvailability.startTime
+                    .getHours()
+                    .toString()
+                    .padStart(2, "0")}:${nextAvailability.startTime
+                    .getMinutes()
+                    .toString()
+                    .padStart(2, "0")} - ${nextAvailability.endTime
+                    .getHours()
+                    .toString()
+                    .padStart(2, "0")}:${nextAvailability.endTime
+                    .getMinutes()
+                    .toString()
+                    .padStart(2, "0")} ${nextAvailability.date}`
+              );
+            }
+          }
           newAvailabilities.push(
             expertAvailabilityRepository.create({
               date: new Date(currentDate),
@@ -783,27 +852,40 @@ export default class ExpertRepository {
             0
           );
           // ✅ Check for overlapping schedules
-          const [overlappingAvailability, previousAvailability] =
-            await Promise.all([
-              expertAvailabilityRepository.findOne({
-                where: {
-                  expert: { id: expert.id },
-                  date: new Date(firstDayOfMonth),
-                  startTime: LessThanOrEqual(endTimeTemp),
-                  endTime: MoreThanOrEqual(startTimeTemp),
-                },
-              }),
-              expertAvailabilityRepository.findOne({
-                where: {
-                  expert: { id: expert.id },
-                  date: new Date(firstDayOfMonth),
-                  endTime: LessThanOrEqual(startTimeTemp),
-                },
-                order: {
-                  endTime: "DESC",
-                },
-              }),
-            ]);
+          const [
+            overlappingAvailability,
+            previousAvailability,
+            nextAvailability,
+          ] = await Promise.all([
+            expertAvailabilityRepository.findOne({
+              where: {
+                expert: { id: expert.id },
+                date: new Date(firstDayOfMonth),
+                startTime: LessThanOrEqual(endTimeTemp),
+                endTime: MoreThanOrEqual(startTimeTemp),
+              },
+            }),
+            expertAvailabilityRepository.findOne({
+              where: {
+                expert: { id: expert.id },
+                date: new Date(firstDayOfMonth),
+                endTime: LessThanOrEqual(startTimeTemp),
+              },
+              order: {
+                endTime: "DESC",
+              },
+            }),
+            expertAvailabilityRepository.findOne({
+              where: {
+                expert: { id: expert.id },
+                date: new Date(firstDayOfMonth),
+                startTime: MoreThanOrEqual(endTimeTemp),
+              },
+              order: {
+                startTime: "ASC",
+              },
+            }),
+          ]);
 
           if (overlappingAvailability) {
             throw new BadRequestError(
@@ -851,7 +933,30 @@ export default class ExpertRepository {
               );
             }
           }
-
+          // Check next availability distance 30 minutes
+          if (nextAvailability) {
+            const nextStartTime = new Date(nextAvailability.startTime);
+            const timeDifference =
+              nextStartTime.getTime() - endTimeTemp.getTime();
+            if (timeDifference < 30 * 60 * 1000) {
+              throw new BadRequestError(
+                EXPERT_AVAILABILITY_MESSAGES.AVAILABILITY_SHOULD_BE_30_MINUTES_THAN_NEXT +
+                  `: ${nextAvailability.startTime
+                    .getHours()
+                    .toString()
+                    .padStart(2, "0")}:${nextAvailability.startTime
+                    .getMinutes()
+                    .toString()
+                    .padStart(2, "0")} - ${nextAvailability.endTime
+                    .getHours()
+                    .toString()
+                    .padStart(2, "0")}:${nextAvailability.endTime
+                    .getMinutes()
+                    .toString()
+                    .padStart(2, "0")} ${nextAvailability.date}`
+              );
+            }
+          }
           newAvailabilities.push(
             expertAvailabilityRepository.create({
               date: new Date(firstDayOfMonth),
@@ -1247,28 +1352,40 @@ export default class ExpertRepository {
     );
 
     // ✅ Check for overlapping schedules
-    const [overlappingAvailability, previousAvailability] = await Promise.all([
-      expertAvailabilityRepository.findOne({
-        where: {
-          expert: { id: expertId },
-          id: Not(id), // Exclude the current availability being updated
-          date: new Date(selectedDate),
-          startTime: LessThanOrEqual(endTimeTemp),
-          endTime: MoreThanOrEqual(startTimeTemp),
-        },
-      }),
-      expertAvailabilityRepository.findOne({
-        where: {
-          expert: { id: expertId },
-          id: Not(id), // Exclude the current availability being updated
-          date: new Date(selectedDate),
-          endTime: LessThanOrEqual(startTimeTemp),
-        },
-        order: {
-          endTime: "DESC",
-        },
-      }),
-    ]);
+    const [overlappingAvailability, previousAvailability, nextAvailability] =
+      await Promise.all([
+        expertAvailabilityRepository.findOne({
+          where: {
+            expert: { id: expertId },
+            id: Not(id), // Exclude the current availability being updated
+            date: new Date(selectedDate),
+            startTime: LessThanOrEqual(endTimeTemp),
+            endTime: MoreThanOrEqual(startTimeTemp),
+          },
+        }),
+        expertAvailabilityRepository.findOne({
+          where: {
+            expert: { id: expertId },
+            id: Not(id), // Exclude the current availability being updated
+            date: new Date(selectedDate),
+            endTime: LessThanOrEqual(startTimeTemp),
+          },
+          order: {
+            endTime: "DESC",
+          },
+        }),
+        expertAvailabilityRepository.findOne({
+          where: {
+            expert: { id: expertId },
+            id: Not(id),
+            date: new Date(selectedDate),
+            startTime: MoreThanOrEqual(endTimeTemp),
+          },
+          order: {
+            startTime: "ASC",
+          },
+        }),
+      ]);
 
     if (overlappingAvailability) {
       throw new BadRequestError(
@@ -1310,6 +1427,30 @@ export default class ExpertRepository {
               .getMinutes()
               .toString()
               .padStart(2, "0")} ${previousAvailability.date}`
+        );
+      }
+    }
+
+    // Check next availability distance 30 minutes
+    if (nextAvailability) {
+      const nextStartTime = new Date(nextAvailability.startTime);
+      const timeDifference = nextStartTime.getTime() - endTimeTemp.getTime();
+      if (timeDifference < 30 * 60 * 1000) {
+        throw new BadRequestError(
+          EXPERT_AVAILABILITY_MESSAGES.AVAILABILITY_SHOULD_BE_30_MINUTES_THAN_NEXT +
+            `: ${nextAvailability.startTime
+              .getHours()
+              .toString()
+              .padStart(2, "0")}:${nextAvailability.startTime
+              .getMinutes()
+              .toString()
+              .padStart(2, "0")} - ${nextAvailability.endTime
+              .getHours()
+              .toString()
+              .padStart(2, "0")}:${nextAvailability.endTime
+              .getMinutes()
+              .toString()
+              .padStart(2, "0")} ${nextAvailability.date}`
         );
       }
     }
