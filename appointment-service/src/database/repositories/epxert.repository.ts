@@ -643,7 +643,7 @@ export default class ExpertRepository {
           const startTimeTemp = new Date(
             year,
             month,
-            dateTemp,
+            currentDate.getDate(),
             startTime.split(":")[0],
             startTime.split(":")[1],
             0,
@@ -652,7 +652,7 @@ export default class ExpertRepository {
           const endTimeTemp = new Date(
             year,
             month,
-            dateTemp,
+            currentDate.getDate(),
             endTime.split(":")[0],
             endTime.split(":")[1],
             0,
@@ -870,6 +870,7 @@ export default class ExpertRepository {
         currentDate.setMonth(month);
       }
     }
+
     await expertAvailabilityRepository.save(newAvailabilities);
     return null;
   }
