@@ -1211,6 +1211,103 @@ export default class ExpertRepository {
       );
     }
     const { date, startTime, endTime } = req.body;
+    // ✅ Ensure valid date and time
+    const startDate = new Date(`${date}T${startTime}:00.000Z`);
+    const endDate = new Date(`${date}T${endTime}:00.000Z`);
+    // ✅ Convert to Date format
+    const selectedDate = new Date(date);
+    const dateTemp = selectedDate.getDate(); // 1 = 1st, 2 = 2nd, ..., 31 = 31st
+    const year = selectedDate.getFullYear();
+    const month = selectedDate.getMonth();
+    if (startDate >= endDate) {
+      throw new BadRequestError(
+        EXPERT_AVAILABILITY_MESSAGES.START_DATE_MUST_BE_EQUAL_OR_BEFORE_END_DATE
+      );
+    }
+    const startTimeTemp = new Date(
+      year,
+      month,
+      dateTemp,
+      startTime.split(":")[0],
+      startTime.split(":")[1],
+      0,
+      0
+    );
+    const endTimeTemp = new Date(
+      year,
+      month,
+      dateTemp,
+      endTime.split(":")[0],
+      endTime.split(":")[1],
+      0,
+      0
+    );
+    // ✅ Check for overlapping schedules
+    const [overlappingAvailability, previousAvailability] = await Promise.all([
+      expertAvailabilityRepository.findOne({
+        where: {
+          expert: { id: expertId },
+          date: new Date(selectedDate),
+          startTime: LessThanOrEqual(endTimeTemp),
+          endTime: MoreThanOrEqual(startTimeTemp),
+        },
+      }),
+      expertAvailabilityRepository.findOne({
+        where: {
+          expert: { id: expertId },
+          date: new Date(selectedDate),
+          endTime: LessThanOrEqual(startTimeTemp),
+        },
+        order: {
+          endTime: "DESC",
+        },
+      }),
+    ]);
+
+    if (overlappingAvailability) {
+      throw new BadRequestError(
+        EXPERT_AVAILABILITY_MESSAGES.AVAILABILITY_EXISTED +
+          `: ${overlappingAvailability.startTime
+            .getHours()
+            .toString()
+            .padStart(2, "0")}:${overlappingAvailability.startTime
+            .getMinutes()
+            .toString()
+            .padStart(2, "0")} - ${overlappingAvailability.endTime
+            .getHours()
+            .toString()
+            .padStart(2, "0")}:${overlappingAvailability.endTime
+            .getMinutes()
+            .toString()
+            .padStart(2, "0")} ${overlappingAvailability.date} is overlapping`
+      );
+    }
+    // Check previous availability distance 30 minutes
+
+    if (previousAvailability) {
+      const previousEndTime = new Date(previousAvailability.endTime);
+      const timeDifference =
+        startTimeTemp.getTime() - previousEndTime.getTime();
+      if (timeDifference < 30 * 60 * 1000) {
+        throw new BadRequestError(
+          EXPERT_AVAILABILITY_MESSAGES.AVAILABILITY_SHOULD_BE_30_MINUTES_THAN_PREVIOUS +
+            `: ${previousAvailability.startTime
+              .getHours()
+              .toString()
+              .padStart(2, "0")}:${previousAvailability.startTime
+              .getMinutes()
+              .toString()
+              .padStart(2, "0")} - ${previousAvailability.endTime
+              .getHours()
+              .toString()
+              .padStart(2, "0")}:${previousAvailability.endTime
+              .getMinutes()
+              .toString()
+              .padStart(2, "0")} ${previousAvailability.date}`
+        );
+      }
+    }
+
     expertAvailabilityRepository.merge(expertAvailability, {
       date,
       startTime,
