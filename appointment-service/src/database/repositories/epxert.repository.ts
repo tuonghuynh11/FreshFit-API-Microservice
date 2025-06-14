@@ -33,6 +33,7 @@ import {
   In,
   LessThanOrEqual,
   MoreThanOrEqual,
+  Not,
 } from "typeorm";
 import { getDaysInMonth, pick } from "../../utils";
 import { Appointment, AppointmentStatus } from "../entities/Appointments";
@@ -1212,8 +1213,8 @@ export default class ExpertRepository {
     }
     const { date, startTime, endTime } = req.body;
     // ✅ Ensure valid date and time
-    const startDate = new Date(`${date}T${startTime}:00.000Z`);
-    const endDate = new Date(`${date}T${endTime}:00.000Z`);
+    const startDate = new Date(startTime);
+    const endDate = new Date(endTime);
     // ✅ Convert to Date format
     const selectedDate = new Date(date);
     const dateTemp = selectedDate.getDate(); // 1 = 1st, 2 = 2nd, ..., 31 = 31st
@@ -1224,12 +1225,13 @@ export default class ExpertRepository {
         EXPERT_AVAILABILITY_MESSAGES.START_DATE_MUST_BE_EQUAL_OR_BEFORE_END_DATE
       );
     }
+
     const startTimeTemp = new Date(
       year,
       month,
       dateTemp,
-      startTime.split(":")[0],
-      startTime.split(":")[1],
+      startDate.getHours(),
+      startDate.getMinutes(),
       0,
       0
     );
@@ -1237,16 +1239,18 @@ export default class ExpertRepository {
       year,
       month,
       dateTemp,
-      endTime.split(":")[0],
-      endTime.split(":")[1],
+      endDate.getHours(),
+      endDate.getMinutes(),
       0,
       0
     );
+
     // ✅ Check for overlapping schedules
     const [overlappingAvailability, previousAvailability] = await Promise.all([
       expertAvailabilityRepository.findOne({
         where: {
           expert: { id: expertId },
+          id: Not(id), // Exclude the current availability being updated
           date: new Date(selectedDate),
           startTime: LessThanOrEqual(endTimeTemp),
           endTime: MoreThanOrEqual(startTimeTemp),
@@ -1255,6 +1259,7 @@ export default class ExpertRepository {
       expertAvailabilityRepository.findOne({
         where: {
           expert: { id: expertId },
+          id: Not(id), // Exclude the current availability being updated
           date: new Date(selectedDate),
           endTime: LessThanOrEqual(startTimeTemp),
         },
