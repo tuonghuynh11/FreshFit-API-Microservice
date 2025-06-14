@@ -20,6 +20,7 @@ import { omit } from "../../utils";
 import { AppointmentReview } from "../entities/AppointmentReview";
 import { ExpertReview } from "../entities/ExpertReview";
 import { AppDataSource } from "../data-source";
+import { SystemRole } from "../../utils/enums";
 
 export default class AppointmentRepository {
   static getAptByUserId = async (req: Request) => {
@@ -745,13 +746,48 @@ export default class AppointmentRepository {
       );
     }
 
-    if (
-      appointment.status === AppointmentStatus.COMPLETED ||
-      appointment.status === AppointmentStatus.CONFIRMED
-    ) {
+    // if (
+    //   appointment.status === AppointmentStatus.COMPLETED ||
+    //   appointment.status === AppointmentStatus.CONFIRMED
+    // ) {
+    //   throw new BadRequestError(APPOINTMENT_MESSAGES.APPOINTMENT_NOT_CANCELLED);
+    // }
+    if (appointment.status === AppointmentStatus.COMPLETED) {
       throw new BadRequestError(APPOINTMENT_MESSAGES.APPOINTMENT_NOT_CANCELLED);
     }
 
+    // Calculate refund amount based on appointment fees and cancellation time
+    const cancellationTime = new Date();
+    const appointmentStartTime = new Date(appointment.available!.startTime);
+    let refundAmount = appointment.fees;
+
+    const diffInMs =
+      appointmentStartTime.getTime() - cancellationTime.getTime();
+    const diffInHours = diffInMs / (1000 * 60 * 60);
+
+    // Determine refund amount based on cancellation time and user role
+    if (user.role === SystemRole.Expert) {
+      // If the canceler is an expert, refund the full amount
+      refundAmount = appointment.fees;
+    } else if (diffInHours >= 24) {
+      // Refund 100%
+      refundAmount = appointment.fees;
+    } else if (diffInHours >= 6 && diffInHours < 24) {
+      // Refund 50%
+      refundAmount = appointment.fees * 0.5;
+    } else if (diffInHours > 0 && diffInHours < 6) {
+      // No refund
+      refundAmount = 0;
+    } else {
+      // If cancelled after the appointment has started or ended
+      refundAmount = 0;
+    }
+
+    console.log("cancellationTime:", cancellationTime.toLocaleString());
+    console.log("appointmentStartTime:", appointmentStartTime.toLocaleString());
+
+    console.log("diffInHours:", diffInHours);
+    console.log("Refund amount:", refundAmount);
     return await dataSource.transaction(async (manager: EntityManager) => {
       try {
         appointment.status = AppointmentStatus.CANCELLED;
@@ -773,11 +809,13 @@ export default class AppointmentRepository {
           .getRepository(ExpertAvailability)
           .save(expertAvailability!);
 
-        // Ensure UserService transaction is also within the same transaction
-        await UserService.makeRefundTransaction({
-          userId: user.user_id,
-          amount: appointment.fees,
-        });
+        if (refundAmount > 0) {
+          // Ensure UserService transaction is also within the same transaction
+          await UserService.makeRefundTransaction({
+            userId: user.user_id,
+            amount: refundAmount,
+          });
+        }
 
         return appointment;
       } catch (error) {
