@@ -512,6 +512,9 @@ export default class AppointmentRepository {
 
     // Check schedule is available
     const expertAvailability = await expertAvailabilityRepository.findOne({
+      relations: {
+        expert: true,
+      },
       where: {
         id: availableId,
         expert: {
@@ -559,7 +562,17 @@ export default class AppointmentRepository {
               ? DEFAULT_FEES.EXPERT_CALL_FEES
               : DEFAULT_FEES.EXPERT_MESSAGE_FEES),
         });
-
+        // Push Notification for specialist
+        // User
+        await SocketNotificationRepository.emitNotificationLocal({
+          body: {
+            user_id: expertAvailability.expert!.userId,
+            title: "New appointment",
+            message: `You have a new appointment at ${expertAvailability.startTime.toLocaleString()}`,
+            actions: "",
+          },
+          datasource: AppDataSource,
+        });
         return newAppointment;
       } catch (error) {
         console.error("Transaction failed:", error);

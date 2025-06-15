@@ -10,6 +10,7 @@ import { AppDataSource } from "./database/data-source";
 import { createTransport } from "nodemailer";
 import { initMyRabbitMQ } from "./utils/rabbitmq";
 import SocketNotificationService from "./services/socket-notification.services";
+import { initializeBookingConsumer } from "./consumers/appointment.consumer";
 const { instance: app } = application;
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
@@ -53,6 +54,7 @@ initMyRabbitMQ()
     // consumeQueue("appointment-service", async (message) => {
     //   console.log("Received message:", message);
     // });
+    initializeBookingConsumer();
   })
   .catch((error) => {
     Logger.error("Error connecting to RabbitMQ:", error);
