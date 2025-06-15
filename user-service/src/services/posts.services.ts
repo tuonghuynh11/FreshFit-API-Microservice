@@ -363,6 +363,9 @@ class PostService {
     }
     const result = await databaseService.posts.deleteOne({ _id: new ObjectId(id) })
 
+    await databaseService.postBookmarks.deleteMany({
+      postId: new ObjectId(id)
+    })
     return result
   }
 
