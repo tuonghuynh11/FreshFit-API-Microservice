@@ -26,6 +26,8 @@ export const APPOINTMENT_MESSAGES = {
   FAILED_TO_RATING_EXPERT: "Failed to rating appointment",
   GET_APPOINTMENT_STATISTIC_SUCCESS: "Get appointment statistic success",
   YEAR_INVALID: "Year invalid",
+  LEAVE_NOTE_SUCCESSFULLY: "Leave note successfully",
+  NOT_PERMISSION_TO_LEAVE_NOTE: "Not permission to leave note",
 };
 
 export const EXPERT_MESSAGES = {

@@ -1198,7 +1198,7 @@ export default class ExpertRepository {
   };
   static getAllExpertScheduleInSpecificDayForUser = async (req: Request) => {
     console.log("getAllExpertScheduleInSpecificDayForUser called");
-    const { month, year, day, mainSkills } = req.query;
+    const { month, year, day, mainSkills, specialization } = req.query;
     const { dataSource } = req.app.locals;
     const expertAvailabilityRepository =
       dataSource.getRepository(ExpertAvailability);
@@ -1232,6 +1232,15 @@ export default class ExpertRepository {
           expertSkills: {
             skillId: In(mainSkills.toString().split("|")),
           },
+        },
+      };
+    }
+
+    if (specialization) {
+      criteria.where = {
+        ...criteria.where,
+        expert: {
+          specialization: specialization as string,
         },
       };
     }

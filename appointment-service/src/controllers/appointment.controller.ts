@@ -209,6 +209,32 @@ export default class AppointmentController {
     }
     next();
   }
+
+  @Post("/:id/leave-note")
+  @Authorize([SystemRole.User, SystemRole.Expert])
+  public async leaveNoteAppointmentByExpert(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const appointment: any =
+        await AppointmentRepository.leaveNoteAppointmentByExpert({
+          req,
+          res,
+        });
+      res.locals.message = APPOINTMENT_MESSAGES.LEAVE_NOTE_SUCCESSFULLY;
+      res.locals.data = {
+        appointment,
+      };
+
+      next();
+    } catch (error) {
+      next(error);
+    }
+    next();
+  }
+
   @Post("/:id/rating")
   @Authorize([SystemRole.User])
   public async ratingAppointment(

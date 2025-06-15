@@ -1102,6 +1102,14 @@
         "security": true
     },
     {
+        "name": "Leave appointment note by expert",
+        "methods": ["POST"],
+        "context": ["/appointments/:id/leave-note"],
+        "target": "http://appointments:4002/api/v1",
+        "pathRewrite": {},
+        "security": true
+    },
+    {
         "name": "rate-appointment",
         "methods": ["POST"],
         "context": ["/appointments/:id/rating"],

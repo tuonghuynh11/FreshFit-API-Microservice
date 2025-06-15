@@ -1025,6 +1025,51 @@ export default class AppointmentRepository {
 
     return months;
   };
+
+  static leaveNoteAppointmentByExpert = async ({
+    req,
+    res,
+  }: {
+    req: Request;
+    res: Response;
+  }) => {
+    const { id } = req.params;
+    const { note } = req.body;
+    const { dataSource } = req.app.locals;
+    const { user } = res.locals.session;
+    const appointmentRepository = dataSource.getRepository(Appointment);
+    const appointment = await appointmentRepository.findOne({
+      relations: {
+        available: true,
+        expert: true,
+      },
+      where: {
+        id,
+      },
+    });
+
+    if (!appointment) {
+      throw new BadRequestError(APPOINTMENT_MESSAGES.APPOINTMENT_NOT_FOUND);
+    }
+
+    if (user.role !== SystemRole.Expert) {
+      throw new BadRequestError(
+        APPOINTMENT_MESSAGES.NOT_PERMISSION_TO_LEAVE_NOTE
+      );
+    }
+
+    if (user.expert_id !== appointment.expert.id) {
+      throw new BadRequestError(
+        APPOINTMENT_MESSAGES.NOT_PERMISSION_TO_LEAVE_NOTE
+      );
+    }
+
+    appointmentRepository.merge(appointment, {
+      notes: note,
+    });
+    await appointmentRepository.save(appointment);
+    return appointment;
+  };
   static softDelete = async (req: Request, res: Response) => {};
   static hardDelete = async (req: Request, res: Response) => {};
 }
