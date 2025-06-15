@@ -9,6 +9,7 @@ import config from "./configuration";
 import { AppDataSource } from "./database/data-source";
 import { createTransport } from "nodemailer";
 import { initMyRabbitMQ } from "./utils/rabbitmq";
+import SocketNotificationService from "./services/socket-notification.services";
 const { instance: app } = application;
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
@@ -18,6 +19,8 @@ const io = new Server(httpServer, {
     credentials: true,
   },
 });
+// Khởi tạo NotificationService (chỉ 1 lần)
+SocketNotificationService.initialize(io);
 io.on("connection", (socket) => {
   app.locals.socket = socket;
 

@@ -1962,5 +1962,14 @@
         "cache": {
             "ttl": 120
         }
+    },
+    {
+        "name": "emit-socket-notification",
+        "methods": ["POST"],
+        "context": ["/socket-notifications/emit-notification"],
+        "target": "http://localhost:4002/api/v1",
+        "pathRewrite": {},
+        "internal": false,
+        "security": false
     }
 ]

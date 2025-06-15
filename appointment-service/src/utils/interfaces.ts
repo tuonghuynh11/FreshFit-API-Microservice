@@ -24,7 +24,7 @@ export interface ICreateNotification {
   socket: Socket;
   dataSource: DataSource;
   message: string;
-  actions?: any;
+  actions?: any; // page route
   user_id: string;
   title: string;
 }
