@@ -126,3 +126,7 @@ export const SKILLS_MESSAGES = {
   DELETE_SKILL_FAILED: "Delete skills failed",
   DELETE_SKILL_SUCCESS: "Delete skills success",
 };
+
+export const SOCKET_NOTIFICATION_MESSAGES = {
+  EMIT_NOTIFICATION_SUCCESS: "Emit notification success",
+};

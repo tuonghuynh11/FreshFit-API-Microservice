@@ -1,9 +1,11 @@
-import Authenticate from "../decorators/authenticate";
+import { NextFunction, Request, Response } from "express";
 import Controller from "../decorators/controller";
+import { Post } from "../decorators/handlers";
+import { SOCKET_NOTIFICATION_MESSAGES } from "../common/messages/index.messages";
+import SocketNotificationRepository from "../database/repositories/socket-notification.repository";
 
-@Controller("/notifications")
-@Authenticate()
-export default class NotificationController {
+@Controller("/socket-notifications")
+export default class SocketNotificationController {
   // @Get("/")
   // public async index(
   //   req: Request,
@@ -48,27 +50,25 @@ export default class NotificationController {
   //     next(error);
   //   }
   // }
-  // @Post("/read")
-  // public async read(
-  //   req: Request,
-  //   res: Response,
-  //   next: NextFunction
-  // ): Promise<void> {
-  //   try {
-  //     const { dataSource } = req.app.locals;
-  //     const { notificationIds, isRead } = req.body;
-  //     const notificationRepository = dataSource.getRepository(Notification);
-  //     await notificationRepository
-  //       .createQueryBuilder()
-  //       .update(Notification)
-  //       .set({ isRead })
-  //       .where({ id: In(notificationIds) })
-  //       .execute();
-  //     next();
-  //   } catch (error) {
-  //     next(error);
-  //   }
-  // }
+  @Post("/emit-notification")
+  public async emitNotification(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const response = await SocketNotificationRepository.emitNotification({
+        req,
+        res,
+      });
+      res.locals.message =
+        SOCKET_NOTIFICATION_MESSAGES.EMIT_NOTIFICATION_SUCCESS;
+
+      next();
+    } catch (error) {
+      next(error);
+    }
+  }
   // @Post("/delete")
   // public async delete(
   //   req: Request,

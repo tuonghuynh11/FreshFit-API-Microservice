@@ -1,6 +1,6 @@
 import { Filter, ObjectId } from 'mongodb'
 import databaseService from './database.services'
-import { PaymentMethod, TransactionStatus, TransactionType, UserRole } from '~/constants/enums'
+import { NotificationType, PaymentMethod, TransactionStatus, TransactionType, UserRole } from '~/constants/enums'
 import { TRANSACTION_MESSAGES, USERS_MESSAGES } from '~/constants/messages'
 import { TransactionReqBody } from '~/models/requests/Transaction.requests'
 import { envConfig } from '~/constants/config'
@@ -12,6 +12,7 @@ import { Request } from 'express'
 import qs from 'qs'
 import { ErrorWithStatus } from '~/models/Errors'
 import HTTP_STATUS from '~/constants/httpStatus'
+import pushNotificationService from './push-notification.services'
 class TransactionService {
   async getAllByUserId({ page, limit, userId }: { page?: number; limit?: number; userId?: string }) {
     const isUserExisted = await databaseService.users.findOne({ _id: new ObjectId(userId) })
@@ -260,7 +261,17 @@ class TransactionService {
       paymentMethod: undefined,
       transactionReference: undefined
     })
+    const user = await databaseService.users.findOne({ _id: new ObjectId(userId) })
     await databaseService.transactions.insertOne(newTransaction)
+    pushNotificationService.sendPushNotificationCustom({
+      userId: user!._id.toString(),
+      type: NotificationType.Other,
+      alert: {
+        title: 'Refund Successful',
+        body: `Your refund of ${refundAmount} has been processed successfully.`,
+        data: { screen: '/(main)/user/wallet' }
+      }
+    })
 
     return newTransaction
   }

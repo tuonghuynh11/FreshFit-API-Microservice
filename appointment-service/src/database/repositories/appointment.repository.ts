@@ -21,6 +21,8 @@ import { AppointmentReview } from "../entities/AppointmentReview";
 import { ExpertReview } from "../entities/ExpertReview";
 import { AppDataSource } from "../data-source";
 import { SystemRole } from "../../utils/enums";
+import { NotificationType } from "../requests/notification.requests";
+import SocketNotificationRepository from "./socket-notification.repository";
 
 export default class AppointmentRepository {
   static getAptByUserId = async (req: Request) => {
@@ -585,6 +587,9 @@ export default class AppointmentRepository {
 
     // Check schedule is available
     const expertAvailability = await expertAvailabilityRepository.findOne({
+      relations: {
+        expert: true,
+      },
       where: {
         id: availableId,
         expert: {
@@ -632,6 +637,17 @@ export default class AppointmentRepository {
               : DEFAULT_FEES.EXPERT_MESSAGE_FEES),
         });
 
+        // Push Notification for specialist
+        // User
+        await SocketNotificationRepository.emitNotificationLocal({
+          body: {
+            user_id: expertAvailability.expert!.userId,
+            title: "New appointment",
+            message: `You have a new appointment at ${expertAvailability.startTime.toLocaleString()}`,
+            actions: "",
+          },
+          datasource: AppDataSource,
+        });
         return newAppointment;
       } catch (error) {
         console.error("Transaction failed:", error);
@@ -726,6 +742,7 @@ export default class AppointmentRepository {
     const appointment = await appointmentRepository.findOne({
       relations: {
         available: true,
+        expert: true,
       },
       where: {
         id,
@@ -745,7 +762,6 @@ export default class AppointmentRepository {
         APPOINTMENT_MESSAGES.APPOINTMENT_ALREADY_CANCELLED
       );
     }
-
     // if (
     //   appointment.status === AppointmentStatus.COMPLETED ||
     //   appointment.status === AppointmentStatus.CONFIRMED
@@ -814,6 +830,27 @@ export default class AppointmentRepository {
           await UserService.makeRefundTransaction({
             userId: user.user_id,
             amount: refundAmount,
+          });
+        }
+
+        if (user.role === SystemRole.Expert) {
+          await UserService.createNotification({
+            userId: appointment.userId,
+            title: "Appointment Cancelled",
+            message: `Appointment ${appointment.id} has been cancelled by specialist. Reason: ${cancellationReason}`,
+            type: NotificationType.Other,
+            action: "/(main)/specialist",
+          });
+        } else {
+          // User
+          await SocketNotificationRepository.emitNotificationLocal({
+            body: {
+              user_id: appointment.expert.userId,
+              title: "Appointment Cancelled",
+              message: `Appointment ${appointment.id} has been cancelled by user. Reason: ${cancellationReason}`,
+              actions: "",
+            },
+            datasource: dataSource,
           });
         }
 

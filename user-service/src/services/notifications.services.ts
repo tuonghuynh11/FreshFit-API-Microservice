@@ -154,7 +154,8 @@ class NotificationService {
         alert: {
           title: payload.title as string,
           body: payload.message as string
-        }
+        },
+        isInsertToDB: false
       })
     }
     const response = await databaseService.notifications.findOne({

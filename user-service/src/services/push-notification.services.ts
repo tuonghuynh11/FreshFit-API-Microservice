@@ -58,7 +58,8 @@ class PushNotificationService {
   async sendPushNotificationCustom({
     userId,
     type,
-    alert
+    alert,
+    isInsertToDB = true
   }: {
     userId: string
     type: NotificationType
@@ -69,6 +70,7 @@ class PushNotificationService {
       data?: { screen?: string } & Record<string, any>
       imageUrl?: string
     }
+    isInsertToDB?: boolean
   }) {
     const user = await databaseService.users.findOne({
       _id: new ObjectId(userId)
@@ -96,15 +98,18 @@ class PushNotificationService {
               'Content-Type': 'application/json'
             }
           })
-          await databaseService.notifications.insertOne(
-            new Notifications({
-              user_id: new ObjectId(userId),
-              title: alert.title,
-              message: alert.body,
-              type,
-              action: alert.data?.screen || undefined
-            })
-          )
+          if (isInsertToDB) {
+            await databaseService.notifications.insertOne(
+              new Notifications({
+                user_id: new ObjectId(userId),
+                title: alert.title,
+                message: alert.body,
+                type,
+                action: alert.data?.screen || undefined
+              })
+            )
+          }
+
           Logger.info(`Expo Push notification sent to user ${userId}: ${alert.title}`)
         } catch (error: any) {
           Logger.error(`Failed to send push notification to ${userId}: ${error.message}`)

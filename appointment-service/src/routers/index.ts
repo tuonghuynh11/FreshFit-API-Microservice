@@ -6,6 +6,7 @@ import OrderController from "../controllers/order.controller";
 import PaymentController from "../controllers/payment.controller";
 import RatingController from "../controllers/rating.controller";
 import SkillsController from "../controllers/skills.controller";
+import SocketNotificationController from "../controllers/socket-notification.controller";
 
 export const appRouters = [
   {
@@ -19,6 +20,7 @@ export const appRouters = [
       AppointmentController,
       ExpertController,
       SkillsController,
+      SocketNotificationController,
     ],
   },
 ];
