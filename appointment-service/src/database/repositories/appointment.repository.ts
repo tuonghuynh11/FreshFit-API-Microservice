@@ -23,6 +23,7 @@ import { AppDataSource } from "../data-source";
 import { SystemRole } from "../../utils/enums";
 import { NotificationType } from "../requests/notification.requests";
 import SocketNotificationRepository from "./socket-notification.repository";
+import { Expert } from "../entities/Expert";
 
 export default class AppointmentRepository {
   static getAptByUserId = async (req: Request) => {
@@ -947,6 +948,7 @@ export default class AppointmentRepository {
 
     await dataSource.transaction(async (manager: EntityManager) => {
       try {
+        const expertRepository = manager.getRepository(Expert);
         const newExpertAppointmentReview = manager
           .getRepository(ExpertReview)
           .create({
@@ -956,10 +958,28 @@ export default class AppointmentRepository {
             expert: appointment.expert,
             userId: appointment.userId,
           });
+
+        const currentExpert = await expertRepository.findOneBy({
+          id: appointment.expert.id,
+        });
+        const totalReviews = currentExpert!.total_reviews ?? 0;
+        const currentRating = currentExpert!.rating ?? 0;
+        const newRating = parseFloat(
+          (
+            (currentRating * totalReviews + rating) /
+            (totalReviews + 1)
+          ).toFixed(1)
+        );
+        expertRepository.merge(currentExpert!, {
+          rating: newRating,
+          total_reviews: totalReviews + 1,
+        });
+
         await manager
           .getRepository(ExpertReview)
           .save(newExpertAppointmentReview);
         appointment.expertReview = newExpertAppointmentReview;
+        await manager.getRepository(Expert).save(currentExpert!);
         await manager.getRepository(Appointment).save(appointment);
         return newExpertAppointmentReview;
       } catch (error) {
