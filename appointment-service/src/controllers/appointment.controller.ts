@@ -46,12 +46,13 @@ export default class AppointmentController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const response = await AppointmentRepository.add({ req, res });
-      res.locals.message = APPOINTMENT_MESSAGES.APPOINTMENT_CREATED;
-      res.locals.data = response;
+      // const response = await AppointmentRepository.add({ req, res });
+      // res.locals.message = APPOINTMENT_MESSAGES.APPOINTMENT_CREATED;
+      // res.locals.data = response;
       const { userId, expertId, availableId, issues, notes, type } = req.body;
       const bookingReq = { userId, expertId, availableId, issues, notes, type };
       await publishToQueue(QUEUE_NAMES.BOOKING_QUEUE, bookingReq);
+      res.locals.message = APPOINTMENT_MESSAGES.APPOINTMENT_CREATED;
       next();
     } catch (error) {
       next(error);
