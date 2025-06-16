@@ -1173,7 +1173,8 @@
         "context": ["/users/expert/create"],
         "target": "http://localhost:4001/api/v1",
         "pathRewrite": {},
-        "security": true
+        "security": true,
+        "onAccessRefreshClients": true
     },
     {
         "name": "Get expert information (access token)",

@@ -685,6 +685,9 @@ class UserService {
         }
       }
     )
+    // await databaseService.refreshTokens.deleteMany({
+    //   user_id: new ObjectId(user_id)
+    // })
     return user
   }
 
