@@ -12,6 +12,7 @@ interface TransactionTypeInput {
   status?: TransactionStatus
   type?: TransactionType
   transactionReference?: string
+  order_url?: string
   created_at?: Date
   updated_at?: Date
 }
@@ -25,6 +26,7 @@ export default class Transaction {
   status?: TransactionStatus
   type?: TransactionType
   transactionReference?: string
+  order_url?: string
   created_at?: Date
   updated_at?: Date
   constructor(transaction: TransactionTypeInput) {
@@ -37,6 +39,7 @@ export default class Transaction {
     this.status = transaction.status || TransactionStatus.Pending
     this.type = transaction.type || TransactionType.Deposit
     this.transactionReference = transaction.transactionReference
+    this.order_url = transaction.order_url
     this.created_at = transaction.created_at || date
     this.updated_at = transaction.updated_at || date
   }

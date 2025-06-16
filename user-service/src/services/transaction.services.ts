@@ -130,12 +130,14 @@ class TransactionService {
       ...newTransaction,
       paymentMethod: PaymentMethod.Zalo_Pay,
       userId: new ObjectId(newTransaction.userId),
-      transactionReference: order.app_trans_id
+      transactionReference: order.app_trans_id,
+      order_url: response?.data?.order_url
     })
 
-    await databaseService.transactions.insertOne(transaction)
+    const temp = await databaseService.transactions.insertOne(transaction)
 
     return {
+      transaction_id: temp?.insertedId?.toString(),
       depositTransactionReference: order.app_trans_id,
       result: response.data
     }
@@ -171,7 +173,8 @@ class TransactionService {
           },
           {
             $set: {
-              status: TransactionStatus.Completed
+              status: TransactionStatus.Completed,
+              order_url: ''
             }
           }
         )
@@ -189,7 +192,8 @@ class TransactionService {
         },
         {
           $set: {
-            status: TransactionStatus.Failed
+            status: TransactionStatus.Failed,
+            order_url: ''
           }
         }
       )
@@ -218,6 +222,40 @@ class TransactionService {
 
     const result = await axios(postConfig)
     console.log(result.data)
+
+    const return_code = result.data?.return_code
+    if (return_code === 1) {
+      // Success
+      await databaseService.transactions.updateOne(
+        {
+          transactionReference: transactionReference
+        },
+        {
+          $set: {
+            status: TransactionStatus.Completed,
+            order_url: ''
+          }
+        }
+      )
+    } else if (return_code === 2) {
+      // Failed
+      await databaseService.transactions.updateOne(
+        {
+          transactionReference: transactionReference
+        },
+        {
+          $set: {
+            status: TransactionStatus.Failed,
+            order_url: ''
+          }
+        }
+      )
+    } else if (return_code === 3) {
+      //return_code = 3
+      // In payment process
+    } else {
+      // Don't have return code
+    }
     return result.data
     /**
          * kết quả mẫu

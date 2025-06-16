@@ -117,7 +117,7 @@ transactionsRouter.patch(
   '/:id/status',
   accessTokenValidator,
   verifiedUSerValidator,
-  adminRoleValidator,
+  // adminRoleValidator,
   filterMiddleware<UpdateTransactionStatusReqBody>(['status']),
   wrapRequestHandler(updateTransactionStatusController)
 )
