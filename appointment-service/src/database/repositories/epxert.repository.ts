@@ -39,6 +39,7 @@ import { getDaysInMonth, pick } from "../../utils";
 import { Appointment, AppointmentStatus } from "../entities/Appointments";
 import { SystemRole } from "../../utils/enums";
 import { Skill } from "../entities/Skill";
+import { ExpertReview } from "../entities/ExpertReview";
 
 export default class ExpertRepository {
   static async create(req: Request) {
@@ -103,6 +104,7 @@ export default class ExpertRepository {
         expertSkills: {
           skill: true,
         },
+        reviews: true,
       },
       where: {
         userId,
@@ -133,6 +135,10 @@ export default class ExpertRepository {
     );
     expertInfo.educations.sort(
       (a: ExpertEducation, b: ExpertEducation) => a.startYear - b.startYear
+    );
+    expertInfo?.reviews?.sort(
+      (a: ExpertReview, b: ExpertReview) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     );
     return {
       ...expertInfo,
@@ -301,6 +307,7 @@ export default class ExpertRepository {
         expertSkills: {
           skill: true,
         },
+        reviews: true,
       },
       where: {
         userId: userId.toString(),
@@ -330,6 +337,11 @@ export default class ExpertRepository {
     );
     expertInfo.educations.sort(
       (a: ExpertEducation, b: ExpertEducation) => a.startYear - b.startYear
+    );
+
+    expertInfo?.reviews?.sort(
+      (a: ExpertReview, b: ExpertReview) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     );
 
     return {
