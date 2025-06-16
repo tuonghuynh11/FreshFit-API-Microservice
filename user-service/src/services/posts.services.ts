@@ -363,9 +363,18 @@ class PostService {
     }
     const result = await databaseService.posts.deleteOne({ _id: new ObjectId(id) })
 
-    await databaseService.postBookmarks.deleteMany({
-      postId: new ObjectId(id)
-    })
+    await Promise.all([
+      databaseService.postBookmarks.deleteMany({
+        postId: new ObjectId(id)
+      }),
+      databaseService.postComments.deleteMany({
+        postId: new ObjectId(id)
+      }),
+      databaseService.postReactions.deleteMany({
+        postId: new ObjectId(id)
+      })
+    ])
+
     return result
   }
 
