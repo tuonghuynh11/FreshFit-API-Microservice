@@ -10,6 +10,17 @@ export const ingredientsSearchValidator = validate(
   checkSchema(
     {
       search: {
+        optional: true,
+        isString: true
+      } // ingredient name
+    },
+    ['query']
+  )
+)
+export const ingredientsSearchExternalValidator = validate(
+  checkSchema(
+    {
+      search: {
         notEmpty: true,
         isString: true
       } // ingredient name
