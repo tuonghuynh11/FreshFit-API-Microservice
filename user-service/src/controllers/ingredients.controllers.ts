@@ -7,26 +7,17 @@ import { IngredientReqBody, IngredientReqQuery, UpdateIngredientReqBody } from '
 import ingredientService from '~/services/ingredients.services'
 
 export const searchIngredientExternalController = async (
-  req: Request<ParamsDictionary, any, any, IngredientReqQuery>,
+  req: Request<ParamsDictionary, any, any, any>,
   res: Response
 ) => {
-  const { search, page, limit, sort_by, order_by } = req.query
-  const { ingredients, total } = await ingredientService.search({
-    search: search?.toString(),
-    page,
-    limit,
-    sort_by,
-    order_by
+  const { search } = req.query
+  const result = await ingredientService.searchByThirdPartyFatsecret({
+    name: search?.toString()
   })
+  console.log('result:', result)
   return res.json({
     message: INGREDIENT_MESSAGES.GET_INGREDIENT_SUCCESS,
-    result: {
-      ingredients,
-      page: Number(page),
-      limit: Number(limit),
-      total_items: total,
-      total_pages: Math.ceil(total / limit)
-    }
+    ingredient: result
   })
 }
 export const searchIngredientController = async (

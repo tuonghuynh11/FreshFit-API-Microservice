@@ -28,7 +28,7 @@ const ingredientsRouter = Router()
 ingredientsRouter.get(
   '/external',
   accessTokenValidator,
-  paginationNavigator,
+  // paginationNavigator,
   ingredientsSearchValidator,
   wrapRequestHandler(searchIngredientExternalController)
 )

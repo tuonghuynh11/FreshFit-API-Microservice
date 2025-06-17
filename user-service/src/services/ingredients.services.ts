@@ -7,7 +7,10 @@ import { IngredientReqBody, UpdateIngredientReqBody } from '~/models/requests/In
 import Ingredients from '~/models/schemas/Ingredients.schema'
 import { ErrorWithStatus } from '~/models/Errors'
 import HTTP_STATUS from '~/constants/httpStatus'
-
+import axios from 'axios'
+import OAuth from 'oauth-1.0a'
+import CryptoJS from 'crypto-js'
+import { envConfig } from '~/constants/config'
 class IngredientService {
   async search({
     search,
@@ -186,6 +189,121 @@ class IngredientService {
     const result = await databaseService.ingredients.deleteOne({ _id: new ObjectId(id) })
 
     return result
+  }
+
+  async searchByThirdPartyFatsecret({ name }: { name: string }) {
+    // Tạo OAuth1.0a instance
+    const oauth = new OAuth({
+      consumer: {
+        key: envConfig.fatsecret_consumer_key, // <-- Nhập từ FatSecret
+        secret: envConfig.fatsecret_secret_key // <-- Nhập từ FatSecret
+      },
+      signature_method: 'HMAC-SHA1',
+      hash_function(base_string: string, key: string): string {
+        return CryptoJS.HmacSHA1(base_string, key).toString(CryptoJS.enc.Base64)
+      }
+    })
+
+    // Không cần access token nếu chỉ dùng app-level access
+    const token = undefined
+    //---Search Ingredient---//
+    // Thông tin request
+    const method = 'GET'
+    const url = 'https://platform.fatsecret.com/rest/foods/search/v1'
+    const params = {
+      search_expression: name,
+      format: 'json',
+      page_number: '0',
+      max_results: '1'
+    }
+    // 👉 Gộp body params và OAuth params
+    const oauthParams = oauth.authorize({ url, method, data: params }, token)
+
+    // Kết hợp tất cả vào body (form-encoded)
+    // Combine và ép kiểu value về string
+    const combinedParams = {
+      ...params,
+      ...oauthParams
+    }
+
+    const formBody = new URLSearchParams(
+      Object.entries(combinedParams).reduce(
+        (acc, [key, value]) => {
+          acc[key] = String(value)
+          return acc
+        },
+        {} as Record<string, string>
+      )
+    ).toString()
+
+    // Gửi POST request
+    const searchResult = await axios({
+      url,
+      method,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      data: formBody
+    })
+    console.log('Search Result:', searchResult.data)
+    const foods = searchResult.data?.foods?.food
+    if (foods.length === 0) {
+      throw new ErrorWithStatus({
+        status: HTTP_STATUS.NOT_FOUND,
+        message: INGREDIENT_MESSAGES.INGREDIENT_NOT_FOUND
+      })
+    }
+    //---Search Ingredient---//
+
+    //---GET Ingredient Detail---//
+    // Thông tin request
+    const getDetailMethod = 'GET'
+    const getDetailUrl = 'https://platform.fatsecret.com/rest/food/v4'
+    const getDetailParams = {
+      food_id: foods?.food_id,
+      format: 'json'
+    }
+    // 👉 Gộp body params và OAuth params
+    const getDetailOauthParams = oauth.authorize(
+      { url: getDetailUrl, method: getDetailMethod, data: getDetailParams },
+      token
+    )
+
+    // Kết hợp tất cả vào body (form-encoded)
+    // Combine và ép kiểu value về string
+    const getDetailCombinedParams = {
+      ...getDetailParams,
+      ...getDetailOauthParams
+    }
+
+    const getDetailFormBody = new URLSearchParams(
+      Object.entries(getDetailCombinedParams).reduce(
+        (acc, [key, value]) => {
+          acc[key] = String(value)
+          return acc
+        },
+        {} as Record<string, string>
+      )
+    ).toString()
+
+    // Gửi POST request
+    const getDetailResult = await axios({
+      url: getDetailUrl,
+      method: getDetailMethod,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      data: getDetailFormBody
+    })
+    console.log('Ingredient Detail:', getDetailResult?.data)
+    if (!getDetailResult?.data?.food) {
+      throw new ErrorWithStatus({
+        status: HTTP_STATUS.NOT_FOUND,
+        message: INGREDIENT_MESSAGES.INGREDIENT_NOT_FOUND
+      })
+    }
+    //---GET Ingredient Detail---//
+    return getDetailResult?.data?.food
   }
 }
 const ingredientService = new IngredientService()
