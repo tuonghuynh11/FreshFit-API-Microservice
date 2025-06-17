@@ -1604,8 +1604,8 @@ export default class ExpertRepository {
     const [
       totalYesterDayAppointments,
       totalTodayAppointments,
-      totalPendingAppointmentsLastMonth,
-      totalPendingAppointmentsThisMonth,
+      totalConfirmedAppointmentsLastMonth,
+      totalConfirmedAppointmentsThisMonth,
       totalPatientsLastMonth,
       totalPatientsThisMonth,
       totalCompleteAppointmentsLastMonth,
@@ -1616,6 +1616,7 @@ export default class ExpertRepository {
           expert: {
             id: expertId,
           },
+          status: AppointmentStatus.CONFIRMED,
           createdAt: Between(startOfYesterday, startOfYesterday),
         },
       }),
@@ -1624,6 +1625,7 @@ export default class ExpertRepository {
           expert: {
             id: expertId,
           },
+          status: AppointmentStatus.CONFIRMED,
           createdAt: Between(startOfToday, endOfToday),
         },
       }),
@@ -1632,7 +1634,7 @@ export default class ExpertRepository {
           expert: {
             id: expertId,
           },
-          status: AppointmentStatus.PENDING,
+          status: AppointmentStatus.CONFIRMED,
           createdAt: Between(startOfLastMonth, endOfLastMonth),
         },
       }),
@@ -1641,7 +1643,7 @@ export default class ExpertRepository {
           expert: {
             id: expertId,
           },
-          status: AppointmentStatus.PENDING,
+          status: AppointmentStatus.CONFIRMED,
           createdAt: Between(startOfThisMonth, endOfThisMonth),
         },
       }),
@@ -1670,8 +1672,8 @@ export default class ExpertRepository {
     return {
       totalYesterDayAppointments,
       totalTodayAppointments,
-      totalPendingAppointmentsLastMonth,
-      totalPendingAppointmentsThisMonth,
+      totalConfirmedAppointmentsLastMonth,
+      totalConfirmedAppointmentsThisMonth,
       totalPatientsLastMonth,
       totalPatientsThisMonth,
       totalCompleteAppointmentsLastMonth,
