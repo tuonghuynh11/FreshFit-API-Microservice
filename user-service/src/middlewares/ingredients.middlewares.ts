@@ -1,4 +1,5 @@
 import { checkSchema } from 'express-validator'
+import { ObjectId } from 'mongodb'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { INGREDIENT_MESSAGES } from '~/constants/messages'
 import { ErrorWithStatus } from '~/models/Errors'
@@ -87,7 +88,8 @@ export const updateIngredientValidator = validate(
         custom: {
           options: async (value, { req }) => {
             const isExist = await databaseService.ingredients.findOne({
-              name: value
+              name: value,
+              _id: { $ne: new ObjectId(req.params?.id) }
             })
             if (isExist) {
               throw new ErrorWithStatus({
