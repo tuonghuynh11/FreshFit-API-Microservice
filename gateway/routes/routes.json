@@ -577,6 +577,7 @@
         "target": "http://localhost:4001/api/v1",
         "pathRewrite": {},
         "security": true,
+        "timeout": 30000,
         "cache": {
             "ttl": 120
         }

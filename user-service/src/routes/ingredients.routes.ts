@@ -10,6 +10,7 @@ import {
 import { filterMiddleware } from '~/middlewares/common.middlewares'
 import {
   addIngredientValidator,
+  ingredientsSearchExternalValidator,
   ingredientsSearchValidator,
   updateIngredientValidator
 } from '~/middlewares/ingredients.middlewares'
@@ -29,7 +30,7 @@ ingredientsRouter.get(
   '/external',
   accessTokenValidator,
   // paginationNavigator,
-  ingredientsSearchValidator,
+  ingredientsSearchExternalValidator,
   wrapRequestHandler(searchIngredientExternalController)
 )
 
