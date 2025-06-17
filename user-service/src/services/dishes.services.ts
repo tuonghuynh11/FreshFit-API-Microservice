@@ -1,7 +1,7 @@
 import { Filter, ObjectId } from 'mongodb'
 import databaseService from './database.services'
 import { UserRole } from '~/constants/enums'
-import { DISH_MESSAGES, EXERCISE_MESSAGES, INGREDIENT_MESSAGES } from '~/constants/messages'
+import { DISH_MESSAGES, INGREDIENT_MESSAGES } from '~/constants/messages'
 import {
   DishIngredientReqBody,
   DishReqBody,
@@ -32,7 +32,9 @@ class DishService {
     max_calories?: number
     min_calories?: number
   }) {
-    const conditions: any = {}
+    const conditions: any = {
+      is_active: true
+    }
     if (search) {
       conditions.name = {
         $regex: search.trim(),
@@ -58,7 +60,13 @@ class DishService {
     //     .toArray(),
     //   await databaseService.dishes.countDocuments(conditions)
     // ])
-    const pipeline: any[] = []
+    const pipeline: any[] = [
+      {
+        $match: {
+          is_active: true
+        }
+      }
+    ]
 
     if (search) {
       pipeline.push({
@@ -176,6 +184,18 @@ class DishService {
   }
 
   async add({ user_id, role, dish }: { user_id: string; role: UserRole; dish: DishReqBody }) {
+    if (dish.source_id) {
+      const existed = await databaseService.dishes.findOne({
+        _id: new ObjectId(dish.source_id)
+      })
+
+      if (!existed) {
+        throw new ErrorWithStatus({
+          status: HTTP_STATUS.NOT_FOUND,
+          message: DISH_MESSAGES.DISH_SOURCE_NOT_FOUND
+        })
+      }
+    }
     const ingredientIds = dish.ingredients.map((ingredient: DishesIngredients) => new ObjectId(ingredient.ingredientId))
 
     const ingredients = await databaseService.ingredients
@@ -241,24 +261,37 @@ class DishService {
   }
 
   async delete({ id }: { id: string }) {
-    const exercise = await databaseService.exercises.findOne({ _id: new ObjectId(id) })
-    if (!exercise) {
-      throw new Error(EXERCISE_MESSAGES.EXERCISE_NOT_FOUND)
+    const dish = await databaseService.dishes.findOne({ _id: new ObjectId(id) })
+    if (!dish) {
+      throw new ErrorWithStatus({
+        status: HTTP_STATUS.BAD_REQUEST,
+        message: DISH_MESSAGES.DISH_NOT_FOUND
+      })
     }
 
-    const isUsedBySetExercise = await databaseService.set_exercises
+    const isUsedByMeal = await databaseService.meals
       .find({
-        exercises: {
+        dishes: {
           _id: new ObjectId(id)
         }
       })
       .toArray()
 
-    if (isUsedBySetExercise.length > 0) {
-      throw new Error(EXERCISE_MESSAGES.EXERCISE_IS_USED)
+    if (isUsedByMeal.length > 0) {
+      throw new ErrorWithStatus({
+        status: HTTP_STATUS.BAD_REQUEST,
+        message: DISH_MESSAGES.DISH_ALREADY_USED
+      })
     }
 
-    const result = await databaseService.exercises.deleteOne({ _id: new ObjectId(id) })
+    const result = await databaseService.dishes.updateOne(
+      { _id: new ObjectId(id) },
+      {
+        $set: {
+          is_active: false
+        }
+      }
+    )
 
     return result
   }
@@ -583,6 +616,7 @@ class DishService {
     }
 
     const conditions: Filter<Dishes> = {
+      is_active: true,
       ingredients: {
         $elemMatch: {
           ingredientId: {

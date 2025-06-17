@@ -19,6 +19,7 @@ export interface DishReqBody {
   fiber?: number
   sugar?: number
   protein?: number
+  source_id?: string
 }
 export interface UpdateDishReqBody {
   name?: string

@@ -20,6 +20,7 @@ export interface ExerciseReqBody {
   secondary_muscle?: MuscleGroup // nhóm cơ phụ mà bài tập này tác động đến
   instructions?: string // hướng dẫn thực hiện bài tập này
   tips?: string // mẹo thực hiện bài tập này
+  source_id?: string
 }
 export interface UpdateExerciseReqBody {
   name?: string

@@ -29,7 +29,9 @@ class ExerciseService {
     target_muscle?: MUSCLE_GROUP_NAME
     experience_level: LevelType
   }) {
-    const conditions: any = {}
+    const conditions: any = {
+      is_active: true
+    }
     if (search) {
       conditions.name = {
         $regex: search.trim(),
@@ -67,7 +69,9 @@ class ExerciseService {
   async getAll() {
     const exercises = await databaseService.exercises
       .find(
-        {},
+        {
+          is_active: true
+        },
         {
           projection: {
             id: 1,
@@ -127,6 +131,19 @@ class ExerciseService {
     }
   }
   async add({ exercise }: { exercise: ExerciseReqBody }) {
+    if (exercise.source_id) {
+      const existed = await databaseService.exercises.findOne({
+        _id: new ObjectId(exercise.source_id)
+      })
+
+      if (!existed) {
+        throw new ErrorWithStatus({
+          status: HTTP_STATUS.NOT_FOUND,
+          message: EXERCISE_MESSAGES.EXERCISE_SOURCE_NOT_FOUND
+        })
+      }
+    }
+
     const newExercise = new Exercises({
       ...exercise
     })
@@ -134,6 +151,7 @@ class ExerciseService {
 
     return {
       ...newExercise,
+      source_id: newExercise?.source_id,
       _id: exerciseInserted.insertedId
     }
   }
@@ -184,7 +202,14 @@ class ExerciseService {
       })
     }
 
-    const result = await databaseService.exercises.deleteOne({ _id: new ObjectId(id) })
+    const result = await databaseService.exercises.updateOne(
+      { _id: new ObjectId(id) },
+      {
+        $set: {
+          is_active: false
+        }
+      }
+    )
 
     return result
   }

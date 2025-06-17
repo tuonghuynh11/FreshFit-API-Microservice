@@ -213,3 +213,35 @@ export const addDishIngredientValidator = validate(
     ['body']
   )
 )
+
+export const checkOriginalDishValidator = validate(
+  checkSchema(
+    {
+      id: {
+        notEmpty: true,
+        trim: true,
+        custom: {
+          options: async (value, { req }) => {
+            const isExist = await databaseService.dishes.findOne({
+              _id: new ObjectId(value)
+            })
+            if (!isExist) {
+              throw new ErrorWithStatus({
+                message: DISH_MESSAGES.DISH_NOT_FOUND,
+                status: HTTP_STATUS.NOT_FOUND
+              })
+            }
+            if (!isExist.is_custom) {
+              throw new ErrorWithStatus({
+                message: DISH_MESSAGES.CAN_NOT_EDIT_OR_DELETE_ORIGINAL_DISH,
+                status: HTTP_STATUS.FORBIDDEN
+              })
+            }
+            return true
+          }
+        }
+      }
+    },
+    ['params']
+  )
+)

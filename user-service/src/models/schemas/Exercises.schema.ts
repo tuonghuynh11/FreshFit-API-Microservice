@@ -22,6 +22,9 @@ interface ExercisesType {
   secondary_muscle?: MuscleGroup // nhóm cơ phụ mà bài tập này tác động đến
   instructions?: string // hướng dẫn thực hiện bài tập này
   tips?: string // mẹo thực hiện bài tập này
+  is_active?: boolean // Check exercise is deleted
+  is_custom?: boolean // Check exercise doesn't original
+  source_id?: string // Original exercise Id
 }
 
 export default class Exercises {
@@ -44,6 +47,9 @@ export default class Exercises {
   secondary_muscle?: MuscleGroup // nhóm cơ phụ mà bài tập này tác động đến
   instructions?: string // hướng dẫn thực hiện bài tập này
   tips?: string // mẹo thực hiện bài tập này
+  is_active?: boolean // Check dish is deleted
+  is_custom?: boolean // Check dish doesn't original
+  source_id?: ObjectId // Original dish Id
 
   constructor(exercise: ExercisesType) {
     const date = new Date()
@@ -66,5 +72,8 @@ export default class Exercises {
     this.secondary_muscle = exercise.secondary_muscle || ({} as MuscleGroup)
     this.instructions = exercise.instructions || ''
     this.tips = exercise.tips || ''
+    this.is_active = true
+    this.is_custom = true
+    this.source_id = exercise.source_id ? new ObjectId(exercise.source_id) : undefined
   }
 }
