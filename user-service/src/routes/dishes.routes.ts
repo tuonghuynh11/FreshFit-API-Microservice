@@ -2,6 +2,7 @@ import { Router } from 'express'
 import {
   addDishController,
   addDishIngredientController,
+  deleteDishController,
   deleteDishIngredientController,
   getDishByIdController,
   getDishIngredientDetailController,
@@ -15,13 +16,14 @@ import { filterMiddleware } from '~/middlewares/common.middlewares'
 import {
   addDishIngredientValidator,
   addDishValidator,
+  checkOriginalDishValidator,
   dishesSearchByIngredientValidator,
   dishesSearchValidator,
   updateDishIngredientValidator,
   updateDishValidator
 } from '~/middlewares/dishes.middlewares'
 import { paginationNavigator } from '~/middlewares/paginations.middlewares'
-import { accessTokenValidator, verifiedUSerValidator } from '~/middlewares/users.middlewares'
+import { accessTokenValidator, adminRoleValidator, verifiedUSerValidator } from '~/middlewares/users.middlewares'
 import { UpdateDishIngredientReqBody, UpdateDishReqBody } from '~/models/requests/Dishes.requests'
 import { wrapRequestHandler } from '~/utils/handles'
 // Base route: /dishes
@@ -89,6 +91,7 @@ dishesRouter.get('/:id', accessTokenValidator, verifiedUSerValidator, wrapReques
  *  fiber?: number
  *  sugar?: number
  *  protein?: number
+ *  source_id?: string
  * }
  * **/
 dishesRouter.post(
@@ -125,6 +128,7 @@ dishesRouter.patch(
   '/:id',
   accessTokenValidator,
   verifiedUSerValidator,
+  checkOriginalDishValidator,
   updateDishValidator,
   filterMiddleware<UpdateDishReqBody>([
     'name',
@@ -147,6 +151,21 @@ dishesRouter.patch(
 )
 
 /**
+ * Description: Delete dish
+ * Path: /dishes/:id
+ * Method: Delete
+ * Body:
+ * **/
+dishesRouter.delete(
+  '/:id',
+  accessTokenValidator,
+  verifiedUSerValidator,
+  adminRoleValidator,
+  checkOriginalDishValidator,
+  wrapRequestHandler(deleteDishController)
+)
+
+/**
  * Description: Add Dish ingredient
  * Path: /ingredients
  * Method: Post
@@ -160,6 +179,7 @@ dishesRouter.post(
   '/:id/ingredients',
   accessTokenValidator,
   verifiedUSerValidator,
+  checkOriginalDishValidator,
   addDishIngredientValidator,
   wrapRequestHandler(addDishIngredientController)
 )
@@ -189,6 +209,7 @@ dishesRouter.patch(
   '/:id/ingredients/:ingredient_id',
   accessTokenValidator,
   verifiedUSerValidator,
+  checkOriginalDishValidator,
   updateDishIngredientValidator,
   filterMiddleware<UpdateDishIngredientReqBody>(['ingredientId', 'quantity', 'unit']),
   wrapRequestHandler(updateDishIngredientController)
@@ -202,6 +223,7 @@ dishesRouter.delete(
   '/:id/ingredients/:ingredient_id',
   accessTokenValidator,
   verifiedUSerValidator,
+  checkOriginalDishValidator,
   wrapRequestHandler(deleteDishIngredientController)
 )
 

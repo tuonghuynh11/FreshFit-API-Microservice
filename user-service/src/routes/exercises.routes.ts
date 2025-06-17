@@ -11,6 +11,7 @@ import {
 import { filterMiddleware } from '~/middlewares/common.middlewares'
 import {
   addExerciseValidator,
+  checkOriginalExerciseValidator,
   exercisesSearchValidator,
   updateExerciseValidator
 } from '~/middlewares/exercises.middlewares'
@@ -70,6 +71,7 @@ exercisesRouter.get('/:id', accessTokenValidator, verifiedUSerValidator, wrapReq
  *  secondary_muscle?: MuscleGroup // nhóm cơ phụ mà bài tập này tác động đến
  *  instructions?: string // hướng dẫn thực hiện bài tập này
  *  tips?: string // mẹo thực hiện bài tập này
+ *  source_id?: string // original exercise
  * }
  * **/
 exercisesRouter.post(
@@ -108,6 +110,7 @@ exercisesRouter.patch(
   accessTokenValidator,
   verifiedUSerValidator,
   adminRoleValidator,
+  checkOriginalExerciseValidator,
   updateExerciseValidator,
   filterMiddleware<UpdateExerciseReqBody>([
     'name',
@@ -140,6 +143,7 @@ exercisesRouter.delete(
   accessTokenValidator,
   verifiedUSerValidator,
   adminRoleValidator,
+  checkOriginalExerciseValidator,
   wrapRequestHandler(deleteExerciseController)
 )
 

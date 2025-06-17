@@ -152,7 +152,9 @@ export const EXERCISE_MESSAGES = {
   INVALID_EXERCISE_CATEGORY: 'Invalid exercise category',
   INVALID_MECHANICS_TYPE: 'Invalid mechanics type',
   INVALID_FORCE_TYPE: " 'Invalid force type",
-  INVALID_EXPERIENCE_LEVEL: 'Invalid experience level'
+  INVALID_EXPERIENCE_LEVEL: 'Invalid experience level',
+  CAN_NOT_EDIT_OR_DELETE_ORIGINAL_EXERCISE: 'Can not edit or delete original exercise',
+  EXERCISE_SOURCE_NOT_FOUND: 'Exercise source not found'
 }
 
 export const SETS_MESSAGES = {
@@ -289,7 +291,9 @@ export const DISH_MESSAGES = {
   INVALID_DISH_CATEGORY_FILTER: 'Invalid dish category filter',
   CLONE_DISH_SUCCESS: 'Clone dish successful',
   RATING_SUCCESS: 'Rating successful',
-  NO_RATING_PERMISSION: 'No permission for rating this dish'
+  NO_RATING_PERMISSION: 'No permission for rating this dish',
+  CAN_NOT_EDIT_OR_DELETE_ORIGINAL_DISH: 'Can not edit or delete original dish',
+  DISH_SOURCE_NOT_FOUND: 'Dish source not found'
 }
 export const INGREDIENT_MESSAGES = {
   ADD_INGREDIENT_SUCCESS: 'Add ingredient successful',

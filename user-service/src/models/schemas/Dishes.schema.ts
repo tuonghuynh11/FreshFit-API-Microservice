@@ -22,6 +22,9 @@ interface DishesType {
   fiber?: number
   sugar?: number
   protein?: number
+  is_active?: boolean // Check dish is deleted
+  is_custom?: boolean // Check dish doesn't original
+  source_id?: string // Original dish Id
 }
 
 export default class Dishes {
@@ -45,6 +48,9 @@ export default class Dishes {
   fiber?: number
   sugar?: number
   protein?: number
+  is_active?: boolean // Check dish is deleted
+  is_custom?: boolean // Check dish doesn't original
+  source_id?: ObjectId // Original dish Id
 
   constructor(dishesType: DishesType) {
     const date = new Date()
@@ -68,6 +74,9 @@ export default class Dishes {
     this.fiber = dishesType.fiber || 0
     this.sugar = dishesType.sugar || 0
     this.protein = dishesType.protein || 0
+    this.is_active = true
+    this.is_custom = true
+    this.source_id = dishesType.source_id ? new ObjectId(dishesType.source_id) : undefined
   }
 }
 

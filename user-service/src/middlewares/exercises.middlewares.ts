@@ -175,3 +175,34 @@ export const updateExerciseValidator = validate(
     ['body']
   )
 )
+export const checkOriginalExerciseValidator = validate(
+  checkSchema(
+    {
+      id: {
+        notEmpty: true,
+        trim: true,
+        custom: {
+          options: async (value, { req }) => {
+            const isExist = await databaseService.exercises.findOne({
+              _id: new ObjectId(value)
+            })
+            if (!isExist) {
+              throw new ErrorWithStatus({
+                message: EXERCISE_MESSAGES.EXERCISE_NOT_FOUND,
+                status: HTTP_STATUS.NOT_FOUND
+              })
+            }
+            if (!isExist.is_custom) {
+              throw new ErrorWithStatus({
+                message: EXERCISE_MESSAGES.CAN_NOT_EDIT_OR_DELETE_ORIGINAL_EXERCISE,
+                status: HTTP_STATUS.FORBIDDEN
+              })
+            }
+            return true
+          }
+        }
+      }
+    },
+    ['params']
+  )
+)

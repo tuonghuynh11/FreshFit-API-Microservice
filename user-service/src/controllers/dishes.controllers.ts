@@ -56,6 +56,14 @@ export const updateDishController = async (req: Request<ParamsDictionary, any, U
     dishService: result
   })
 }
+export const deleteDishController = async (req: Request<ParamsDictionary, any, any>, res: Response) => {
+  const { id } = req.params
+  const result = await dishService.delete({ id })
+
+  return res.json({
+    message: DISH_MESSAGES.DELETE_DISH_SUCCESS
+  })
+}
 
 export const ratingDishController = async (req: Request<ParamsDictionary, any, any>, res: Response) => {
   const { id } = req.params

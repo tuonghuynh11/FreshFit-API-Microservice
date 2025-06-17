@@ -453,6 +453,14 @@
         "security": true
     },
     {
+        "name": "delete-dish",
+        "methods": ["DELETE"],
+        "context": ["/dishes/:id"],
+        "target": "http://localhost:4001/api/v1",
+        "pathRewrite": {},
+        "security": true
+    },
+    {
         "name": "add-dish-ingredient",
         "methods": ["POST"],
         "context": ["/dishes/:id/ingredients"],
