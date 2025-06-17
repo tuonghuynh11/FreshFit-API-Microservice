@@ -95,5 +95,9 @@ export const envConfig = {
   smtpPassword: process.env.SMTP_PASSWORD || '',
 
   // RabbitMQ Config
-  rabbitMQUrl: process.env.RABBITMQ_HOST || 'amqp://localhost:5672'
+  rabbitMQUrl: process.env.RABBITMQ_HOST || 'amqp://localhost:5672',
+
+  // Search ingredient API (fatsecret)
+  fatsecret_consumer_key: process.env.FATSECRET_CONSUMER_KEY || '',
+  fatsecret_secret_key: process.env.FATSECRET_SECRET_KEY || ''
 }
