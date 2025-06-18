@@ -243,13 +243,36 @@ export default class AppointmentRepository {
       };
     }
     const appointments = await appointmentRepository.find(criteria);
-    const users = await Promise.all(
-      appointments.map((apt: Appointment) => {
-        return UserService.checkUserExisted({
-          userId: apt.expert.userId as string,
-        });
-      })
-    );
+    // const expertUsers = await Promise.all(
+    //   appointments.map((apt: Appointment) => {
+    //     return UserService.checkUserExisted({
+    //       userId: apt.expert.userId as string,
+    //     });
+    //   })
+    // );
+    // const users = await Promise.all(
+    //   appointments.map((apt: Appointment) => {
+    //     return UserService.checkUserExisted({
+    //       userId: apt.userId as string,
+    //     });
+    //   })
+    // );
+    const [expertUsers, users] = await Promise.all([
+      Promise.all(
+        appointments.map((apt: Appointment) => {
+          return UserService.checkUserExisted({
+            userId: apt.expert.userId as string,
+          });
+        })
+      ),
+      Promise.all(
+        appointments.map((apt: Appointment) => {
+          return UserService.checkUserExisted({
+            userId: apt.userId as string,
+          });
+        })
+      ),
+    ]);
     // ✅ Map appointments with user info
     const result = appointments.map((apt: Appointment, index: number) => ({
       id: apt.id,
@@ -259,12 +282,20 @@ export default class AppointmentRepository {
       status: apt.status,
       type: apt.type,
       userId: apt.userId,
+      user: {
+        _id: users[index]?._id,
+        fullName: users[index]?.fullName,
+        email: users[index]?.email,
+        gender: users[index]?.gender,
+        username: users[index]?.username,
+        avatar: users[index]?.avatar,
+      },
       expert: {
         id: apt.expert.id,
-        fullName: users[index].fullName,
-        gender: users[index].gender,
-        username: users[index].username,
-        avatar: users[index].avatar,
+        fullName: expertUsers[index]?.fullName,
+        gender: expertUsers[index]?.gender,
+        username: expertUsers[index]?.username,
+        avatar: expertUsers[index]?.avatar,
         experience_years: apt.expert.experience_years,
         rating: apt.expert.rating,
       },
