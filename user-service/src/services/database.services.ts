@@ -49,18 +49,68 @@ class DatabaseService {
     }
   }
   async createIndexes() {
-    await Promise.all([this.indexWords()])
+    console.log('-----Index creating ...-----')
+    await Promise.all([this.indexIngredients(), this.indexDishes(), this.indexExercises(), this.indexSets()])
+    console.log('-----Index created-----')
   }
-  async indexWords() {
-    // const exists = await this.words.indexExists(['name_text'])
-    // if (!exists) {
-    //   this.words.createIndex(
-    //     {
-    //       name: 'text'
-    //     },
-    //     { default_language: 'none' }
-    //   )
-    // }
+  async indexIngredients() {
+    const exists = await this.ingredients.indexExists(['name_1'])
+    if (!exists) {
+      this.ingredients.createIndex(
+        {
+          name: 1
+        },
+        { unique: true }
+      )
+    }
+  }
+  async indexDishes() {
+    const exists = await this.dishes.indexExists(['name_1', 'calories_1', 'name_1_calories_1'])
+    if (!exists) {
+      this.dishes.createIndex(
+        {
+          name: 1
+        },
+        { unique: true }
+      )
+      this.dishes.createIndex({
+        calories: 1
+      })
+      this.dishes.createIndex({
+        name: 1,
+        calories: 1
+      })
+    }
+  }
+  async indexExercises() {
+    const exists = await this.exercises.indexExists(['name_1'])
+    if (!exists) {
+      this.exercises.createIndex(
+        {
+          name: 1
+        },
+        { unique: true }
+      )
+    }
+  }
+
+  async indexSets() {
+    const exists = await this.sets.indexExists(['name_1', 'total_calories_1', 'name_1_total_calories_1'])
+    if (!exists) {
+      this.sets.createIndex(
+        {
+          name: 1
+        },
+        { unique: true }
+      )
+      this.sets.createIndex({
+        total_calories: 1
+      })
+      this.sets.createIndex({
+        name: 1,
+        total_calories: 1
+      })
+    }
   }
   startSession(): ClientSession {
     return this.client.startSession()

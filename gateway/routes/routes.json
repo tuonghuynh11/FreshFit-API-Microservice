@@ -416,7 +416,7 @@
         "pathRewrite": {},
         "security": true,
         "cache": {
-            "ttl": 180
+            "ttl": 600
         },
         "timeout": 120000
     },
