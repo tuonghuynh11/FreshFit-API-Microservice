@@ -244,7 +244,8 @@ class IngredientService {
     //   data: formBody
     // })
     const searchResult = await axios.get(url, {
-      params: combinedParams
+      params: combinedParams,
+      timeout: 20000
     })
     console.log('Search Result:', searchResult.data)
     const foods = searchResult.data?.foods?.food
@@ -298,7 +299,8 @@ class IngredientService {
     // })
 
     const getDetailResult = await axios.get(getDetailUrl, {
-      params: getDetailCombinedParams
+      params: getDetailCombinedParams,
+      timeout: 20000
     })
 
     console.log('Ingredient Detail:', getDetailResult?.data)
