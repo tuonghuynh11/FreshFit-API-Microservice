@@ -171,9 +171,7 @@ class IngredientService {
       .find({
         ingredients: {
           $elemMatch: {
-            ingredient: {
-              _id: new ObjectId(id)
-            }
+            ingredientId: new ObjectId(id)
           }
         }
       })
