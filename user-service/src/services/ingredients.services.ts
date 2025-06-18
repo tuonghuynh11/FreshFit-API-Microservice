@@ -235,13 +235,16 @@ class IngredientService {
     ).toString()
 
     // Gửi POST request
-    const searchResult = await axios({
-      url,
-      method,
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      data: formBody
+    // const searchResult = await axios({
+    //   url,
+    //   method,
+    //   headers: {
+    //     'Content-Type': 'application/x-www-form-urlencoded'
+    //   },
+    //   data: formBody
+    // })
+    const searchResult = await axios.get(url, {
+      params: combinedParams
     })
     console.log('Search Result:', searchResult.data)
     const foods = searchResult.data?.foods?.food
@@ -285,14 +288,19 @@ class IngredientService {
     ).toString()
 
     // Gửi POST request
-    const getDetailResult = await axios({
-      url: getDetailUrl,
-      method: getDetailMethod,
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      data: getDetailFormBody
+    // const getDetailResult = await axios({
+    //   url: getDetailUrl,
+    //   method: getDetailMethod,
+    //   headers: {
+    //     'Content-Type': 'application/x-www-form-urlencoded'
+    //   },
+    //   data: getDetailFormBody
+    // })
+
+    const getDetailResult = await axios.get(getDetailUrl, {
+      params: getDetailCombinedParams
     })
+
     console.log('Ingredient Detail:', getDetailResult?.data)
     if (!getDetailResult?.data?.food) {
       throw new ErrorWithStatus({

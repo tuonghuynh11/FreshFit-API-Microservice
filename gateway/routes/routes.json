@@ -579,7 +579,7 @@
         "security": true,
         "timeout": 30000,
         "cache": {
-            "ttl": 120
+            "ttl": 600
         }
     },
     {
