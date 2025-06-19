@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb'
 import databaseService from './database.services'
-import { RoleTypeQueryFilter, UserRole } from '~/constants/enums'
+import { RoleTypeQueryFilter, SetType, UserRole } from '~/constants/enums'
 import { SETS_MESSAGES } from '~/constants/messages'
 import { SetReqBody, UpdateSetReqBody } from '~/models/requests/Set.requests'
 import Sets from '~/models/schemas/Sets.schema'
@@ -16,6 +16,7 @@ class SetService {
     page,
     limit,
     type,
+    level,
     sort_by = 'name',
     order_by = 'ASC',
     user_id,
@@ -35,6 +36,7 @@ class SetService {
     max_calories?: number
     min_calories?: number
     isRecommended?: boolean
+    level?: SetType
   }) {
     const conditions: any = {}
     if (search) {
@@ -43,7 +45,9 @@ class SetService {
         $options: 'i'
       }
     }
-
+    if (level) {
+      conditions.type = level
+    }
     if (max_calories) {
       conditions.total_calories = {
         ...conditions.total_calories,

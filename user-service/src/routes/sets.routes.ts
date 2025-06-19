@@ -18,7 +18,7 @@ const setsRouter = Router()
 // Base route: /sets
 /**
  * Description: Search set by name
- * Path: ?search = "" &page = 1 &limit = 10 & order_by & sort_by & min_calories & max_calories
+ * Path: ?search = "" &page = 1 &limit = 10 & order_by & sort_by & min_calories & max_calories & level
  * Method: GET
  * **/
 setsRouter.get(

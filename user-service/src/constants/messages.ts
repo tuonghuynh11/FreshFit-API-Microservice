@@ -271,7 +271,8 @@ export const CHALLENGE_MESSAGES = {
   CHALLENGE_MUST_HAVE_HEALTH_PLAN: 'Challenge must have health plan',
   CHALLENGE_EXPIRED: 'Challenge expired',
   CHALLENGE_NOT_ACTIVE: 'Challenge not active',
-  CHALLENGE_NAME_EXISTS: 'Challenge name already exists'
+  CHALLENGE_NAME_EXISTS: 'Challenge name already exists',
+  CAN_NOT_DELETE_ACTIVE_CHALLENGE: 'Can not delete active challenge'
 }
 export const DISH_MESSAGES = {
   ADD_DISH_SUCCESS: 'Add dish successful',

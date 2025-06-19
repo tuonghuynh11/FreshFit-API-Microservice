@@ -30,4 +30,5 @@ export interface SetReqQuery extends PaginationReqQuery, Filter {
   min_calories?: number
   max_calories?: number
   isRecommended?: string
+  level?: SetType
 }

@@ -8,9 +8,10 @@ import { SetReqBody, SetReqQuery, UpdateSetReqBody } from '~/models/requests/Set
 export const searchSetsController = async (req: Request<ParamsDictionary, any, any, SetReqQuery>, res: Response) => {
   const { user_id, role } = req.decoded_authorization as TokenPayload
 
-  const { search, type, page, limit, sort_by, order_by, max_calories, min_calories, isRecommended } = req.query
+  const { search, type, level, page, limit, sort_by, order_by, max_calories, min_calories, isRecommended } = req.query
   const { sets, total } = await setService.search({
     search: search?.toString(),
+    level,
     page: page ? Number(page) : 1,
     limit: limit ? Number(limit) : 10,
     sort_by,

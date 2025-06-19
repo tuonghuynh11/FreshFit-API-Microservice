@@ -352,6 +352,13 @@ class ChallengesService {
       throw new Error(CHALLENGE_MESSAGES.CHALLENGE_NOT_FOUND)
     }
 
+    if (challenge.status === ChallengeStatus.Active) {
+      throw new ErrorWithStatus({
+        status: HTTP_STATUS.BAD_REQUEST,
+        message: CHALLENGE_MESSAGES.CAN_NOT_DELETE_ACTIVE_CHALLENGE
+      })
+    }
+
     const isUsedByChallenge = await databaseService.userChallengeParticipation
       .find({
         challenge_id: new ObjectId(id),
