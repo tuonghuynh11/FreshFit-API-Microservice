@@ -41,10 +41,22 @@ class DishService {
         $options: 'i'
       }
     }
-    if (max_calories && min_calories) {
+    // if (max_calories && min_calories) {
+    //   conditions.calories = {
+    //     $gte: min_calories,
+    //     $lte: max_calories
+    //   }
+    // }
+    if (max_calories) {
       conditions.calories = {
-        $gte: min_calories,
+        ...conditions.calories,
         $lte: max_calories
+      }
+    }
+    if (min_calories) {
+      conditions.calories = {
+        ...conditions.calories,
+        $gte: min_calories
       }
     }
 
@@ -626,13 +638,22 @@ class DishService {
       }
     }
 
+    if (max_calories) {
+      conditions.calories = {
+        $lte: max_calories
+      }
+    }
+    if (min_calories) {
+      conditions.calories = {
+        $gte: min_calories
+      }
+    }
     if (max_calories && min_calories) {
       conditions.calories = {
         $gte: min_calories,
         $lte: max_calories
       }
     }
-
     const dishesPipeline = [
       { $match: conditions },
       {

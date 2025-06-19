@@ -43,12 +43,24 @@ class MealService {
         $options: 'i'
       }
     }
-    if (max_calories && min_calories) {
+    if (max_calories) {
       conditions.calories = {
-        $gte: min_calories,
+        ...conditions.calories,
         $lte: max_calories
       }
     }
+    if (min_calories) {
+      conditions.calories = {
+        ...conditions.calories,
+        $gte: min_calories
+      }
+    }
+    // if (max_calories && min_calories) {
+    //   conditions.calories = {
+    //     $gte: min_calories,
+    //     $lte: max_calories
+    //   }
+    // }
 
     if (meal_type !== MealQueryType.All) {
       conditions.meal_type = meal_type

@@ -44,12 +44,24 @@ class SetService {
       }
     }
 
-    if (max_calories && min_calories) {
+    if (max_calories) {
       conditions.total_calories = {
-        $gte: min_calories,
+        ...conditions.total_calories,
         $lte: max_calories
       }
     }
+    if (min_calories) {
+      conditions.total_calories = {
+        ...conditions.total_calories,
+        $gte: min_calories
+      }
+    }
+    // if (max_calories && min_calories) {
+    //   conditions.total_calories = {
+    //     $gte: min_calories,
+    //     $lte: max_calories
+    //   }
+    // }
     if (type !== RoleTypeQueryFilter.All) {
       if (type === RoleTypeQueryFilter.System) {
         conditions.user_id = undefined
