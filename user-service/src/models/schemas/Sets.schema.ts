@@ -19,6 +19,7 @@ interface ISet {
   total_calories?: number
   is_youtube_workout?: boolean // true nếu là youtube workout, false nếu là set bài tập bình thường
   youtube_id?: string // id của video youtube, dùng để lấy thông tin video từ youtube api
+  is_active?: boolean
 }
 
 export default class Sets {
@@ -38,6 +39,7 @@ export default class Sets {
   total_calories?: number
   is_youtube_workout?: boolean // true nếu là youtube workout, false nếu là set bài tập bình thường
   youtube_id?: string // id của video youtube, dùng để lấy thông tin video từ youtube api
+  is_active?: boolean
 
   constructor(set: ISet) {
     const date = new Date()
@@ -57,5 +59,6 @@ export default class Sets {
     this.total_calories = set.total_calories || 0
     this.is_youtube_workout = set.is_youtube_workout || false // mặc định là false, nếu là youtube workout thì sẽ được cập nhật sau
     this.youtube_id = set.youtube_id || ''
+    this.is_active = true
   }
 }

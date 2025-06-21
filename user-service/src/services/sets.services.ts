@@ -38,7 +38,9 @@ class SetService {
     isRecommended?: boolean
     level?: SetType
   }) {
-    const conditions: any = {}
+    const conditions: any = {
+      is_active: true
+    }
     if (search) {
       conditions.name = {
         $regex: search.trim(),
@@ -162,7 +164,32 @@ class SetService {
     if (!set) {
       throw new Error(SETS_MESSAGES.SET_NOT_FOUND)
     }
+    // Check set is used
 
+    // const [isUsedByWorkoutPlanDetails, isUsedByHealthTrackingDetails] = await Promise.all([
+    //   databaseService.workoutPlanDetails
+    //     .find({
+    //       sets: {
+    //         $elemMatch: {
+    //           set_id: new ObjectId(id)
+    //         }
+    //       }
+    //     })
+    //     .toArray(),
+    //   databaseService.healthTrackings
+    //     .find({
+    //       healthTrackingDetails: {
+    //         $elemMatch: {
+    //           setId: new ObjectId(id)
+    //         }
+    //       }
+    //     })
+    //     .toArray()
+    // ])
+
+    // if (isUsedByWorkoutPlanDetails.length > 0 || isUsedByHealthTrackingDetails.length > 0) {
+    //   throw new ErrorWithStatus({ status: HTTP_STATUS.CONFLICT, message: SETS_MESSAGES.SET_IS_USED })
+    // }
     const updateData: any = {
       ...omit(updateSet, ['set_exercises'])
     }
@@ -207,21 +234,43 @@ class SetService {
       throw new ErrorWithStatus({ status: HTTP_STATUS.FORBIDDEN, message: SETS_MESSAGES.NO_DELETE_PERMISSION })
     }
 
-    const isUsedByWorkoutPlanDetails = await databaseService.workoutPlanDetails
-      .find({
-        sets: {
-          $elemMatch: {
-            set_id: new ObjectId(id)
+    const [isUsedByWorkoutPlanDetails, isUsedByHealthTrackingDetails] = await Promise.all([
+      databaseService.workoutPlanDetails
+        .find({
+          sets: {
+            $elemMatch: {
+              set_id: new ObjectId(id)
+            }
           }
-        }
-      })
-      .toArray()
+        })
+        .toArray(),
+      databaseService.healthTrackings
+        .find({
+          healthTrackingDetails: {
+            $elemMatch: {
+              setId: new ObjectId(id)
+            }
+          }
+        })
+        .toArray()
+    ])
 
-    if (isUsedByWorkoutPlanDetails.length > 0) {
+    if (isUsedByWorkoutPlanDetails.length > 0 || isUsedByHealthTrackingDetails.length > 0) {
       throw new ErrorWithStatus({ status: HTTP_STATUS.CONFLICT, message: SETS_MESSAGES.SET_IS_USED })
     }
 
     const result = await databaseService.sets.deleteOne({ _id: new ObjectId(id) })
+    // const result = await databaseService.sets.updateOne(
+    //   { _id: new ObjectId(id) },
+    //   {
+    //     $set: {
+    //       is_active: false
+    //     },
+    //     $currentDate: {
+    //       updated_at: true
+    //     }
+    //   }
+    // )
     return result
   }
   async clone({ user_id, set_ids, role }: { user_id: string; role: UserRole; set_ids: string[] }) {
