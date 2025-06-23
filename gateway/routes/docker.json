@@ -303,6 +303,22 @@
         "security": true
     },
     {
+        "name": "get-challenge-leaderboard",
+        "methods": ["GET"],
+        "context": ["/challenges/:id/leaderboard"],
+        "target": "http://users:4001/api/v1",
+        "pathRewrite": {},
+        "security": true
+    },
+    {
+        "name": "get-challenge-general-statistic",
+        "methods": ["GET"],
+        "context": ["/challenges/:id/general-statistic"],
+        "target": "http://users:4001/api/v1",
+        "pathRewrite": {},
+        "security": true
+    },
+    {
         "name": "add-challenge",
         "methods": ["POST"],
         "context": ["/challenges"],

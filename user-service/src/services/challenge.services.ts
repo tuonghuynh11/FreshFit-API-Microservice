@@ -4,6 +4,7 @@ import {
   ChallengeQueryStatusFilter,
   ChallengeQueryTypeFilter,
   ChallengeStatus,
+  GeneralStatus,
   UserChallengeParticipationStatus,
   UserRole
 } from '~/constants/enums'
@@ -13,6 +14,7 @@ import { ErrorWithStatus } from '~/models/Errors'
 import HTTP_STATUS from '~/constants/httpStatus'
 import Challenges from '~/models/schemas/Challenges.schema'
 import UserChallengeParticipation from '~/models/schemas/UserChallengeParticipation.schema'
+import { getDayAndWeekIndex } from '~/utils/commons'
 
 class ChallengesService {
   async search({
@@ -378,6 +380,292 @@ class ChallengesService {
     const result = await databaseService.challenges.deleteOne({ _id: new ObjectId(id) })
 
     return result
+  }
+
+  async getLeaderboard({
+    id,
+    user_id,
+    page = 1,
+    limit = 10
+  }: {
+    id: string
+    user_id: string
+    page?: number
+    limit?: number
+  }) {
+    const challenge = await databaseService.challenges.findOne({
+      _id: new ObjectId(id)
+    })
+    if (!challenge) {
+      throw new ErrorWithStatus({
+        message: CHALLENGE_MESSAGES.CHALLENGE_NOT_FOUND,
+        status: HTTP_STATUS.NOT_FOUND
+      })
+    }
+
+    if (!challenge.health_plan_id) {
+      throw new ErrorWithStatus({
+        message: HEALTH_PLAN_MESSAGES.HEALTH_PLAN_NOT_FOUND,
+        status: HTTP_STATUS.NOT_FOUND
+      })
+    }
+
+    const healthPlan = await databaseService.healthPlans.findOne({
+      _id: new ObjectId(challenge.health_plan_id)
+    })
+    const totalChallengeDays = healthPlan?.details.length
+    const basePipeline = [
+      {
+        $match: {
+          challenge_id: new ObjectId(id)
+        }
+      },
+      {
+        $lookup: {
+          from: 'user_challenge_participation_progress',
+          localField: '_id',
+          foreignField: 'user_challenge_participation_id',
+          as: 'progress'
+        }
+      },
+      {
+        $addFields: {
+          completedDays: {
+            $size: {
+              $filter: {
+                input: '$progress',
+                as: 'p',
+                cond: {
+                  $eq: ['$$p.status', 'Done']
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'user_id',
+          foreignField: '_id',
+          as: 'user'
+        }
+      },
+      {
+        $unwind: {
+          path: '$user',
+          preserveNullAndEmptyArrays: false
+        }
+      },
+      {
+        $project: {
+          user_id: 1,
+          challenge_id: 1,
+          completedDays: 1,
+          'user._id': 1,
+          'user.fullName': 1,
+          'user.username': 1,
+          'user.email': 1,
+          'user.avatar': 1
+        }
+      }
+    ]
+
+    // Lấy tổng số bản ghi
+    const totalItemsResult = await databaseService.userChallengeParticipation
+      .aggregate([...basePipeline, { $count: 'total' }])
+      .toArray()
+
+    const totalItems = totalItemsResult[0]?.total || 0
+
+    // Lấy dữ liệu với skip/limit
+    const participationProgresses = await databaseService.userChallengeParticipation
+      .aggregate([...basePipeline, { $sort: { completedDays: -1 } }, { $skip: (page - 1) * limit }, { $limit: limit }])
+      .toArray()
+    return {
+      leaderboard: {
+        totalChallengeDays,
+        participationProgresses
+      },
+      total: totalItems
+    }
+  }
+  async getChallengeGeneralStatistic({ id, user_id }: { id: string; user_id: string }) {
+    const challenge = await databaseService.challenges.findOne({
+      _id: new ObjectId(id)
+    })
+    if (!challenge) {
+      throw new ErrorWithStatus({
+        message: CHALLENGE_MESSAGES.CHALLENGE_NOT_FOUND,
+        status: HTTP_STATUS.NOT_FOUND
+      })
+    }
+
+    if (!challenge.health_plan_id) {
+      throw new ErrorWithStatus({
+        message: HEALTH_PLAN_MESSAGES.HEALTH_PLAN_NOT_FOUND,
+        status: HTTP_STATUS.NOT_FOUND
+      })
+    }
+
+    const healthPlan = await databaseService.healthPlans.findOne({
+      _id: new ObjectId(challenge.health_plan_id)
+    })
+    const { dayOfWeek: nowDay, weekIndex: nowWeek } = getDayAndWeekIndex(
+      new Date(challenge.start_date),
+      new Date(challenge.end_date),
+      new Date()
+    )
+    let totalParticipationCompletedToday = 0
+    let isTodayUserCompleted = false
+    const currentHealthPlanDetail = await databaseService.healthPlanDetails.findOne({
+      _id: {
+        $in: healthPlan?.details
+      },
+      day: nowDay,
+      week: nowWeek
+    })
+
+    const totalChallengeDays = healthPlan?.details.length
+    const totalParticipation = await databaseService.userChallengeParticipation
+      .find({
+        challenge_id: new ObjectId(id)
+      })
+      .toArray()
+
+    if (!currentHealthPlanDetail) {
+      totalParticipationCompletedToday = totalParticipation.length
+      isTodayUserCompleted = true
+    } else {
+      const [participationProgresses, todayUserProgresses] = await Promise.all([
+        databaseService.userChallengeParticipation
+          .aggregate([
+            {
+              $match: {
+                challenge_id: new ObjectId(id)
+              }
+            },
+            {
+              $lookup: {
+                from: 'user_challenge_participation_progress',
+                localField: '_id',
+                foreignField: 'user_challenge_participation_id',
+                as: 'progress'
+              }
+            },
+            {
+              $match:
+                /**
+                 * query: The query in MQL.
+                 */
+                {
+                  'progress.health_plan_detail_id': currentHealthPlanDetail._id,
+                  'progress.status': GeneralStatus.Done
+                }
+            }
+          ])
+          .toArray(),
+        databaseService.userChallengeParticipation
+          .aggregate([
+            {
+              $match: {
+                challenge_id: new ObjectId(id),
+                user_id: new ObjectId(user_id)
+              }
+            },
+            {
+              $lookup: {
+                from: 'user_challenge_participation_progress',
+                localField: '_id',
+                foreignField: 'user_challenge_participation_id',
+                as: 'progress'
+              }
+            },
+            {
+              $match:
+                /**
+                 * query: The query in MQL.
+                 */
+                {
+                  'progress.health_plan_detail_id': currentHealthPlanDetail._id,
+                  'progress.status': GeneralStatus.Done
+                }
+            }
+          ])
+          .toArray()
+      ])
+      totalParticipationCompletedToday = participationProgresses.length
+      isTodayUserCompleted = todayUserProgresses.length !== 0 ? true : false
+    }
+
+    const userProgresses = await databaseService.userChallengeParticipation
+      .aggregate([
+        {
+          $match: {
+            challenge_id: new ObjectId(id),
+            user_id: new ObjectId(user_id)
+          }
+        },
+        {
+          $lookup: {
+            from: 'user_challenge_participation_progress',
+            localField: '_id',
+            foreignField: 'user_challenge_participation_id',
+            as: 'progress'
+          }
+        },
+        {
+          $addFields: {
+            completedDays: {
+              $size: {
+                $filter: {
+                  input: '$progress',
+                  as: 'p',
+                  cond: {
+                    $eq: ['$$p.status', 'Done']
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'user_id',
+            foreignField: '_id',
+            as: 'user'
+          }
+        },
+        {
+          $unwind: {
+            path: '$user',
+            preserveNullAndEmptyArrays: false
+          }
+        },
+        {
+          $project: {
+            user_id: 1,
+            challenge_id: 1,
+            completedDays: 1,
+            'user._id': 1,
+            'user.fullName': 1,
+            'user.username': 1,
+            'user.email': 1,
+            'user.avatar': 1
+          }
+        }
+      ])
+      .toArray()
+
+    return {
+      totalParticipation: totalParticipation.length,
+      totalParticipationCompletedToday,
+      totalParticipationUnCompletedToday: totalParticipation.length - totalParticipationCompletedToday,
+      isTodayUserCompleted,
+      totalChallengeDays,
+      userProgresses: userProgresses.length > 0 ? userProgresses[0] : null
+    }
   }
 }
 const challengesService = new ChallengesService()

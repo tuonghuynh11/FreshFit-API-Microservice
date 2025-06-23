@@ -272,7 +272,10 @@ export const CHALLENGE_MESSAGES = {
   CHALLENGE_EXPIRED: 'Challenge expired',
   CHALLENGE_NOT_ACTIVE: 'Challenge not active',
   CHALLENGE_NAME_EXISTS: 'Challenge name already exists',
-  CAN_NOT_DELETE_ACTIVE_CHALLENGE: 'Can not delete active challenge'
+  CAN_NOT_DELETE_ACTIVE_CHALLENGE: 'Can not delete active challenge',
+  INVALID_LEADERBOARD_RANK_TYPE: 'Invalid leaderboard rak type',
+  GET_CHALLENGE_LEADERBOARD_SUCCESS: 'Get challenge leaderboard success',
+  GET_CHALLENGE_GENERAL_STATISTIC_SUCCESS: 'Get challenge general statistic success'
 }
 export const DISH_MESSAGES = {
   ADD_DISH_SUCCESS: 'Add dish successful',
