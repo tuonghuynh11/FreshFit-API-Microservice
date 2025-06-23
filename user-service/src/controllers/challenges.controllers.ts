@@ -3,7 +3,12 @@ import { TokenPayload } from '~/models/requests/User.requests'
 import { ParamsDictionary } from 'express-serve-static-core'
 import { CHALLENGE_MESSAGES, EXERCISE_MESSAGES } from '~/constants/messages'
 import exerciseService from '~/services/exercises.services'
-import { ChallengeReqBody, ChallengeReqQuery, UpdateChallengeReqBody } from '~/models/requests/Challenge.requests'
+import {
+  ChallengeLeaderBoardReqQuery,
+  ChallengeReqBody,
+  ChallengeReqQuery,
+  UpdateChallengeReqBody
+} from '~/models/requests/Challenge.requests'
 import challengesService from '~/services/challenge.services'
 
 export const searchChallengesController = async (
@@ -108,5 +113,48 @@ export const deleteChallengeController = async (req: Request<ParamsDictionary, a
 
   return res.json({
     message: CHALLENGE_MESSAGES.DELETE_CHALLENGE_SUCCESS
+  })
+}
+
+export const getChallengeLeaderboardController = async (
+  req: Request<ParamsDictionary, any, any, ChallengeLeaderBoardReqQuery>,
+  res: Response
+) => {
+  const { page, limit } = req.query
+  const { id } = req.params
+  const { user_id } = req.decoded_authorization as TokenPayload
+
+  const { leaderboard, total } = await challengesService.getLeaderboard({
+    id,
+    user_id,
+    page: Number(page),
+    limit: Number(limit)
+  })
+  return res.json({
+    message: CHALLENGE_MESSAGES.GET_CHALLENGE_LEADERBOARD_SUCCESS,
+    result: {
+      leaderboard,
+      page: Number(page),
+      limit: Number(limit),
+      total_items: total,
+      total_pages: Math.ceil(total / limit)
+    }
+  })
+}
+export const getChallengeGeneralStatisticController = async (
+  req: Request<ParamsDictionary, any, any, any>,
+  res: Response
+) => {
+  const { page, limit } = req.query
+  const { id } = req.params
+  const { user_id } = req.decoded_authorization as TokenPayload
+
+  const result = await challengesService.getChallengeGeneralStatistic({
+    id,
+    user_id
+  })
+  return res.json({
+    message: CHALLENGE_MESSAGES.GET_CHALLENGE_GENERAL_STATISTIC_SUCCESS,
+    result
   })
 }

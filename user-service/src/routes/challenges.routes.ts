@@ -5,6 +5,8 @@ import {
   deactivateChallengeController,
   deleteChallengeController,
   getChallengeByIdController,
+  getChallengeGeneralStatisticController,
+  getChallengeLeaderboardController,
   joinChallengeController,
   searchChallengesController,
   updateChallengeController
@@ -46,6 +48,31 @@ challengesRouter.get(
   accessTokenValidator,
   verifiedUSerValidator,
   wrapRequestHandler(getChallengeByIdController)
+)
+/**
+ * Description: Get challenge leaderboard
+ * Path: /:id/leaderboard?page = 1 &limit = 10
+ * Method: Get
+ * Body:
+ * **/
+challengesRouter.get(
+  '/:id/leaderboard',
+  accessTokenValidator,
+  verifiedUSerValidator,
+  paginationNavigator,
+  wrapRequestHandler(getChallengeLeaderboardController)
+)
+/**
+ * Description: Get challenge General Statistic
+ * Path: /:id/general-statistic
+ * Method: Get
+ * Body:
+ * **/
+challengesRouter.get(
+  '/:id/general-statistic',
+  accessTokenValidator,
+  verifiedUSerValidator,
+  wrapRequestHandler(getChallengeGeneralStatisticController)
 )
 
 /**

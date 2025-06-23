@@ -365,3 +365,30 @@ export const getStartAndEndISO = (dateStr: string, timeZone: string): { start: s
     end: formatInTimeZone(end, timeZone, "yyyy-MM-dd'T'HH:mm:ssXXX")
   }
 }
+
+export function getDayAndWeekIndex(startDate: Date, endDate: Date, targetDate: Date) {
+  startDate.setHours(0, 0, 0, 0)
+  endDate.setHours(0, 0, 0, 0)
+  targetDate.setHours(0, 0, 0, 0)
+
+  if (targetDate < startDate || targetDate > endDate) {
+    return {
+      valid: false,
+      message: 'targetDate is out of challenge range'
+    }
+  }
+
+  const diffDays = Math.floor((targetDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1
+  const weekIndex = Math.ceil(diffDays / 7)
+
+  // Get dayOfWeek as number (1 = Monday, ..., 7 = Sunday)
+  const jsDay = targetDate.getDay() // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+  const dayOfWeekNumber = jsDay === 0 ? 7 : jsDay // Convert to 1–7 (Monday = 1)
+
+  return {
+    valid: true,
+    dayOfWeek: dayOfWeekNumber, // ví dụ: 1 (Monday)
+    weekIndex, // ví dụ: 3
+    dayIndex: diffDays // ví dụ: 15
+  }
+}

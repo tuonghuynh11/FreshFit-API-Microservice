@@ -45,3 +45,4 @@ export interface ChallengeReqQuery extends PaginationReqQuery, Filter {
   type: ChallengeQueryTypeFilter
   status: ChallengeQueryStatusFilter
 }
+export interface ChallengeLeaderBoardReqQuery extends PaginationReqQuery {}
