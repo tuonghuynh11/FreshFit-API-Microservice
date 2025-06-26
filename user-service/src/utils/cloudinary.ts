@@ -47,7 +47,8 @@ export const uploadVideoToCloudinary = async (video_url: string) => {
     unique_filename: true,
     folder: 'FreshFit/Videos'
   })
-  return result.url
+
+  return result.secure_url
 }
 export const uploadImageToCloudinary = async (image_url: string) => {
   // try {
@@ -100,5 +101,5 @@ export const uploadImageToCloudinary = async (image_url: string) => {
       }
     )
   })
-  return result.url
+  return result.secure_url
 }

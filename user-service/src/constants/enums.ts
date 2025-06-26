@@ -94,7 +94,8 @@ export enum SetStatus {
 export enum MealType {
   Breakfast = 'Breakfast',
   Lunch = 'Lunch',
-  Dinner = 'Dinner'
+  Dinner = 'Dinner',
+  Snack = 'Snack'
 }
 export enum ChallengeType {
   Fitness = 'Fitness',
@@ -141,7 +142,8 @@ export enum MealQueryType {
   All = 'All',
   Breakfast = 'Breakfast',
   Lunch = 'Lunch',
-  Dinner = 'Dinner'
+  Dinner = 'Dinner',
+  Snack = 'Snack'
 }
 
 export enum RoleTypeQueryFilter {

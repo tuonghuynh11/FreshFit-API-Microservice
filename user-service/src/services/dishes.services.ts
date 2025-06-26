@@ -296,14 +296,15 @@ class DishService {
       })
     }
 
-    const result = await databaseService.dishes.updateOne(
-      { _id: new ObjectId(id) },
-      {
-        $set: {
-          is_active: false
-        }
-      }
-    )
+    // const result = await databaseService.dishes.updateOne(
+    //   { _id: new ObjectId(id) },
+    //   {
+    //     $set: {
+    //       is_active: false
+    //     }
+    //   }
+    // )
+    const result = await databaseService.dishes.deleteOne({ _id: new ObjectId(id) })
 
     return result
   }
