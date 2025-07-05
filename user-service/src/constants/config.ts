@@ -82,8 +82,10 @@ export const envConfig = {
   defaultExpertPassword: process.env.DEFAULT_EXPERT_PASSWORD || '12345678expert@Ex',
 
   // ZEGO SERVICE
-  zegoAppId: process.env.ZEGO_APP_ID || 0,
-  zegoServerSecret: process.env.ZEGO_SERVER_SECRET || '',
+  zegoAppId: '351012611',
+  zegoServerSecret: '640bf762c30e67dc813cf2a5750d4b2b',
+  // zegoAppId: process.env.ZEGO_APP_ID || 0,
+  // zegoServerSecret: process.env.ZEGO_SERVER_SECRET || '',
   // zegoEffectiveTimeInSeconds: process.env.ZEGO_EFFECTIVE_TIME_IN_SECONDS || 604800, // 1 week
   zegoEffectiveTimeInSeconds: 86400, // 1 day
 
