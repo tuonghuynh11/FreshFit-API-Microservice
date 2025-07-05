@@ -382,7 +382,6 @@ export function getDayAndWeekIndex(startDate: Date, endDate: Date, targetDate: D
   const weekIndex = Math.ceil(diffDays / 7)
 
   // Get dayOfWeek as number (1 = Monday, ..., 7 = Sunday)
-  // Get dayOfWeek as number (1 = Monday, ..., 7 = Sunday)
   const jsDay = targetDate.getDay() // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
   const dayOfWeekNumber = jsDay === 0 ? 7 : jsDay // Convert to 1–7 (Monday = 1)
 
